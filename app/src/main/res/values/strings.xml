@@ -13,4 +13,9 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+    <string name="list_name">List name</string>
+    <string name="created_by">Created by</string>
+    <string name="creator">Creator</string>
+    <string name="november_18_2019">November 18, 2019</string>
+    <string name="_04_30pm">04:30PM</string>
 </resources>
