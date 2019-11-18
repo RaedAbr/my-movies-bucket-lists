@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">My Movies Bucketlists</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">@string/app_name</string>
+    <string name="nav_header_subtitle">What movie will I watch next?</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="list_name">List name</string>
+    <string name="created_by">Created by</string>
+    <string name="creator">Creator</string>
+    <string name="november_18_2019">November 18, 2019</string>
+    <string name="_04_30pm">04:30PM</string>
+</resources>
