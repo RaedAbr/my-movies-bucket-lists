@@ -31,9 +31,9 @@ abstract class GenericRecyclerViewAdapter<T>(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return getViewHolder(
-            LayoutInflater.from(parent.context)
-            .inflate(viewType, parent, false)
-            , viewType)
+            LayoutInflater.from(parent.context).inflate(viewType, parent, false),
+            viewType
+        )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -45,10 +45,10 @@ abstract class GenericRecyclerViewAdapter<T>(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return getLayoutId(position, listItems[position])
+        return getLayoutId()
     }
 
-    protected abstract fun getLayoutId(position: Int, obj: T): Int
+    protected abstract fun getLayoutId(): Int
 
     abstract fun getViewHolder(view: View, viewType: Int):RecyclerView.ViewHolder
 

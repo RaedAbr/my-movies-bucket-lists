@@ -34,7 +34,7 @@ class HomeFragment : Fragment() {
         val recyclerView = root!!.findViewById<RecyclerView>(R.id.recycler_lists_view)
         val lists = OneList.myLists
 
-        val myAdapter = object : GenericRecyclerViewAdapter<Any>(
+        val myAdapter = object : GenericRecyclerViewAdapter<OneList>(
             lists,
             object : OnItemClickListener {
                 override fun onItemClick(position: Int, view: View) {
@@ -44,12 +44,8 @@ class HomeFragment : Fragment() {
 //                    startActivityForResult(intent, TODO_INDEX_RESULT, null)
                 }
             }) {
-            override fun getLayoutId(position: Int, obj: Any): Int {
-                return when(obj) {
-                    is OneList -> R.layout.recycler_list_item
-//                    is Bus->R.layout.bus_layout
-                    else -> R.layout.recycler_list_item
-                }
+            override fun getLayoutId(): Int {
+                return  R.layout.recycler_list_item
             }
 
             override fun getViewHolder(view: View, viewType: Int): RecyclerView.ViewHolder {
