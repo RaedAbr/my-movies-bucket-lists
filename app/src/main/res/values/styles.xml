@@ -34,4 +34,12 @@
 
     <style name="List.DateTime" parent="TextAppearance.AppCompat.Caption" />
 
+    <style name="Toolbar" parent="@style/AppTheme.AppBarOverlay">
+        <item name="android:fontFamily">@font/berkshire_swash</item>
+    </style>
+
+    <style name="NavHeaderTitle" parent="@style/TextAppearance.AppCompat.Body1">
+        <item name="android:fontFamily">@font/berkshire_swash</item>
+    </style>
+
 </resources>
