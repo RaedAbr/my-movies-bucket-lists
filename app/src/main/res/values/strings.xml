@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">My Movies Bucketlists</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">@string/app_name</string>
     <string name="nav_header_subtitle">What movie will I watch next?</string>
     <string name="nav_header_desc">Navigation header</string>
@@ -18,4 +16,7 @@
     <string name="creator">Creator</string>
     <string name="november_18_2019">November 18, 2019</string>
     <string name="_04_30pm">04:30PM</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -4,13 +4,13 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import mse.mobop.R
-import mse.mobop.data.OneList
+import mse.mobop.model.MoviesBucketlist
 
 object RecyclerViewHoldersFactory {
 
     fun create(view: View, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            R.layout.recycler_lists_view -> ListViewHolder(view)
+            R.layout.recycler_bucketlists_view -> ListViewHolder(view)
 //            R.layout.bus_layout -> BusViewHolder(view)
             else -> {
                 ListViewHolder(view)
@@ -18,14 +18,14 @@ object RecyclerViewHoldersFactory {
         }
     }
 
-    class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), GenericRecyclerViewAdapter.Binder<OneList> {
+    class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), GenericRecyclerViewAdapter.Binder<MoviesBucketlist> {
 
         private var listNameTextView: TextView = itemView.findViewById(R.id.list_name_textview)
         private var listCreatorTextView: TextView = itemView.findViewById(R.id.list_creator_textview)
         private var listCreationDateTextView: TextView = itemView.findViewById(R.id.list_date_textview)
         private var listCreationTimeTextView: TextView = itemView.findViewById(R.id.list_time_textview)
 
-        override fun bind(data: OneList, position: Int, listener: GenericRecyclerViewAdapter.OnItemClickListener) {
+        override fun bind(data: MoviesBucketlist, position: Int, listener: GenericRecyclerViewAdapter.OnItemClickListener) {
             listNameTextView.text = data.name
             listCreatorTextView.text = data.createdBy
             listCreationDateTextView.text = data.creationDate

@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+ xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    style="@style/List.Item">
+    style="@style/Bucketlist.Card">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
 
     <TextView
         android:id="@+id/list_name_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/list_name"
-        style="@style/List.Name"/>
+        style="@style/Bucketlist.Name"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -21,13 +27,13 @@
             android:layout_height="wrap_content"
             android:text="@string/created_by"
             android:layout_marginEnd="5dp"
-            style="@style/List.CreatedBy" />
+            style="@style/Bucketlist.CreatedBy" />
         <TextView
             android:id="@+id/list_creator_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/creator"
-            style="@style/List.CreatedBy"/>
+            style="@style/Bucketlist.CreatedBy"/>
     </LinearLayout>
 
     <LinearLayout
@@ -38,9 +44,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/november_18_2019"
-            style="@style/List.DateTime"
+            style="@style/Bucketlist.DateTime"
             android:gravity="center_vertical"
             android:drawableStart="@drawable/ic_calendar"
+            android:drawableTint="@color/colorPrimaryDark"
             android:layout_marginEnd="10dp"/>
 
         <TextView
@@ -48,8 +55,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/_04_30pm"
-            style="@style/List.DateTime"
+            style="@style/Bucketlist.DateTime"
             android:gravity="center_vertical"
-            android:drawableStart="@drawable/ic_time" />
+            android:drawableStart="@drawable/ic_time"
+            android:drawableTint="@color/colorPrimaryDark"/>
     </LinearLayout>
-</LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
