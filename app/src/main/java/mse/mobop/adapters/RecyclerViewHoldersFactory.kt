@@ -10,7 +10,7 @@ object RecyclerViewHoldersFactory {
 
     fun create(view: View, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            R.layout.recycler_lists_view -> ListViewHolder(view)
+            R.layout.recycler_bucketlists_view -> ListViewHolder(view)
 //            R.layout.bus_layout -> BusViewHolder(view)
             else -> {
                 ListViewHolder(view)

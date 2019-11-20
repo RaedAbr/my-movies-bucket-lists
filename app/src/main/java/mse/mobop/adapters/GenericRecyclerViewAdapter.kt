@@ -14,20 +14,9 @@ abstract class GenericRecyclerViewAdapter<T>(
         fun onItemClick(position: Int, view: View)
     }
 
-//    var listItems: List<T>
-
-//    constructor(listItems: List<T>) {
-//        this.listItems = listItems
-//    }
-//
-//    constructor() {
-//        listItems = emptyList()
-//    }
-
-//    fun setItems(listItems: List<T>) {
-//        this.listItems = listItems
-//        notifyDataSetChanged()
-//    }
+    internal interface Binder<T> {
+        fun bind(data: T, position: Int, listener: OnItemClickListener)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return getViewHolder(
@@ -51,8 +40,4 @@ abstract class GenericRecyclerViewAdapter<T>(
     protected abstract fun getLayoutId(): Int
 
     abstract fun getViewHolder(view: View, viewType: Int):RecyclerView.ViewHolder
-
-    internal interface Binder<T> {
-        fun bind(data: T, position: Int, listener: OnItemClickListener)
-    }
 }
