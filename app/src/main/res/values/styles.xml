@@ -19,21 +19,15 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Bucketlist">List</style>
-
     <style name="Bucketlist.Card">
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_margin">5dp</item>
         <item name="android:background">@color/white</item>
-<!--        <item name="android:shadowColor">@color/black</item>-->
-<!--        <item name="android:elevation">5dp</item>-->
     </style>
-
     <style name="Bucketlist.Name" parent="TextAppearance.AppCompat.Light.SearchResult.Title" />
-
     <style name="Bucketlist.CreatedBy" parent="TextAppearance.AppCompat.Light.SearchResult.Subtitle" />
-
     <style name="Bucketlist.DateTime" parent="TextAppearance.AppCompat.Caption" />
 
     <style name="Toolbar" parent="@style/AppTheme.AppBarOverlay">
@@ -43,5 +37,14 @@
     <style name="NavHeaderTitle" parent="@style/TextAppearance.AppCompat.Body1">
         <item name="android:fontFamily">@font/berkshire_swash</item>
     </style>
+
+
+    <style name="Bucketlist.AddEdit">AddEditBucketlist</style>
+    <style name="Bucketlist.AddEdit.Title">
+        <item name="android:textSize">40sp</item>
+        <item name="android:layout_marginBottom">40dp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
 
 </resources>

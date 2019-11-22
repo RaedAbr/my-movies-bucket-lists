@@ -7,11 +7,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import kotlinx.android.synthetic.main.fragment_add_edit_bucketlist.*
 import mse.mobop.R
+import mse.mobop.model.MoviesBucketlist
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
+public const val ARG_TITLE = "title"
 private const val ARG_PARAM2 = "param2"
 
 /**
@@ -41,7 +45,14 @@ class AddEditBucketlistFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_edit_bucketlist, container, false)
+        val root = inflater.inflate(R.layout.fragment_add_edit_bucketlist, container, false)
+        val viewModel = ViewModelProviders.of(this).get(AddEditBucketlistFragmentViewModel::class.java)
+        viewModel.moviesBucketlist.observe(this, Observer {
+            textview_add_edit_bucketlist_title.text = arguments?.getString(ARG_TITLE)
+            edittext_add_edit_bucketlist_name.setText(it?.name)
+        })
+        viewModel.loadArguments(arguments)
+        return root
     }
 
 //    // TODO: Rename method, update argument and hook method into UI event

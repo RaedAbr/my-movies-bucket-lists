@@ -2,6 +2,7 @@ package mse.mobop.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity
 data class MoviesBucketlist (
@@ -13,4 +14,4 @@ data class MoviesBucketlist (
     var creationTime: String
 //    var sharedWith: ArrayList<String>? = null,
 //    var moviesList: ArrayList<String>? = null
-)
+) : Serializable

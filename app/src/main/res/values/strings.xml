@@ -16,7 +16,5 @@
     <string name="creator">Creator</string>
     <string name="november_18_2019">November 18, 2019</string>
     <string name="_04_30pm">04:30PM</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="new_list">New list</string>
 </resources>
