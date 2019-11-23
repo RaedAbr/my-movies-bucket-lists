@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="mse.mobop.ui.fragment.bucketlist.BucketlistsFragment"
+        android:name="mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist.BucketlistsFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_bucketlists" >
         <action
@@ -21,36 +21,36 @@
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="mse.mobop.ui.fragment.gallery.GalleryFragment"
+        android:name="mse.mobop.mymoviesbucketlists.ui.fragment.gallery.GalleryFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="mse.mobop.ui.fragment.slideshow.SlideshowFragment"
+        android:name="mse.mobop.mymoviesbucketlists.ui.fragment.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
 
     <fragment
         android:id="@+id/nav_tools"
-        android:name="mse.mobop.ui.fragment.tools.ToolsFragment"
+        android:name="mse.mobop.mymoviesbucketlists.ui.fragment.tools.ToolsFragment"
         android:label="@string/menu_tools"
         tools:layout="@layout/fragment_tools" />
 
     <fragment
         android:id="@+id/nav_share"
-        android:name="mse.mobop.ui.fragment.share.ShareFragment"
+        android:name="mse.mobop.mymoviesbucketlists.ui.fragment.share.ShareFragment"
         android:label="@string/menu_share"
         tools:layout="@layout/fragment_share" />
 
     <fragment
         android:id="@+id/nav_send"
-        android:name="mse.mobop.ui.fragment.send.SendFragment"
+        android:name="mse.mobop.mymoviesbucketlists.ui.fragment.send.SendFragment"
         android:label="@string/menu_send"
         tools:layout="@layout/fragment_send" />
     <fragment
         android:id="@+id/nav_addEditBucketlistFragment"
-        android:name="mse.mobop.ui.fragment.bucketlist.AddEditBucketlistFragment"
+        android:name="mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist.AddEditBucketlistFragment"
         android:label="fragment_add_edit_bucketlist"
         tools:layout="@layout/fragment_add_edit_bucketlist" />
 </navigation>
