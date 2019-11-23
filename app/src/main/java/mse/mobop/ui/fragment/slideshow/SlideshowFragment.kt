@@ -1,4 +1,4 @@
-package mse.mobop.ui.slideshow
+package mse.mobop.ui.fragment.slideshow
 
 import android.os.Bundle
 import android.view.LayoutInflater

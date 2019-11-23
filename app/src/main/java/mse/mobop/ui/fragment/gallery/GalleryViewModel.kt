@@ -1,4 +1,4 @@
-package mse.mobop.ui.gallery
+package mse.mobop.ui.fragment.gallery
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

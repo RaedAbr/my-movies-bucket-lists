@@ -1,13 +1,13 @@
-package mse.mobop.ui.share
+package mse.mobop.ui.fragment.send
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class ShareViewModel : ViewModel() {
+class SendViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is share Fragment"
+        value = "This is send Fragment"
     }
     val text: LiveData<String> = _text
 }

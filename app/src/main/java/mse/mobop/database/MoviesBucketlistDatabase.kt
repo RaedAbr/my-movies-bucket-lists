@@ -4,15 +4,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
-import mse.mobop.model.MoviesBucketlist
-import mse.mobop.model.MoviesBucketlistDao
+import mse.mobop.model.Bucketlist
+import mse.mobop.model.BucketlistDao
 import org.jetbrains.anko.doAsync
 
-@Database(entities = [MoviesBucketlist::class], version = 1, exportSchema = false)
+@Database(entities = [Bucketlist::class] ,version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class MoviesBucketlistDatabase: RoomDatabase() {
 
-    abstract fun moviesBucketlistDao(): MoviesBucketlistDao
+    abstract fun moviesBucketlistDao(): BucketlistDao
 
     companion object {
         var DB_NAME = "MoviesBucketlist.db"
@@ -36,26 +38,26 @@ abstract class MoviesBucketlistDatabase: RoomDatabase() {
 
                 doAsync {
                     val moviesBucketlistDao = INSTANCE!!.moviesBucketlistDao()
-                    moviesBucketlistDao.insert(MoviesBucketlist(
+                    moviesBucketlistDao.insert(Bucketlist(
                         1,
                         "OneList 1",
-                        "Me",
-                        "November 18, 2019",
-                        "04:30PM"
+                        "Me"
+//                        "November 18, 2019",
+//                        "04:30PM"
                     ))
-                    moviesBucketlistDao.insert(MoviesBucketlist(
+                    moviesBucketlistDao.insert(Bucketlist(
                         2,
                         "OneList 2",
-                        "Alice",
-                        "November 18, 2019",
-                        "04:30PM"
+                        "Alice"
+//                        "November 18, 2019",
+//                        "04:30PM"
                     ))
-                    moviesBucketlistDao.insert(MoviesBucketlist(
+                    moviesBucketlistDao.insert(Bucketlist(
                         3,
                         "OneList 3",
-                        "Bob",
-                        "November 18, 2019",
-                        "04:30PM"
+                        "Bob"
+//                        "November 18, 2019",
+//                        "04:30PM"
                     ))
                 }
             }

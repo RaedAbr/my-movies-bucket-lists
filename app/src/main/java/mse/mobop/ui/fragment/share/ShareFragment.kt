@@ -1,4 +1,4 @@
-package mse.mobop.ui.send
+package mse.mobop.ui.fragment.share
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import mse.mobop.R
 
-class SendFragment : Fragment() {
+class ShareFragment : Fragment() {
 
-    private lateinit var sendViewModel: SendViewModel
+    private lateinit var shareViewModel: ShareViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        sendViewModel =
-            ViewModelProviders.of(this).get(SendViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_send, container, false)
-        val textView: TextView = root.findViewById(R.id.text_send)
-        sendViewModel.text.observe(this, Observer {
+        shareViewModel =
+            ViewModelProviders.of(this).get(ShareViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_share, container, false)
+        val textView: TextView = root.findViewById(R.id.text_share)
+        shareViewModel.text.observe(this, Observer {
             textView.text = it
         })
         return root

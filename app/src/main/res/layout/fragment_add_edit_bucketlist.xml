@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="20dp"
-    tools:context=".ui.bucketlist.AddEditBucketlistFragment">
+    tools:context=".ui.fragment.bucketlist.AddEditBucketlistFragment">
 
     <TextView
         android:id="@+id/textview_add_edit_bucketlist_title"
