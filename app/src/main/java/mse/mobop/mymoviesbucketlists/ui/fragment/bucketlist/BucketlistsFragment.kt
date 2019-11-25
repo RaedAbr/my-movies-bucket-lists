@@ -15,9 +15,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import mse.mobop.mymoviesbucketlists.BucketlistAction
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.adapters.GenericRecyclerViewAdapter
+import mse.mobop.mymoviesbucketlists.adapters.RecyclerViewHoldersFactory
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
+import mse.mobop.mymoviesbucketlists.model.ModelInterface
 import mse.mobop.mymoviesbucketlists.ui.swipe.SwipeController
 
 
@@ -43,7 +46,8 @@ class BucketlistsFragment : Fragment() {
         val addBucketlistFab: FloatingActionButton = root.findViewById(R.id.add_bucketlist_fab)
         addBucketlistFab.setOnClickListener {
             findNavController().navigate(
-                R.id.action_nav_home_to_nav_addEditBucketlistFragment
+                R.id.action_nav_home_to_nav_addEditBucketlistFragment,
+                AddEditBucketlistViewModel.createArguments(null, BucketlistAction.ADD)
             )
         }
 
@@ -61,18 +65,17 @@ class BucketlistsFragment : Fragment() {
 
         ItemTouchHelper(object: SwipeController(ItemTouchHelper.RIGHT) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                bucketlistsViewModel.deleteAt(viewHolder.adapterPosition)
+                bucketlistsViewModel.delete((viewHolder as RecyclerViewHoldersFactory.BucketlistViewHolder).dataObject)
 //                recyclerAdapter.notifyItemRemoved(viewHolder.adapterPosition)
                 Toast.makeText(this@BucketlistsFragment.context, "List deleted", Toast.LENGTH_SHORT).show()
             }
         }).attachToRecyclerView(recyclerView)
 
         recyclerAdapter.setOnItemClickListener(object : GenericRecyclerViewAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int, view: View) {
-                // todo: replace this with navigating to the movies list
+            override fun onItemClick(dataObject: ModelInterface) {
                 findNavController().navigate(
-                    R.id.action_nav_home_to_nav_addEditBucketlistFragment,
-                    AddEditBucketlistFragmentViewModel.createArguments(bucketlistsViewModel.getBucketlistAt(position))
+                    R.id.action_nav_home_to_oneBucketlistFragment,
+                    OneBucketlistViewModel.createArguments(dataObject as Bucketlist)
                 )
             }
         })

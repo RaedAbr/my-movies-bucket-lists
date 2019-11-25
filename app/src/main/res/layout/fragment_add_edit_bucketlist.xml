@@ -5,18 +5,18 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="20dp"
+    style="@style/Fragment"
     tools:context=".ui.fragment.bucketlist.AddEditBucketlistFragment">
 
     <TextView
-        android:id="@+id/textview_add_edit_bucketlist_title"
+        android:id="@+id/fragment_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/new_list"
-        style="@style/Bucketlist.AddEdit.Title"/>
+        style="@style/FragmentTitle"/>
 
     <EditText
-        android:id="@+id/edittext_add_edit_bucketlist_name"
+        android:id="@+id/bucketlist_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/list_name"

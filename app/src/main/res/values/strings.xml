@@ -19,6 +19,7 @@
     <string name="save">Save</string>
     <string name="created_in">Created in</string>
     <string name="at">at</string>
-    <string name="_23_11_2019">23-11-2019</string>
+    <string name="_23_11_2019">23–11–2019</string>
     <string name="signout">Signout</string>
+    <string name="edit">Edit</string>
 </resources>

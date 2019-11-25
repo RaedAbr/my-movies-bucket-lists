@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import mse.mobop.mymoviesbucketlists.model.Bucketlist
 import mse.mobop.mymoviesbucketlists.model.ModelInterface
 
 class GenericRecyclerViewAdapter<T: ModelInterface>(private val layoutId: Int
@@ -25,11 +26,11 @@ class GenericRecyclerViewAdapter<T: ModelInterface>(private val layoutId: Int
     }
 
     interface OnItemClickListener {
-        fun onItemClick(position: Int, view: View)
+        fun onItemClick(dataObject: ModelInterface)
     }
 
     interface Binder<T> {
-        fun bind(data: T, position: Int, listener: OnItemClickListener)
+        fun bind(dataObject: T, position: Int, listener: OnItemClickListener)
     }
 
 //    private var listItems: List<T> = emptyList()

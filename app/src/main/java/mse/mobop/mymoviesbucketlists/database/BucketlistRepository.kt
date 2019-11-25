@@ -13,7 +13,7 @@ class BucketlistRepository(application: Application) {
     init {
         val database = MoviesBucketlistDatabase.getInstance(application)
         bucketlistDao = database.moviesBucketlistDao()
-        allBucketlist = bucketlistDao.getAllMoviesBucketlists()
+        allBucketlist = bucketlistDao.getAllBucketlists()
     }
 
     fun insert(bucketlist: Bucketlist) {

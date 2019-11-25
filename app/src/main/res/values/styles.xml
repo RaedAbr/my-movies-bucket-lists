@@ -18,8 +18,16 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="Bucketlist">List</style>
-    <style name="Bucketlist.Card">
+    <style name="Fragment">
+        <item name="android:padding">20dp</item>
+    </style>
+    <style name="FragmentTitle">
+        <item name="android:textSize">40sp</item>
+        <item name="android:layout_marginBottom">40dp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="BucketlistCard">
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginTop">8dp</item>
@@ -39,12 +47,7 @@
     </style>
 
 
-    <style name="Bucketlist.AddEdit">AddEditBucketlist</style>
-    <style name="Bucketlist.AddEdit.Title">
-        <item name="android:textSize">40sp</item>
-        <item name="android:layout_marginBottom">40dp</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-    </style>
+    <style name="BucketlistAddEdit">AddEditBucketlist</style>
 
 
 </resources>

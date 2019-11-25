@@ -15,17 +15,11 @@ abstract class BucketlistDao {
     }
 
     @Update
-    abstract fun updatePrep(bucketlist: Bucketlist)
-    fun update(bucketlist: Bucketlist) {
-        updatePrep(bucketlist.apply {
-            creationDateTime = OffsetDateTime.now()
-        })
-    }
+    abstract fun update(bucketlist: Bucketlist)
 
     @Delete
     abstract fun delete(bucketlist: Bucketlist)
 
-//    @Query("select * from Bucketlist order by creationDate, creationTime desc")
     @Query("select * from Bucketlist order by datetime(creationDateTime) desc")
-    abstract fun getAllMoviesBucketlists(): LiveData<List<Bucketlist>>
+    abstract fun getAllBucketlists(): LiveData<List<Bucketlist>>
 }

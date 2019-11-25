@@ -3,39 +3,36 @@ package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import mse.mobop.mymoviesbucketlists.ARG_ADD_EDIT_BUCKETLIST_FRAGMENT_ACTION
-import mse.mobop.mymoviesbucketlists.ARG_ADD_EDIT_BUCKETLIST_FRAGMENT_TITLE
-import mse.mobop.mymoviesbucketlists.ARG_ADD_EDIT_BUCKETLIST_OBJECT
+import mse.mobop.mymoviesbucketlists.ARG_BUCKETLIST_OBJECT
+import mse.mobop.mymoviesbucketlists.BucketlistAction
 import mse.mobop.mymoviesbucketlists.database.BucketlistRepository
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
 
-class AddEditBucketlistFragmentViewModel(application: Application): AndroidViewModel(application) {
-    enum class Action {
-        ADD, EDIT
-    }
-
+class AddEditBucketlistViewModel(application: Application): AndroidViewModel(application) {
     companion object {
-
-        fun createArguments(bucketlist: Bucketlist): Bundle {
+        fun createArguments(bucketlist: Bucketlist?, action: BucketlistAction): Bundle {
             val bundle = Bundle()
-            bundle.putSerializable(ARG_ADD_EDIT_BUCKETLIST_OBJECT, bucketlist)
-            bundle.putString(ARG_ADD_EDIT_BUCKETLIST_FRAGMENT_TITLE, "Edit list")
-            bundle.putSerializable(ARG_ADD_EDIT_BUCKETLIST_FRAGMENT_ACTION, Action.EDIT)
-
+            if (action == BucketlistAction.EDIT) {
+                bundle.putSerializable(ARG_BUCKETLIST_OBJECT, bucketlist)
+            }
+            bundle.putSerializable(ARG_ADD_EDIT_BUCKETLIST_FRAGMENT_ACTION, action)
             return bundle
         }
     }
 
-    val bucketlist: MutableLiveData<Bucketlist> = MutableLiveData()
+    private val _bucketlist: MutableLiveData<Bucketlist> = MutableLiveData()
+    val bucketlist: LiveData<Bucketlist>
+        get() = _bucketlist
 
     fun loadArguments(arguments: Bundle?) {
         if (arguments == null) {
             return
         }
-
-        val book: Bucketlist? = arguments.get(ARG_ADD_EDIT_BUCKETLIST_OBJECT) as Bucketlist?
-        this.bucketlist.postValue(book)
+        val book: Bucketlist? = arguments.get(ARG_BUCKETLIST_OBJECT) as Bucketlist?
+        _bucketlist.value = book
     }
 
 

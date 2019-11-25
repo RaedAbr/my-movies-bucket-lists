@@ -20,22 +20,24 @@ object RecyclerViewHoldersFactory {
     }
 
     class BucketlistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), GenericRecyclerViewAdapter.Binder<Bucketlist> {
-        private var listNameTextView: TextView = itemView.findViewById(R.id.list_name_textview)
-        private var listCreatorTextView: TextView = itemView.findViewById(R.id.list_creator_textview)
-        private var listCreationDateTextView: TextView = itemView.findViewById(R.id.list_date_textview)
-        private var listCreationTimeTextView: TextView = itemView.findViewById(R.id.list_time_textview)
+        private var bucketlistName: TextView = itemView.findViewById(R.id.bucketlist_name)
+        private var bucketlistCreator: TextView = itemView.findViewById(R.id.bucketlist_creator)
+        private var bucketlistDate: TextView = itemView.findViewById(R.id.bucketlist_date)
+        private var bucketlistTime: TextView = itemView.findViewById(R.id.bucketlist_time)
+        lateinit var dataObject: Bucketlist
 
-        override fun bind(data: Bucketlist, position: Int, listener: GenericRecyclerViewAdapter.OnItemClickListener) {
-            listNameTextView.text = data.name
-            listCreatorTextView.text = data.createdBy
+        override fun bind(dataObject: Bucketlist, position: Int, listener: GenericRecyclerViewAdapter.OnItemClickListener) {
+            this.dataObject = dataObject
+            bucketlistName.text = dataObject.name
+            bucketlistCreator.text = dataObject.createdBy
             var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-            listCreationDateTextView.text = data.creationDateTime!!.format(formatter)
+            bucketlistDate.text = dataObject.creationDateTime!!.format(formatter)
             formatter = DateTimeFormatter.ofPattern("KK:mm a")
-            listCreationTimeTextView.text = data.creationDateTime!!.format(formatter)
+            bucketlistTime.text = dataObject.creationDateTime!!.format(formatter)
 
             itemView.setOnClickListener {
                 if (position != RecyclerView.NO_POSITION)
-                    listener.onItemClick(position, itemView)
+                    listener.onItemClick(dataObject)
             }
         }
     }
