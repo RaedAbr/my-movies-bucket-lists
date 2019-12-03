@@ -7,6 +7,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimaryDark</item>
         <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
+    </style>
+
+    <style name="CustomActivityAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -18,30 +26,39 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="Bucketlist">List</style>
+    <style name="Fragment">
+        <item name="android:padding">20dp</item>
+    </style>
+    <style name="FragmentTitle">
+        <item name="android:textSize">40sp</item>
+        <item name="android:layout_marginBottom">40dp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+    <style name="ActivityTitle" parent="FragmentTitle">
+        <item name="android:textSize">30sp</item>
+    </style>
 
-    <style name="Bucketlist.Card">
+    <style name="BucketlistCard">
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_margin">5dp</item>
         <item name="android:background">@color/white</item>
-<!--        <item name="android:shadowColor">@color/black</item>-->
-<!--        <item name="android:elevation">5dp</item>-->
     </style>
-
     <style name="Bucketlist.Name" parent="TextAppearance.AppCompat.Light.SearchResult.Title" />
-
     <style name="Bucketlist.CreatedBy" parent="TextAppearance.AppCompat.Light.SearchResult.Subtitle" />
-
     <style name="Bucketlist.DateTime" parent="TextAppearance.AppCompat.Caption" />
 
     <style name="Toolbar" parent="@style/AppTheme.AppBarOverlay">
-        <item name="android:fontFamily">@font/berkshire_swash</item>
+        <item name="android:fontFamily">@font/anton</item>
     </style>
 
     <style name="NavHeaderTitle" parent="@style/TextAppearance.AppCompat.Body1">
-        <item name="android:fontFamily">@font/berkshire_swash</item>
+        <item name="android:fontFamily">@font/anton</item>
     </style>
+
+
+    <style name="BucketlistAddEdit">AddEditBucketlist</style>
+
 
 </resources>

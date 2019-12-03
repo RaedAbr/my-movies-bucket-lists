@@ -1,14 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.bucketlist.AddEditBucketlistFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    style="@style/Fragment"
+    tools:context=".ui.fragment.bucketlist.AddEditBucketlistFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/fragment_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:text="@string/new_list"
+        style="@style/FragmentTitle"/>
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/bucketlist_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/list_name"
+        android:inputType="text"
+        android:importantForAutofill="no">
+    </EditText>
+
+    <androidx.appcompat.widget.SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:queryHint="Share with"
+        app:iconifiedByDefault="false"
+        app:searchIcon="@null"/>
+
+
+
+</LinearLayout>
