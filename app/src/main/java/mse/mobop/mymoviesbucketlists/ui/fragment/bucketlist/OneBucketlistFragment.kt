@@ -2,7 +2,6 @@ package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +12,7 @@ import kotlinx.android.synthetic.main.fragment_one_bucketlist.*
 import mse.mobop.mymoviesbucketlists.BucketlistAction
 
 import mse.mobop.mymoviesbucketlists.R
+import mse.mobop.mymoviesbucketlists.hideKeyboardFrom
 import java.time.format.DateTimeFormatter
 
 /**
@@ -51,13 +51,13 @@ class OneBucketlistFragment : Fragment() {
         return root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         activity!!.menuInflater.inflate(R.menu.edit_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when(item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
             R.id.edit -> {
                 findNavController().navigate(
                     R.id.action_oneBucketlistFragment_to_nav_addEditBucketlistFragment,
@@ -67,5 +67,11 @@ class OneBucketlistFragment : Fragment() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onResume() {
+        // hide the keyboard if opened (after finishing editing for example)
+        hideKeyboardFrom(activity!!, view!!)
+        super.onResume()
     }
 }

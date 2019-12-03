@@ -2,7 +2,6 @@ package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -49,13 +48,13 @@ class AddEditBucketlistFragment : Fragment() {
         return root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         activity!!.menuInflater.inflate(R.menu.save_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when(item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
             R.id.save -> {
                 val ret: Boolean = when(action) {
                     BucketlistAction.ADD -> {

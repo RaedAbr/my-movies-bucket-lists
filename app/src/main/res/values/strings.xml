@@ -22,4 +22,14 @@
     <string name="_23_11_2019">23–11–2019</string>
     <string name="signout">Signout</string>
     <string name="edit">Edit</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="signin">Sign in</string>
+    <string name="no_account_yet_create_one">No account yet? Create one</string>
+    <string name="signup">Sign up</string>
+    <string name="confitm_password">Confitm password</string>
+    <string name="already_have_an_account_sign_in">Already have an account? Sign in</string>
+    <string name="username">Username</string>
+
+    <style name="create_one">Create one</style>
 </resources>

@@ -1,10 +1,7 @@
 package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.view.*
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -19,6 +16,7 @@ import mse.mobop.mymoviesbucketlists.BucketlistAction
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.adapters.GenericRecyclerViewAdapter
 import mse.mobop.mymoviesbucketlists.adapters.RecyclerViewHoldersFactory
+import mse.mobop.mymoviesbucketlists.hideKeyboardFrom
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
 import mse.mobop.mymoviesbucketlists.model.ModelInterface
 import mse.mobop.mymoviesbucketlists.ui.swipe.SwipeController
@@ -89,14 +87,10 @@ class BucketlistsFragment : Fragment() {
         super.onResume()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         activity!!.menuInflater.inflate(R.menu.main_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun hideKeyboardFrom(context: Context, view: View) {
-        val inputMethodManager =
-            context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-    }
+
 }

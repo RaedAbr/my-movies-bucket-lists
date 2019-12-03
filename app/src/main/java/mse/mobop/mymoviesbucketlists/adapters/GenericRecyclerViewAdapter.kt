@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import mse.mobop.mymoviesbucketlists.model.Bucketlist
 import mse.mobop.mymoviesbucketlists.model.ModelInterface
 
 class GenericRecyclerViewAdapter<T: ModelInterface>(private val layoutId: Int
@@ -44,6 +43,7 @@ class GenericRecyclerViewAdapter<T: ModelInterface>(private val layoutId: Int
         )
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 //        (holder as Binder<T>).bind(listItems[position], position, listener!!)
         (holder as Binder<T>).bind(getItem(position), position, listener!!)

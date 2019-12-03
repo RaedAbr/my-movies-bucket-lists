@@ -1,46 +1,59 @@
-package mse.mobop.mymoviesbucketlists
+package mse.mobop.mymoviesbucketlists.ui.activity
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.ui.onNavDestinationSelected
-import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
-import java.util.*
+import mse.mobop.mymoviesbucketlists.R
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private lateinit var providers: List<AuthUI.IdpConfig>
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
     private lateinit var navView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
 
+    override fun onStart() {
+        super.onStart()
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user == null) {
+            startActivity(Intent(this, SigninActivity::class.java))
+            finish()
+        }
+        user?.let {
+            // Name, email address, and profile photo Url
+            val name = user.displayName
+            val email = user.email
+            val photoUrl = user.photoUrl
+
+            // Check if user's email is verified
+            val emailVerified = user.isEmailVerified
+
+            // The user's ID, unique to the Firebase project. Do NOT use this value to
+            // authenticate with your backend server, if you have one. Use
+            // FirebaseUser.getToken() instead.
+//            val uid = user.uid
+
+            Log.e("name", name!!)
+            Log.e("email", email!!)
+            Log.e("photoUrl", photoUrl.toString())
+            Log.e("emailVerified", emailVerified.toString())
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // init authentification providers
-        providers = Arrays.asList<AuthUI.IdpConfig> (
-            AuthUI.IdpConfig.EmailBuilder().build()
-        )
-
-        showSigninOptions()
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -50,8 +63,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,
-                R.id.nav_tools, R.id.nav_share, R.id.nav_send
+                R.id.nav_home,
+                R.id.nav_gallery,
+                R.id.nav_slideshow,
+                R.id.nav_tools,
+                R.id.nav_share,
+                R.id.nav_send
             ), drawerLayout
         )
 
@@ -59,27 +76,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setNavigationItemSelectedListener(this)
         navController = findNavController(R.id.nav_host_fragment)
 //        navView.setupWithNavController(navController)
-    }
-
-    private fun showSigninOptions() {
-        startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
-            .setAvailableProviders(providers)
-            .setTheme(R.style.AppTheme)
-            .build(), MY_REQUEST_CODE
-        )
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == MY_REQUEST_CODE) {
-            val response = IdpResponse.fromResultIntent(data)
-            if (resultCode == Activity.RESULT_OK) {
-                val user = FirebaseAuth.getInstance().currentUser
-                Toast.makeText(this, user!!.email, Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, response!!.error!!.message, Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -92,15 +88,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return when(menuItem.itemId) {
             R.id.nav_signout -> {
                 Log.e("signout", "signing out...")
-                AuthUI.getInstance().signOut(this)
-                    .addOnCompleteListener{
-                        showSigninOptions()
-//                        startActivity(Intent(this, LoginActivity::class.java))
-//                        finish()
-                    }
-                    .addOnFailureListener{
-                        Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
-                    }
+                FirebaseAuth.getInstance().signOut()
+                startActivity(Intent(this, SigninActivity::class.java))
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                finish()
                 true
             }
             else -> {
@@ -109,9 +100,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //                navView.setupWithNavController(navController)
             }
         }
-    }
-
-    companion object {
-        const val  MY_REQUEST_CODE = 123
     }
 }
