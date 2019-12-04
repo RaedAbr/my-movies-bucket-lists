@@ -32,6 +32,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val fromSignin = intent.getStringExtra(ARG_SIGN_IN_SUCCESSFULLY)
+        if (fromSignin != null) {
+            Snackbar.make(contentView!!, "Welcome " + user!!.displayName, Snackbar.LENGTH_SHORT).show()
+        }
+
 //        if (user == null) {
 //            startActivity(Intent(this, SigninActivity::class.java))
 //            finish()
@@ -64,11 +69,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onStart() {
         super.onStart()
-
-        val fromSignin = intent.getStringExtra(ARG_SIGN_IN_SUCCESSFULLY)
-        if (fromSignin != null) {
-            Snackbar.make(contentView!!, "Welcome " + user!!.displayName, Snackbar.LENGTH_SHORT).show()
-        }
 
         user?.let {
             // Name, email address, and profile photo Url
