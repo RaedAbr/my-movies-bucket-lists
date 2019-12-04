@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -13,8 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.ui.onNavDestinationSelected
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import mse.mobop.mymoviesbucketlists.R
+import org.jetbrains.anko.contentView
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -22,38 +25,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var navController: NavController
     private lateinit var navView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
-
-    override fun onStart() {
-        super.onStart()
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user == null) {
-            startActivity(Intent(this, SigninActivity::class.java))
-            finish()
-        }
-        user?.let {
-            // Name, email address, and profile photo Url
-            val name = user.displayName
-            val email = user.email
-            val photoUrl = user.photoUrl
-
-            // Check if user's email is verified
-            val emailVerified = user.isEmailVerified
-
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getToken() instead.
-//            val uid = user.uid
-
-            Log.e("name", name!!)
-            Log.e("email", email!!)
-            Log.e("photoUrl", photoUrl.toString())
-            Log.e("emailVerified", emailVerified.toString())
-        }
-    }
+    private var user = FirebaseAuth.getInstance().currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if (user == null) {
+            startActivity(Intent(this, SigninActivity::class.java))
+            finish()
+            return
+        }
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -74,8 +56,34 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         navView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener(this)
+        navView.getHeaderView(0).findViewById<TextView>(R.id.username_textview).text = user!!.displayName
         navController = findNavController(R.id.nav_host_fragment)
 //        navView.setupWithNavController(navController)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        user?.let {
+            // Name, email address, and profile photo Url
+            val name = user!!.displayName
+            val email = user!!.email
+            val photoUrl = user!!.photoUrl
+
+            // Check if user's email is verified
+            val emailVerified = user!!.isEmailVerified
+
+            // The user's ID, unique to the Firebase project. Do NOT use this value to
+            // authenticate with your backend server, if you have one. Use
+            // FirebaseUser.getToken() instead.
+//            val uid = user.uid
+
+            Log.e("name", name!!)
+            Log.e("email", email!!)
+            Log.e("photoUrl", photoUrl.toString())
+            Log.e("emailVerified", emailVerified.toString())
+
+            Snackbar.make(contentView!!, "Welcome back " + user!!.displayName, Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
