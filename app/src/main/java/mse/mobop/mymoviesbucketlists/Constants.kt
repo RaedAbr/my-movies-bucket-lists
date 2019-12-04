@@ -1,13 +1,11 @@
 package mse.mobop.mymoviesbucketlists
 
-const val ARG_BUCKETLIST_OBJECT = "mse.mobop.ui.fragment.bucketlist.Object"
-const val ARG_ADD_EDIT_BUCKETLIST_FRAGMENT_ACTION = "mse.mobop.ui.fragment.bucketlist.FragmentAction"
+// Bundle arguments between fragments
+const val ARG_SIGN_IN_SUCCESSFULLY = "mse.mobop.ui.activity.signin"
+
+// Activities reauest codes
+const val RC_GOOGLE_SIGN_IN: Int = 1
 
 enum class BucketlistAction {
     ADD, EDIT
 }
-
-val BucketListActionStrings = mapOf(
-    BucketlistAction.ADD to "New list",
-    BucketlistAction.EDIT to "Edit list"
-)

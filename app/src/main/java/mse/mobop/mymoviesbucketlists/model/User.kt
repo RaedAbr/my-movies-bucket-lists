@@ -9,7 +9,7 @@ data class User (
     @PrimaryKey
     var username: String,
     var password: String
-): Serializable {
+) {
     override fun equals(other: Any?): Boolean {
         val o = other as User
         return this.username == o.username && this.password == o.password

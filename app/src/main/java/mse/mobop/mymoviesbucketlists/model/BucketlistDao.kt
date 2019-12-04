@@ -20,6 +20,9 @@ abstract class BucketlistDao {
     @Delete
     abstract fun delete(bucketlist: Bucketlist)
 
-    @Query("select * from Bucketlist order by datetime(creationDateTime) desc")
-    abstract fun getAllBucketlists(): LiveData<List<Bucketlist>>
+    @Query("select * from Bucketlist where id = :id LIMIT 1")
+    abstract fun selectById(id: Long): LiveData<Bucketlist>
+
+    @Query("select * from Bucketlist where createdBy like :currentUsername order by datetime(creationDateTime) desc")
+    abstract fun getAllBucketlists(currentUsername: String): LiveData<List<Bucketlist>>
 }

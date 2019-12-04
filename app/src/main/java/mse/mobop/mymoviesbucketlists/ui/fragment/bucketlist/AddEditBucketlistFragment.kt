@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_add_edit_bucketlist.*
 import mse.mobop.mymoviesbucketlists.*
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
@@ -16,7 +17,7 @@ import mse.mobop.mymoviesbucketlists.model.Bucketlist
 
 class AddEditBucketlistFragment : Fragment() {
     private lateinit var action: BucketlistAction
-    private lateinit var addEditBucketlistViewModel: AddEditBucketlistViewModel
+    private lateinit var bucketlistViewModel: BucketlistViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,16 +33,21 @@ class AddEditBucketlistFragment : Fragment() {
 
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_add_edit_bucketlist, container, false)
-        addEditBucketlistViewModel = ViewModelProviders.of(this).get(AddEditBucketlistViewModel::class.java)
-        addEditBucketlistViewModel.bucketlist.observe(this, Observer {
+
+        // get bandle args from parent fragment
+        val bandle = AddEditBucketlistFragmentArgs.fromBundle(arguments!!)
+        val fragmentTitle = bandle.fragmentTitle
+        val bucketlistId = bandle.bucketlistId
+        action = bandle.action
+
+        bucketlistViewModel = ViewModelProviders.of(this).get(BucketlistViewModel::class.java)
+        bucketlistViewModel.loadBucketlist(bucketlistId)
+        bucketlistViewModel.bucketlist.observe(this, Observer {
+            fragment_title.text = fragmentTitle
             bucketlist_name.setText(it?.name)
-            fragment_title.text = BucketListActionStrings[action]
         })
 
-        addEditBucketlistViewModel.loadArguments(arguments)
-        action = arguments?.getSerializable(ARG_ADD_EDIT_BUCKETLIST_FRAGMENT_ACTION) as BucketlistAction
-
-        // get the focus on the list name EditText view
+        // get the focus on the list name EditText view and open keyboard
         val imgr: InputMethodManager =
             activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
@@ -80,24 +86,24 @@ class AddEditBucketlistFragment : Fragment() {
             Toast.makeText(context, "List name can not be empty!", Toast.LENGTH_SHORT).show()
             return false
         }
-        val updatedBucketlist: Bucketlist = addEditBucketlistViewModel.bucketlist.value!!
+        val updatedBucketlist: Bucketlist = bucketlistViewModel.bucketlist.value!!
         updatedBucketlist.name = bucketlistName
-        addEditBucketlistViewModel.update(updatedBucketlist)
+        bucketlistViewModel.update(updatedBucketlist)
         Toast.makeText(context, "Movies bucketlist updated", Toast.LENGTH_SHORT).show()
         return true
     }
 
     private fun saveNewBucketlist(): Boolean {
         val listName = bucketlist_name.text.toString()
-        val createdBy = "Raed"
+        val createdBy = FirebaseAuth.getInstance().currentUser!!.displayName
 
         if (listName.trim().isEmpty()){
             Toast.makeText(context, "List name can not be empty!", Toast.LENGTH_SHORT).show()
             return false
         }
 
-        addEditBucketlistViewModel.insert(
-            Bucketlist(null, listName, createdBy)
+        bucketlistViewModel.insert(
+            Bucketlist(null, listName, createdBy ?: "UNKNOUN")
         )
         Toast.makeText(context, "New movies bucketlist saved", Toast.LENGTH_SHORT).show()
         return true

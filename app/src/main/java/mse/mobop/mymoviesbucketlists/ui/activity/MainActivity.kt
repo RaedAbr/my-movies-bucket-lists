@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.ui.onNavDestinationSelected
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import mse.mobop.mymoviesbucketlists.ARG_SIGN_IN_SUCCESSFULLY
 import mse.mobop.mymoviesbucketlists.R
 import org.jetbrains.anko.contentView
 
@@ -31,11 +32,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (user == null) {
-            startActivity(Intent(this, SigninActivity::class.java))
-            finish()
-            return
-        }
+//        if (user == null) {
+//            startActivity(Intent(this, SigninActivity::class.java))
+//            finish()
+//            return
+//        }
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -63,6 +64,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onStart() {
         super.onStart()
+
+        val fromSignin = intent.getStringExtra(ARG_SIGN_IN_SUCCESSFULLY)
+        if (fromSignin != null) {
+            Snackbar.make(contentView!!, "Welcome " + user!!.displayName, Snackbar.LENGTH_SHORT).show()
+        }
+
         user?.let {
             // Name, email address, and profile photo Url
             val name = user!!.displayName
@@ -81,8 +88,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             Log.e("email", email!!)
             Log.e("photoUrl", photoUrl.toString())
             Log.e("emailVerified", emailVerified.toString())
-
-            Snackbar.make(contentView!!, "Welcome back " + user!!.displayName, Snackbar.LENGTH_SHORT).show()
         }
     }
 
@@ -109,4 +114,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
     }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        Log.e("result", requestCode.toString())
+//        if (requestCode == RC_SIGN_IN_SUCCESSFULLY) {
+//            Snackbar.make(contentView!!, "Welcome " + user!!.displayName, Snackbar.LENGTH_SHORT).show()
+//        }
+//    }
 }

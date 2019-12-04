@@ -20,7 +20,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.activity_signin.*
+import mse.mobop.mymoviesbucketlists.ARG_SIGN_IN_SUCCESSFULLY
 import mse.mobop.mymoviesbucketlists.R
+import mse.mobop.mymoviesbucketlists.RC_GOOGLE_SIGN_IN
 
 class SigninActivity: AppCompatActivity() {
 
@@ -62,7 +64,9 @@ class SigninActivity: AppCompatActivity() {
             FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        startActivity(Intent(this, MainActivity::class.java))
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.putExtra(ARG_SIGN_IN_SUCCESSFULLY, ARG_SIGN_IN_SUCCESSFULLY)
+                        startActivity(intent)
                         finish()
                     } else {
                         toggleProgressBar()
@@ -82,13 +86,13 @@ class SigninActivity: AppCompatActivity() {
             val googleSignInClient = GoogleSignIn.getClient(this, gso)
             googleSignInClient.signOut()
             val signInIntent = googleSignInClient.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN)
+            startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == RC_GOOGLE_SIGN_IN) {
             val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = task.getResult(ApiException::class.java)
@@ -110,7 +114,9 @@ class SigninActivity: AppCompatActivity() {
         FirebaseAuth.getInstance().signInWithCredential(credential)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    startActivity(Intent(this, MainActivity::class.java))
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra(ARG_SIGN_IN_SUCCESSFULLY, ARG_SIGN_IN_SUCCESSFULLY)
+                    startActivity(intent)
                     finish()
                 } else {
                     toggleProgressBar()
@@ -131,10 +137,5 @@ class SigninActivity: AppCompatActivity() {
             signin_button.visibility = View.VISIBLE
             link_signup.visibility = View.VISIBLE
         }
-    }
-
-
-    companion object {
-        const val RC_SIGN_IN: Int = 1
     }
 }
