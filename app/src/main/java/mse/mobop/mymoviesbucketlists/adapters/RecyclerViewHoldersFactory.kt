@@ -3,6 +3,7 @@ package mse.mobop.mymoviesbucketlists.adapters
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.item_bucketlist.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
 import java.time.format.DateTimeFormatter
@@ -20,10 +21,10 @@ object RecyclerViewHoldersFactory {
     }
 
     class BucketlistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), GenericRecyclerViewAdapter.Binder<Bucketlist> {
-        private var bucketlistName: TextView = itemView.findViewById(R.id.bucketlist_name)
-        private var bucketlistCreator: TextView = itemView.findViewById(R.id.bucketlist_creator)
-        private var bucketlistDate: TextView = itemView.findViewById(R.id.bucketlist_date)
-        private var bucketlistTime: TextView = itemView.findViewById(R.id.bucketlist_time)
+        private var bucketlistName: TextView = itemView.bucketlist_name
+        private var bucketlistCreator: TextView = itemView.bucketlist_creator
+        private var bucketlistDate: TextView = itemView.bucketlist_date
+        private var bucketlistTime: TextView = itemView.bucketlist_time
         lateinit var dataObject: Bucketlist
 
         override fun bind(dataObject: Bucketlist, position: Int, listener: GenericRecyclerViewAdapter.OnItemClickListener) {

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.android.synthetic.main.activity_signup.*
+import mse.mobop.mymoviesbucketlists.ARG_SIGN_IN_SUCCESSFULLY
 import mse.mobop.mymoviesbucketlists.R
 
 class SignupActivity: AppCompatActivity() {
@@ -79,7 +80,9 @@ class SignupActivity: AppCompatActivity() {
                             ?.addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     Log.d("User", "User profile updated.")
-                                    startActivity(Intent(this, MainActivity::class.java))
+                                    val intent = Intent(this, MainActivity::class.java)
+                                    intent.putExtra(ARG_SIGN_IN_SUCCESSFULLY, ARG_SIGN_IN_SUCCESSFULLY)
+                                    startActivity(intent)
                                     finish()
                                 }
                             }

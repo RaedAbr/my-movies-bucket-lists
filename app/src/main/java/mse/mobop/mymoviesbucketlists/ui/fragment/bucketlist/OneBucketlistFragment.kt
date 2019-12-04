@@ -19,7 +19,8 @@ import java.time.format.DateTimeFormatter
  * A simple [Fragment] subclass.
  */
 class OneBucketlistFragment : Fragment() {
-    private lateinit var oneBucketlistViewModel: OneBucketlistViewModel
+    private lateinit var bucketlistViewModel: BucketlistViewModel
+    private var bucketlistId: Long = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +37,13 @@ class OneBucketlistFragment : Fragment() {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_one_bucketlist, container, false)
 
-        oneBucketlistViewModel = ViewModelProviders.of(this).get(OneBucketlistViewModel::class.java)
-        oneBucketlistViewModel.bucketlist.observe(this, Observer {
+        // get bandle args from parent fragment
+        val bandle = AddEditBucketlistFragmentArgs.fromBundle(arguments!!)
+        bucketlistId = bandle.bucketlistId
+
+        bucketlistViewModel = ViewModelProviders.of(this).get(BucketlistViewModel::class.java)
+        bucketlistViewModel.loadBucketlist(bucketlistId)
+        bucketlistViewModel.bucketlist.observe(this, Observer {
             bucketlist_name.text = it?.name
             bucketlist_creator.text = it?.createdBy
             var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
@@ -45,8 +51,6 @@ class OneBucketlistFragment : Fragment() {
             formatter = DateTimeFormatter.ofPattern("KK:mm a")
             bucketlist_time.text = it.creationDateTime!!.format(formatter)
         })
-
-        oneBucketlistViewModel.loadObjectFromArguments(arguments)
 
         return root
     }
@@ -59,10 +63,13 @@ class OneBucketlistFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.edit -> {
-                findNavController().navigate(
-                    R.id.action_oneBucketlistFragment_to_nav_addEditBucketlistFragment,
-                    AddEditBucketlistViewModel.createArguments(oneBucketlistViewModel.bucketlist.value!!, BucketlistAction.EDIT)
-                )
+                val direction = OneBucketlistFragmentDirections
+                    .actionOneBucketlistFragmentToNavAddEditBucketlistFragment(
+                        fragmentTitle = getString(R.string.edit),
+                        bucketlistId = bucketlistId,
+                        action = BucketlistAction.EDIT
+                    )
+                findNavController().navigate(direction)
                 true
             }
             else -> super.onOptionsItemSelected(item)
