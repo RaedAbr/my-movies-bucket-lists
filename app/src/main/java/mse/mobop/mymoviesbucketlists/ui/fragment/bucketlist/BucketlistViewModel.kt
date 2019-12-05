@@ -13,7 +13,8 @@ class BucketlistViewModel(application: Application): AndroidViewModel(applicatio
     private val bucketlistRepository: BucketlistRepository = BucketlistRepository(application)
 
     lateinit var bucketlist: LiveData<Bucketlist>
-    val allBucketlist: LiveData<List<Bucketlist>> = bucketlistRepository.allBucketlist
+    val allBucketlist: LiveData<List<Bucketlist>>
+        get() = bucketlistRepository.allBucketlist
 
     fun loadBucketlist(id: Long) {
         bucketlist = bucketlistRepository.selectById(id)

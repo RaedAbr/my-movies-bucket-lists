@@ -12,7 +12,9 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_add_edit_bucketlist.*
 import mse.mobop.mymoviesbucketlists.*
+import mse.mobop.mymoviesbucketlists.database.Converters
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
+import java.time.OffsetDateTime
 
 
 class AddEditBucketlistFragment : Fragment() {
@@ -41,11 +43,13 @@ class AddEditBucketlistFragment : Fragment() {
         action = bandle.action
 
         bucketlistViewModel = ViewModelProviders.of(this).get(BucketlistViewModel::class.java)
-        bucketlistViewModel.loadBucketlist(bucketlistId)
-        bucketlistViewModel.bucketlist.observe(this, Observer {
-            fragment_title.text = fragmentTitle
-            bucketlist_name.setText(it?.name)
-        })
+        if (bucketlistId != -1L) {
+            bucketlistViewModel.loadBucketlist(bucketlistId)
+            bucketlistViewModel.bucketlist.observe(this, Observer {
+                fragment_title.text = fragmentTitle
+                bucketlist_name.setText(it?.name)
+            })
+        }
 
         // get the focus on the list name EditText view and open keyboard
         val imgr: InputMethodManager =
@@ -95,7 +99,7 @@ class AddEditBucketlistFragment : Fragment() {
 
     private fun saveNewBucketlist(): Boolean {
         val listName = bucketlist_name.text.toString()
-        val createdBy = FirebaseAuth.getInstance().currentUser!!.displayName
+        val createdBy = FirebaseAuth.getInstance().currentUser!!.uid
 
         if (listName.trim().isEmpty()){
             Toast.makeText(context, "List name can not be empty!", Toast.LENGTH_SHORT).show()
@@ -103,7 +107,7 @@ class AddEditBucketlistFragment : Fragment() {
         }
 
         bucketlistViewModel.insert(
-            Bucketlist(null, listName, createdBy ?: "UNKNOUN")
+            Bucketlist(null, listName, createdBy ?: "UNKNOUN", Converters.fromOffsetDateTime(OffsetDateTime.now()))
         )
         Toast.makeText(context, "New movies bucketlist saved", Toast.LENGTH_SHORT).show()
         return true

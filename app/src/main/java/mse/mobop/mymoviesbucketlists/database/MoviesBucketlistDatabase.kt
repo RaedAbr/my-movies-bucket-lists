@@ -8,9 +8,10 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
 import mse.mobop.mymoviesbucketlists.model.BucketlistDao
+import mse.mobop.mymoviesbucketlists.model.Bucketlist_for_room
 import org.jetbrains.anko.doAsync
 
-@Database(entities = [Bucketlist::class] ,version = 1, exportSchema = false)
+@Database(entities = [Bucketlist_for_room::class] ,version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class MoviesBucketlistDatabase: RoomDatabase() {
 
@@ -38,21 +39,23 @@ abstract class MoviesBucketlistDatabase: RoomDatabase() {
 
                 doAsync {
                     val moviesBucketlistDao = INSTANCE!!.moviesBucketlistDao()
-                    moviesBucketlistDao.insert(Bucketlist(
+                    moviesBucketlistDao.insert(
+                        Bucketlist_for_room(
                         1,
                         "OneList 1",
                         "Me"
 //                        "November 18, 2019",
 //                        "04:30PM"
-                    ))
-                    moviesBucketlistDao.insert(Bucketlist(
+                    )
+                    )
+                    moviesBucketlistDao.insert(Bucketlist_for_room(
                         2,
                         "OneList 2",
                         "Alice"
 //                        "November 18, 2019",
 //                        "04:30PM"
                     ))
-                    moviesBucketlistDao.insert(Bucketlist(
+                    moviesBucketlistDao.insert(Bucketlist_for_room(
                         3,
                         "OneList 3",
                         "Bob"

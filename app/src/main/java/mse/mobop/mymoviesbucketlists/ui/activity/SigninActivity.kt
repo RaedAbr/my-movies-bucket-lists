@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_signin.*
 import mse.mobop.mymoviesbucketlists.ARG_SIGN_IN_SUCCESSFULLY
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.RC_GOOGLE_SIGN_IN
+import mse.mobop.mymoviesbucketlists.firestore.UserFirestore
 
 class SigninActivity: AppCompatActivity() {
 
@@ -64,10 +65,7 @@ class SigninActivity: AppCompatActivity() {
             FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        val intent = Intent(this, MainActivity::class.java)
-                        intent.putExtra(ARG_SIGN_IN_SUCCESSFULLY, ARG_SIGN_IN_SUCCESSFULLY)
-                        startActivity(intent)
-                        finish()
+                        goToMainActivity()
                     } else {
                         toggleProgressBar()
                         Log.e("Signin", it.exception!!.message!!)
@@ -114,15 +112,21 @@ class SigninActivity: AppCompatActivity() {
         FirebaseAuth.getInstance().signInWithCredential(credential)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.putExtra(ARG_SIGN_IN_SUCCESSFULLY, ARG_SIGN_IN_SUCCESSFULLY)
-                    startActivity(intent)
-                    finish()
+                    goToMainActivity()
                 } else {
                     toggleProgressBar()
                     Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
                 }
             }
+    }
+
+    private fun goToMainActivity() {
+        UserFirestore.addCurrentUserIfFirstTime {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra(ARG_SIGN_IN_SUCCESSFULLY, ARG_SIGN_IN_SUCCESSFULLY)
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun toggleProgressBar() {
