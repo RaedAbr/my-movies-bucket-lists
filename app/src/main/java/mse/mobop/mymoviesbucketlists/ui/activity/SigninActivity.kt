@@ -19,11 +19,13 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.android.synthetic.main.activity_signin.*
-import mse.mobop.mymoviesbucketlists.ARG_SIGN_IN_SUCCESSFULLY
+import mse.mobop.mymoviesbucketlists.utils.ARG_SIGN_IN_SUCCESSFULLY
 import mse.mobop.mymoviesbucketlists.R
-import mse.mobop.mymoviesbucketlists.RC_GOOGLE_SIGN_IN
+import mse.mobop.mymoviesbucketlists.utils.RC_GOOGLE_SIGN_IN
 import mse.mobop.mymoviesbucketlists.firestore.UserFirestore
+import java.util.*
 
 class SigninActivity: AppCompatActivity() {
 
@@ -84,7 +86,9 @@ class SigninActivity: AppCompatActivity() {
             val googleSignInClient = GoogleSignIn.getClient(this, gso)
             googleSignInClient.signOut()
             val signInIntent = googleSignInClient.signInIntent
-            startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN)
+            startActivityForResult(signInIntent,
+                RC_GOOGLE_SIGN_IN
+            )
         }
     }
 
@@ -112,10 +116,25 @@ class SigninActivity: AppCompatActivity() {
         FirebaseAuth.getInstance().signInWithCredential(credential)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    goToMainActivity()
-                } else {
-                    toggleProgressBar()
-                    Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG).show()
+                    val currentUser = FirebaseAuth.getInstance().currentUser!!
+                    val username = currentUser.displayName!!.trim().toLowerCase(Locale.getDefault())
+                        .replace("\\s".toRegex(), "_")
+                    val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(username)
+                        .build()
+
+                    FirebaseAuth.getInstance().currentUser
+                        ?.updateProfile(profileUpdates)
+                        ?.addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Log.d("User", "User profile updated.")
+                                goToMainActivity()
+                            } else {
+                                toggleProgressBar()
+                                Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG)
+                                    .show()
+                            }
+                        }
                 }
             }
     }
@@ -123,7 +142,10 @@ class SigninActivity: AppCompatActivity() {
     private fun goToMainActivity() {
         UserFirestore.addCurrentUserIfFirstTime {
             val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra(ARG_SIGN_IN_SUCCESSFULLY, ARG_SIGN_IN_SUCCESSFULLY)
+            intent.putExtra(
+                ARG_SIGN_IN_SUCCESSFULLY,
+                ARG_SIGN_IN_SUCCESSFULLY
+            )
             startActivity(intent)
             finish()
         }

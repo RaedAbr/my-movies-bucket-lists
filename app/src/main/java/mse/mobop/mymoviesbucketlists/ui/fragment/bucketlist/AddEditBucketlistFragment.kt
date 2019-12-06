@@ -2,24 +2,35 @@ package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_add_edit_bucketlist.*
+import kotlinx.android.synthetic.main.fragment_add_edit_bucketlist.view.*
 import mse.mobop.mymoviesbucketlists.*
-import mse.mobop.mymoviesbucketlists.database.Converters
+import mse.mobop.mymoviesbucketlists.adapters.UserAdapter
+import mse.mobop.mymoviesbucketlists.firestore.UserFirestore
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
-import java.time.OffsetDateTime
+import mse.mobop.mymoviesbucketlists.model.User
+import mse.mobop.mymoviesbucketlists.utils.BucketlistAction
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class AddEditBucketlistFragment : Fragment() {
     private lateinit var action: BucketlistAction
     private lateinit var bucketlistViewModel: BucketlistViewModel
+    //    private lateinit var recyclerAdapter: UserAdapter
+//    private lateinit var recyclerView: RecyclerView
+    private var usersList = ArrayList<UserAdapter.UserForSearch>()
+    private lateinit var simpleAdapter: UserAdapter
+
+    private var selectedUsersList: ArrayList<UserAdapter.UserForSearch> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,20 +53,74 @@ class AddEditBucketlistFragment : Fragment() {
         val bucketlistId = bandle.bucketlistId
         action = bandle.action
 
-        bucketlistViewModel = ViewModelProviders.of(this).get(BucketlistViewModel::class.java)
-        if (bucketlistId != -1L) {
-            bucketlistViewModel.loadBucketlist(bucketlistId)
+        bucketlistViewModel = BucketlistViewModel(bucketlistId)
+        if (action == BucketlistAction.EDIT) {
             bucketlistViewModel.bucketlist.observe(this, Observer {
                 fragment_title.text = fragmentTitle
-                bucketlist_name.setText(it?.name)
+                bucketlist_name.setText(it.name)
             })
         }
+
+        // List view of list of users to share with
+        simpleAdapter = UserAdapter(context!!, R.layout.item_user, usersList)
+        simpleAdapter.setOnCheckedChangeListener(object: UserAdapter.OnCheckedChangeListener {
+            override fun onCheckedChange(user: UserAdapter.UserForSearch, isChecked: Boolean) {
+                when {
+                    isChecked -> {
+                        user.isSelected = true
+                        selectedUsersList.add(user)
+                    }
+                    else -> {
+                        selectedUsersList.remove(user)
+                    }
+                }
+            }
+        })
+        root.search_users_listview.adapter = simpleAdapter
+
+        // Search view for users
+        setUpSearchView(root)
 
         // get the focus on the list name EditText view and open keyboard
         val imgr: InputMethodManager =
             activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         return root
+    }
+
+    private fun setUpSearchView(view: View) {
+        view.search_users.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                updateUsersList(query!!)
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                updateUsersList(newText!!)
+                return false
+            }
+        })
+    }
+
+    private fun updateUsersList(txt: String) {
+        val query = UserFirestore.searchUserQuery(txt)
+        usersList.clear()
+        if (query == null) {
+            simpleAdapter.notifyDataSetChanged()
+            return
+        } else {
+            query.get().addOnSuccessListener {
+                it.toObjects(UserAdapter.UserForSearch::class.java).forEach { user ->
+                    if (user.id != FirebaseAuth.getInstance().currentUser!!.uid) {
+                        if (selectedUsersList.find { u -> u.id.equals(user.id) } != null) {
+                            user.isSelected = true
+                        }
+                        usersList.add(user)
+                    }
+                }
+                simpleAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -91,7 +156,10 @@ class AddEditBucketlistFragment : Fragment() {
             return false
         }
         val updatedBucketlist: Bucketlist = bucketlistViewModel.bucketlist.value!!
+        val selectedUsers = selectedUsersList.map { User(it.id, it.name) } as ArrayList
+
         updatedBucketlist.name = bucketlistName
+        updatedBucketlist.sharedWith = selectedUsers
         bucketlistViewModel.update(updatedBucketlist)
         Toast.makeText(context, "Movies bucketlist updated", Toast.LENGTH_SHORT).show()
         return true
@@ -99,15 +167,17 @@ class AddEditBucketlistFragment : Fragment() {
 
     private fun saveNewBucketlist(): Boolean {
         val listName = bucketlist_name.text.toString()
-        val createdBy = FirebaseAuth.getInstance().currentUser!!.uid
+        val currentUser = FirebaseAuth.getInstance().currentUser
 
         if (listName.trim().isEmpty()){
             Toast.makeText(context, "List name can not be empty!", Toast.LENGTH_SHORT).show()
             return false
         }
 
+        val selectedUsers = selectedUsersList.map { User(it.id, it.name) } as ArrayList
+
         bucketlistViewModel.insert(
-            Bucketlist(null, listName, createdBy ?: "UNKNOUN", Converters.fromOffsetDateTime(OffsetDateTime.now()))
+            Bucketlist(name = listName, createdBy = User(currentUser), sharedWith = selectedUsers)
         )
         Toast.makeText(context, "New movies bucketlist saved", Toast.LENGTH_SHORT).show()
         return true

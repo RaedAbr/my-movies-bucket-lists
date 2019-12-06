@@ -1,23 +1,24 @@
 package mse.mobop.mymoviesbucketlists.firestore
 
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import mse.mobop.mymoviesbucketlists.utils.USERS_COLLECTION
 import mse.mobop.mymoviesbucketlists.model.User
-import java.lang.NullPointerException
+import java.util.*
 
 object UserFirestore {
     private val firestoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
-    private val currentUserDocRef: DocumentReference
-        get() = firestoreInstance.document("users/${FirebaseAuth.getInstance().currentUser?.uid
-            ?: throw NullPointerException("UID is null")}")
+    private val userCollRef: CollectionReference
+        get() = firestoreInstance.collection(USERS_COLLECTION)
 
     fun addCurrentUserIfFirstTime(onComplete: () -> Unit) {
+        val currentUser = FirebaseAuth.getInstance().currentUser!!
+        val currentUserDocRef = userCollRef.document(currentUser.uid)
         currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
             if (!documentSnapshot.exists()) {
-                val newUser = User(
-                    FirebaseAuth.getInstance().currentUser?.uid ?: "",
-                    FirebaseAuth.getInstance().currentUser?.displayName ?: "")
+                val newUser = User(currentUser.uid, currentUser.displayName!!)
                 currentUserDocRef.set(newUser).addOnSuccessListener {
                     onComplete()
                 }
@@ -25,5 +26,14 @@ object UserFirestore {
             else
                 onComplete()
         }
+    }
+
+    fun searchUserQuery(searchText: String): Query? {
+        if (searchText.isEmpty()) return null
+        val searchTextUpper = searchText.toLowerCase(Locale.getDefault())
+        return userCollRef
+            .orderBy("name")
+            .startAt(searchTextUpper)
+            .endAt(searchTextUpper + "\uf8ff")
     }
 }

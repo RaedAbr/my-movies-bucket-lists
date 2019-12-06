@@ -20,7 +20,7 @@
     <string name="save">Save</string>
     <string name="created_in">Created in</string>
     <string name="at">at</string>
-    <string name="_23_11_2019">23–11–2019</string>
+    <string name="_23_11_2019">23.11.2019 at 04:04:09</string>
     <string name="signout">Signout</string>
     <string name="edit">Edit</string>
     <string name="email">Email</string>
@@ -31,6 +31,7 @@
     <string name="confitm_password">Confitm password</string>
     <string name="already_have_an_account_sign_in">Already have an account? Sign in</string>
     <string name="username">Username</string>
+    <string name="snackbar_undo">Undo</string>
 
     <style name="create_one">Create one</style>
 </resources>

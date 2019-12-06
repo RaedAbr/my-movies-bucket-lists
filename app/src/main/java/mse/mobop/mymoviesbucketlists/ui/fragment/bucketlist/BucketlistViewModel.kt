@@ -1,26 +1,22 @@
 package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 
 import android.app.Application
-import android.os.Bundle
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 //import mse.mobop.mymoviesbucketlists.ARG_BUCKETLIST_OBJECT
-import mse.mobop.mymoviesbucketlists.database.BucketlistRepository
+import mse.mobop.mymoviesbucketlists.firestore.BucketlistFirestore
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
 
-class BucketlistViewModel(application: Application): AndroidViewModel(application) {
+class BucketlistViewModel(id: String? = null) {
 
-    private val bucketlistRepository: BucketlistRepository = BucketlistRepository(application)
-
-    lateinit var bucketlist: LiveData<Bucketlist>
-    val allBucketlist: LiveData<List<Bucketlist>>
-        get() = bucketlistRepository.allBucketlist
-
-    fun loadBucketlist(id: Long) {
-        bucketlist = bucketlistRepository.selectById(id)
+    var bucketlist: LiveData<Bucketlist> = BucketlistFirestore.getById(id)
+//    val allBucketlist: LiveData<List<Bucketlist>>
+//        get() = bucketlistRepository.allBucketlist
+//
+    fun loadBucketlist(id: String) {
+        bucketlist = BucketlistFirestore.getById(id)
     }
 
-    fun insert(bucketlist: Bucketlist) = bucketlistRepository.insert(bucketlist)
-    fun update(bucketlist: Bucketlist) = bucketlistRepository.update(bucketlist)
-    fun delete(bucketlist: Bucketlist) = bucketlistRepository.delete(bucketlist)
+    fun insert(bucketlist: Bucketlist) = BucketlistFirestore.createBucketlist(bucketlist)
+    fun update(bucketlist: Bucketlist) = BucketlistFirestore.updateBucketlist(bucketlist)
 }

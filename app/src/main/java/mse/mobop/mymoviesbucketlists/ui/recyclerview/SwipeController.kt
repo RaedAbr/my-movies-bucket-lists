@@ -1,4 +1,4 @@
-package mse.mobop.mymoviesbucketlists.ui.swipe
+package mse.mobop.mymoviesbucketlists.ui.recyclerview
 
 import android.graphics.Canvas
 import android.graphics.Color

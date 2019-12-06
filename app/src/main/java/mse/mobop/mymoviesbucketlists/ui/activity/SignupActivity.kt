@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.android.synthetic.main.activity_signup.*
-import mse.mobop.mymoviesbucketlists.ARG_SIGN_IN_SUCCESSFULLY
+import mse.mobop.mymoviesbucketlists.utils.ARG_SIGN_IN_SUCCESSFULLY
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.firestore.UserFirestore
 

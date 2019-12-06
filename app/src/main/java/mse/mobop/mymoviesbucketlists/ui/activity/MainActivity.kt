@@ -16,7 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.ui.onNavDestinationSelected
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import mse.mobop.mymoviesbucketlists.ARG_SIGN_IN_SUCCESSFULLY
+import mse.mobop.mymoviesbucketlists.utils.ARG_SIGN_IN_SUCCESSFULLY
 import mse.mobop.mymoviesbucketlists.R
 import org.jetbrains.anko.contentView
 
