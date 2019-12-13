@@ -11,5 +11,5 @@ enum class BucketlistAction {
 }
 
 // Cloud Firestore collections names
-const val USERS_COLLECTION = "users"
 const val BUCKETLIST_COLLECTION = "bucketlists"
+const val USER_COLLECTION = "users"

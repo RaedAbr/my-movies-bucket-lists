@@ -46,43 +46,18 @@ class BucketlistFragment : Fragment() {
 
         setUpRecyclerView(root)
 
-//        val recyclerView = root.findViewById<RecyclerView>(R.id.recycler_bucketlists_view)
-//        recyclerView.layoutManager = LinearLayoutManager(root.context)
-//        recyclerView.setHasFixedSize(true)
-//        val recyclerAdapter = GenericRecyclerViewAdapter<Bucketlist>(R.layout.item_bucketlist)
-//
-//        bucketlistViewModel = ViewModelProviders.of(activity!!).get(BucketlistViewModel(activity!!.application)::class.java)
-//        bucketlistViewModel.allBucketlist.observe(this, Observer {
-//            recyclerAdapter.submitList(it)
-//        })
-//        recyclerView.adapter = recyclerAdapter
-//
-//        ItemTouchHelper(object: SwipeController(ItemTouchHelper.RIGHT) {
-//            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-//                bucketlistViewModel.delete((viewHolder as RecyclerViewHoldersFactory.BucketlistViewHolder).dataObject)
-////                recyclerAdapter.notifyItemRemoved(viewHolder.adapterPosition)
-//                Toast.makeText(this@BucketlistFragment.context, "List deleted", Toast.LENGTH_SHORT).show()
-//            }
-//        }).attachToRecyclerView(recyclerView)
-//
-//        recyclerAdapter.setOnItemClickListener(object : GenericRecyclerViewAdapter.OnItemClickListener {
-//            override fun onItemClick(dataObject: ModelInterface) {
-//                val direction = BucketlistFragmentDirections.actionNavHomeToOneBucketlistFragment(
-//                    bucketlistId = dataObject.modelId as Long
-//                )
-//                findNavController().navigate(direction)
-//            }
-//        })
-
         return root
     }
 
     private fun setUpRecyclerView(view: View) {
         val query = BucketlistFirestore.getOwnedBucketlistsQuery()
+
         val recyclerOptions = FirestoreRecyclerOptions.Builder<Bucketlist>()
             .setQuery(query, Bucketlist::class.java)
             .build()
+
         recyclerAdapter = BucketlistAdapter(recyclerOptions)
+
         val recyclerView = view.recycler_bucketlists_view
         recyclerView.layoutManager = LinearLayoutManager(view.context)
         recyclerView.setHasFixedSize(true)

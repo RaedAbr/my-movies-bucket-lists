@@ -15,6 +15,6 @@ fun hideKeyboardFrom(context: Context, view: View) {
 }
 
 fun dateConverter(timestamp: Timestamp): CharSequence {
-    val datetime = DateFormat.format("dd.MM.yyyy 'at' HH:mm:ss", timestamp.toDate())
+    val datetime = DateFormat.format("dd.MM.yyyy '-' HH:mm:ss", timestamp.toDate())
     return datetime ?: ""
 }

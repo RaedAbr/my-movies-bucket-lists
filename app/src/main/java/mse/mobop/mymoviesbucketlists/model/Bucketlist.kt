@@ -9,5 +9,6 @@ data class Bucketlist (
     var name: String = "",
     var createdBy: User? = null,
     @ServerTimestamp var creationTimestamp: Timestamp? = null,
-    var sharedWith: ArrayList<User> = ArrayList()
+    var sharedWith: List<User> = ArrayList(),
+    var sharedWithIds: List<String> = ArrayList()
 )

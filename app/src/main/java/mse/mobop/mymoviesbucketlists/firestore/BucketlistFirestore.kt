@@ -42,9 +42,25 @@ object BucketlistFirestore {
 //    }
 
     fun getOwnedBucketlistsQuery(): Query {
-        return bucketlistsCollRef
+        val query = bucketlistsCollRef
             .whereEqualTo("createdBy.id", FirebaseAuth.getInstance().currentUser!!.uid)
             .orderBy("creationTimestamp")
+
+//        query.get().addOnSuccessListener {
+//            Log.e("sucessOwned", it.size().toString())
+//        }
+        return query
+    }
+
+    fun getSharedBucketlistsQuery(): Query {
+        val query = bucketlistsCollRef
+            .whereArrayContains("sharedWithIds", FirebaseAuth.getInstance().currentUser!!.uid)
+            .orderBy("creationTimestamp")
+
+//        query.get().addOnSuccessListener {
+//            Log.e("sucessShared", it.size().toString())
+//        }
+        return query
     }
 
     fun getById(id: String?): LiveData<Bucketlist> {

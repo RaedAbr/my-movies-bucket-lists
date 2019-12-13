@@ -1,7 +1,6 @@
 package mse.mobop.mymoviesbucketlists.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +8,10 @@ import android.widget.ArrayAdapter
 import com.google.firebase.firestore.Exclude
 import kotlinx.android.synthetic.main.item_user.view.*
 
-class UserAdapter(context: Context,
-                  private val viewRes: Int,
-                  private val usersList: ArrayList<UserForSearch>):
-    ArrayAdapter<UserAdapter.UserForSearch>(context, viewRes, usersList){
+class SearchUserAdapter(context: Context,
+                        private val viewRes: Int,
+                        private val usersList: ArrayList<UserForSearch>):
+    ArrayAdapter<SearchUserAdapter.UserForSearch>(context, viewRes, usersList){
 
     private var listener: OnCheckedChangeListener? = null
 

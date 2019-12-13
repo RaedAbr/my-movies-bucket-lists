@@ -4,14 +4,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import mse.mobop.mymoviesbucketlists.utils.USERS_COLLECTION
+import mse.mobop.mymoviesbucketlists.utils.USER_COLLECTION
 import mse.mobop.mymoviesbucketlists.model.User
 import java.util.*
 
 object UserFirestore {
     private val firestoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
     private val userCollRef: CollectionReference
-        get() = firestoreInstance.collection(USERS_COLLECTION)
+        get() = firestoreInstance.collection(USER_COLLECTION)
 
     fun addCurrentUserIfFirstTime(onComplete: () -> Unit) {
         val currentUser = FirebaseAuth.getInstance().currentUser!!

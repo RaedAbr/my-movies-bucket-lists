@@ -14,13 +14,10 @@
     <string name="list_name">List name</string>
     <string name="created_by">Created by</string>
     <string name="creator">Creator</string>
-    <string name="_04_30pm">04:30PM</string>
     <string name="new_list">New list</string>
     <string name="edit_list">Edit list</string>
     <string name="save">Save</string>
-    <string name="created_in">Created in</string>
-    <string name="at">at</string>
-    <string name="_23_11_2019">23.11.2019 at 04:04:09</string>
+    <string name="_23_11_2019">23.11.2019 - 04:04:09</string>
     <string name="signout">Signout</string>
     <string name="edit">Edit</string>
     <string name="email">Email</string>
@@ -32,6 +29,9 @@
     <string name="already_have_an_account_sign_in">Already have an account? Sign in</string>
     <string name="username">Username</string>
     <string name="snackbar_undo">Undo</string>
+    <string name="shared_with">Shared with:</string>
+    <string name="bucketlist_not_shared">This bucketlist is not shared</string>
+    <string name="me">me</string>
 
     <style name="create_one">Create one</style>
 </resources>

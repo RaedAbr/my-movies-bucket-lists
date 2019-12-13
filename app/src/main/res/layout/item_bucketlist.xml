@@ -19,6 +19,7 @@
             style="@style/Bucketlist.Name"/>
 
         <LinearLayout
+            android:id="@+id/created_by_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -39,13 +40,6 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Bucketlist.DateTime"
-                android:text="@string/created_in"
-                android:layout_marginEnd="5dp"/>
             <TextView
                 android:id="@+id/bucketlist_date"
                 android:layout_width="wrap_content"
