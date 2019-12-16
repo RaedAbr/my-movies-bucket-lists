@@ -3,19 +3,19 @@ package mse.mobop.mymoviesbucketlists.firestore
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import mse.mobop.mymoviesbucketlists.utils.BUCKETLIST_COLLECTION
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
-import org.jetbrains.anko.doAsync
 
 object BucketlistFirestore {
     private val firestoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
     private val bucketlistsCollRef: CollectionReference
         get() = firestoreInstance.collection(BUCKETLIST_COLLECTION)
+    private val snapshotListenersMap = mutableMapOf<String, ListenerRegistration>()
 
     fun createBucketlist(bucketlist: Bucketlist) {
         bucketlistsCollRef.add(bucketlist)
@@ -42,32 +42,22 @@ object BucketlistFirestore {
 //    }
 
     fun getOwnedBucketlistsQuery(): Query {
-        val query = bucketlistsCollRef
+        return bucketlistsCollRef
             .whereEqualTo("createdBy.id", FirebaseAuth.getInstance().currentUser!!.uid)
-            .orderBy("creationTimestamp")
-
-//        query.get().addOnSuccessListener {
-//            Log.e("sucessOwned", it.size().toString())
-//        }
-        return query
+            .orderBy("creationTimestamp", Query.Direction.DESCENDING)
     }
 
     fun getSharedBucketlistsQuery(): Query {
-        val query = bucketlistsCollRef
+        return bucketlistsCollRef
             .whereArrayContains("sharedWithIds", FirebaseAuth.getInstance().currentUser!!.uid)
-            .orderBy("creationTimestamp")
-
-//        query.get().addOnSuccessListener {
-//            Log.e("sucessShared", it.size().toString())
-//        }
-        return query
+            .orderBy("creationTimestamp", Query.Direction.DESCENDING)
     }
 
     fun getById(id: String?): LiveData<Bucketlist> {
         val bucketlist = MutableLiveData<Bucketlist>()
 //        doAsync {
         if (id != null) {
-            bucketlistsCollRef.document(id)
+            val registration = bucketlistsCollRef.document(id)
 //                .get().result?.toObject(Bucketlist::class.java)
 
                 .addSnapshotListener { snapshot, e ->
@@ -85,6 +75,7 @@ object BucketlistFirestore {
                         bucketlist.value = null
                     }
                 }
+            snapshotListenersMap.putIfAbsent(id, registration)
 //        }
         }
         return bucketlist
@@ -92,11 +83,16 @@ object BucketlistFirestore {
 
     fun updateBucketlist(bucketlist: Bucketlist) {
         bucketlistsCollRef.document(bucketlist.id!!)
-            .set(bucketlist).addOnSuccessListener {
+            .set(bucketlist)
+            .addOnSuccessListener {
                 Log.e("bucketlist",  bucketlist.id + " Updated successfully")
             }
             .addOnFailureListener {
                 Log.e("bucketlist",  bucketlist.id + " Error writing document")
             }
+    }
+
+    fun stopListener(id: String) {
+        snapshotListenersMap.getValue(id).remove()
     }
 }

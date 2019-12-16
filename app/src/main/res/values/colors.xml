@@ -5,4 +5,5 @@
     <color name="white">#fff</color>
     <color name="black">#000</color>
     <color name="colorBackground">#ECF4FF</color>
+    <color name="colorRecyclerHeader">#3F637C</color>
 </resources>

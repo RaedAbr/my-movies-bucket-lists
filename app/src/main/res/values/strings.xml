@@ -32,6 +32,10 @@
     <string name="shared_with">Shared with:</string>
     <string name="bucketlist_not_shared">This bucketlist is not shared</string>
     <string name="me">me</string>
+    <string name="created_by_me">Created by me</string>
+    <string name="shared_with_me">Shared with me</string>
+    <string name="_2">2</string>
+    <string name="down_arrow">﹀</string>
 
     <style name="create_one">Create one</style>
 </resources>

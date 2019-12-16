@@ -56,6 +56,13 @@ class AddEditBucketlistFragment : Fragment() {
             bucketlistViewModel.bucketlist.observe(this, Observer {
                 fragment_title.text = fragmentTitle
                 bucketlist_name.setText(it.name)
+                it.sharedWith.forEach {user ->
+                    selectedUsersList.add(SearchUserAdapter.UserForSearch(
+                        user.id,
+                        user.name,
+                        true
+                    ))
+                }
             })
         }
 
@@ -155,9 +162,11 @@ class AddEditBucketlistFragment : Fragment() {
         }
         val updatedBucketlist: Bucketlist = bucketlistViewModel.bucketlist.value!!
         val selectedUsers = selectedUsersList.map { User(it.id, it.name) } as ArrayList
+        val sharedWithIds = selectedUsersList.map { it.id!! } as ArrayList<String>
 
         updatedBucketlist.name = bucketlistName
         updatedBucketlist.sharedWith = selectedUsers
+        updatedBucketlist.sharedWithIds = sharedWithIds
         bucketlistViewModel.update(updatedBucketlist)
         Toast.makeText(context, "Movies bucketlist updated", Toast.LENGTH_SHORT).show()
         return true
@@ -173,12 +182,17 @@ class AddEditBucketlistFragment : Fragment() {
         }
 
         val selectedUsers = selectedUsersList.map { User(it.id, it.name) }
-        val selectedUsersIds = selectedUsersList.map { it.id!! }
+        val sharedWithIds = selectedUsersList.map { it.id!! } as ArrayList<String>
 
         bucketlistViewModel.insert(
-            Bucketlist(name = listName, createdBy = User(currentUser), sharedWith = selectedUsers, sharedWithIds = selectedUsersIds)
+            Bucketlist(name = listName, createdBy = User(currentUser), sharedWith = selectedUsers, sharedWithIds = sharedWithIds)
         )
         Toast.makeText(context, "New movies bucketlist saved", Toast.LENGTH_SHORT).show()
         return true
+    }
+
+    override fun onPause() {
+        bucketlistViewModel.stopSnapshotListener()
+        super.onPause()
     }
 }

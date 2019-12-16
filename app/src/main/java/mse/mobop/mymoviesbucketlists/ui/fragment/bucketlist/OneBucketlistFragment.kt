@@ -104,4 +104,9 @@ class OneBucketlistFragment : Fragment() {
         hideKeyboardFrom(activity!!, view!!)
         super.onResume()
     }
+
+    override fun onPause() {
+        bucketlistViewModel.stopSnapshotListener()
+        super.onPause()
+    }
 }

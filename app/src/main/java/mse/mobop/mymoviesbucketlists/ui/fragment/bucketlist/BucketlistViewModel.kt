@@ -13,10 +13,16 @@ class BucketlistViewModel(id: String? = null) {
 //    val allBucketlist: LiveData<List<Bucketlist>>
 //        get() = bucketlistRepository.allBucketlist
 //
-    fun loadBucketlist(id: String) {
-        bucketlist = BucketlistFirestore.getById(id)
-    }
+//    fun loadBucketlist(id: String) {
+//        bucketlist = BucketlistFirestore.getById(id)
+//    }
 
     fun insert(bucketlist: Bucketlist) = BucketlistFirestore.createBucketlist(bucketlist)
     fun update(bucketlist: Bucketlist) = BucketlistFirestore.updateBucketlist(bucketlist)
+
+    fun stopSnapshotListener() {
+        if (bucketlist.value != null) {
+            BucketlistFirestore.stopListener(bucketlist.value!!.id!!)
+        }
+    }
 }

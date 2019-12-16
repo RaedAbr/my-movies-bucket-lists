@@ -19,25 +19,6 @@
             style="@style/Bucketlist.Name"/>
 
         <LinearLayout
-            android:id="@+id/created_by_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/created_by"
-                android:layout_marginEnd="5dp"
-                style="@style/Bucketlist.CreatedBy" />
-            <TextView
-                android:id="@+id/bucketlist_creator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/creator"
-                style="@style/Bucketlist.CreatedBy"/>
-        </LinearLayout>
-
-        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <TextView

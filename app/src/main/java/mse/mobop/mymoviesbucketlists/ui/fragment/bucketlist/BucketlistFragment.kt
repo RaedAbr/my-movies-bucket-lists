@@ -2,6 +2,8 @@ package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 
 import android.os.Bundle
 import android.view.*
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -11,18 +13,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.DocumentSnapshot
-import kotlinx.android.synthetic.main.recycler_bucketlists_view.view.*
+import kotlinx.android.synthetic.main.fragment_bucketlists.view.*
+import kotlinx.android.synthetic.main.recycler_bucketlists_owned.view.*
+import kotlinx.android.synthetic.main.recycler_bucketlists_shared.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.adapters.BucketlistAdapter
 import mse.mobop.mymoviesbucketlists.firestore.BucketlistFirestore
-import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.SwipeController
+import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
 
 
 class BucketlistFragment : Fragment() {
 
-    private lateinit var recyclerAdapter: BucketlistAdapter
+    private lateinit var recyclerViewOwned: RecyclerView
+    private lateinit var recyclerViewShared: RecyclerView
+
+    private lateinit var recyclerAdapterOwned: BucketlistAdapter
+    private lateinit var recyclerAdapterShared: BucketlistAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,53 +52,125 @@ class BucketlistFragment : Fragment() {
             findNavController().navigate(R.id.action_nav_home_to_nav_addEditBucketlistFragment)
         }
 
-        setUpRecyclerView(root)
+        setUpRecyclerViewOwned(root)
+
+        setUpRecyclerViewShared(root)
+
+        setUpRecyclerViewHeaders(root)
 
         return root
     }
 
-    private fun setUpRecyclerView(view: View) {
+    private fun setUpRecyclerViewOwned(view: View) {
         val query = BucketlistFirestore.getOwnedBucketlistsQuery()
 
         val recyclerOptions = FirestoreRecyclerOptions.Builder<Bucketlist>()
             .setQuery(query, Bucketlist::class.java)
             .build()
 
-        recyclerAdapter = BucketlistAdapter(recyclerOptions)
+        recyclerAdapterOwned = BucketlistAdapter(recyclerOptions, BucketlistAdapter.Type.OWNED)
 
-        val recyclerView = view.recycler_bucketlists_view
-        recyclerView.layoutManager = LinearLayoutManager(view.context)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = recyclerAdapter
+        recyclerViewOwned = view.recycler_bucketlists_owned
+        recyclerViewOwned.layoutManager = LinearLayoutManager(view.context)
+        recyclerViewOwned.setHasFixedSize(false)
+        recyclerViewOwned.adapter = recyclerAdapterOwned
 
         ItemTouchHelper(object: SwipeController(ItemTouchHelper.RIGHT) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                recyclerAdapter.deleteItem(view, viewHolder.adapterPosition)
+                recyclerAdapterOwned.deleteItem(view, viewHolder.adapterPosition)
             }
-        }).attachToRecyclerView(recyclerView)
+        }).attachToRecyclerView(recyclerViewOwned)
 
-        recyclerAdapter.setOnItemClickListener(object: BucketlistAdapter.OnItemClickListener {
-            override fun onItemClick(documentSnapshot: DocumentSnapshot, position: Int) {
-                val bucketlist =  documentSnapshot.toObject(Bucketlist::class.java)
-                if (bucketlist != null) {
-                    val direction =
-                        BucketlistFragmentDirections.actionNavHomeToOneBucketlistFragment(
-                            bucketlistId = bucketlist.id!!
-                        )
-                    findNavController().navigate(direction)
-                }
+        recyclerAdapterOwned.setOnItemClickListener(OnBucketlistItemClickListener())
+
+        recyclerAdapterOwned.setOnDataChangeListener(OnBucketlistChangeDataListener(
+            view.owned_header, view.owned_header_nbr
+        ))
+    }
+
+    private fun setUpRecyclerViewShared(view: View) {
+        val query = BucketlistFirestore.getSharedBucketlistsQuery()
+
+        val recyclerOptions = FirestoreRecyclerOptions.Builder<Bucketlist>()
+            .setQuery(query, Bucketlist::class.java)
+            .build()
+
+        recyclerAdapterShared = BucketlistAdapter(recyclerOptions, BucketlistAdapter.Type.SHARED)
+
+        recyclerViewShared = view.recycler_bucketlists_shared
+        recyclerViewShared.layoutManager = LinearLayoutManager(view.context)
+        recyclerViewShared.setHasFixedSize(false)
+        recyclerViewShared.adapter = recyclerAdapterShared
+
+        recyclerAdapterShared.setOnItemClickListener(OnBucketlistItemClickListener())
+
+        recyclerAdapterShared.setOnDataChangeListener(OnBucketlistChangeDataListener(
+            view.shared_header, view.shared_header_nbr
+        ))
+    }
+
+    private inner class OnBucketlistItemClickListener: BucketlistAdapter.OnItemClickListener {
+        override fun onItemClick(documentSnapshot: DocumentSnapshot, position: Int) {
+            val bucketlist = documentSnapshot.toObject(Bucketlist::class.java)
+            if (bucketlist != null) {
+                val direction =
+                    BucketlistFragmentDirections.actionNavHomeToOneBucketlistFragment(
+                        bucketlistId = bucketlist.id!!
+                    )
+                findNavController().navigate(direction)
             }
-        })
+        }
+    }
+
+    private inner class OnBucketlistChangeDataListener(
+        private val recyclerHeader: LinearLayout,
+        private val headerNbr: TextView
+    ): BucketlistAdapter.OnDataChangedListener {
+        override fun onDataChaneg(itemCount: Int) {
+            if (itemCount == 0) {
+                recyclerHeader.visibility = View.GONE
+            } else {
+                recyclerHeader.visibility = View.VISIBLE
+            }
+            headerNbr.text = itemCount.toString()
+        }
+    }
+
+    private fun setUpRecyclerViewHeaders(view: View) {
+        view.owned_header.setOnClickListener {
+            if (recyclerViewOwned.visibility == View.VISIBLE) {
+                recyclerViewOwned.visibility = View.GONE
+                view.owned_header_arrow.visibility = View.GONE
+                view.owned_header_nbr.visibility = View.VISIBLE
+            } else {
+                recyclerViewOwned.visibility = View.VISIBLE
+                view.owned_header_arrow.visibility = View.VISIBLE
+                view.owned_header_nbr.visibility = View.GONE
+            }
+        }
+        view.shared_header.setOnClickListener {
+            if (recyclerViewShared.visibility == View.VISIBLE) {
+                recyclerViewShared.visibility = View.GONE
+                view.shared_header_arrow.visibility = View.GONE
+                view.shared_header_nbr.visibility = View.VISIBLE
+            } else {
+                recyclerViewShared.visibility = View.VISIBLE
+                view.shared_header_arrow.visibility = View.VISIBLE
+                view.shared_header_nbr.visibility = View.GONE
+            }
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        recyclerAdapter.startListening()
+        recyclerAdapterOwned.startListening()
+        recyclerAdapterShared.startListening()
     }
 
     override fun onStop() {
         super.onStop()
-        recyclerAdapter.stopListening()
+        recyclerAdapterOwned.stopListening()
+        recyclerAdapterShared.stopListening()
     }
 
     override fun onResume() {
