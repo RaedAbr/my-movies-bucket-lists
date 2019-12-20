@@ -53,9 +53,7 @@
     <style name="Bucketlist.CreatedBy" parent="TextAppearance.AppCompat.Light.SearchResult.Subtitle" />
     <style name="Bucketlist.DateTime" parent="TextAppearance.AppCompat.Caption" />
 
-    <style name="Toolbar" parent="@style/AppTheme.AppBarOverlay">
-        <item name="android:fontFamily">@font/anton</item>
-    </style>
+    <style name="Toolbar" parent="@style/AppTheme.AppBarOverlay"/>
 
     <style name="NavHeaderTitle" parent="@style/TextAppearance.AppCompat.Body1">
         <item name="android:fontFamily">@font/anton</item>
@@ -64,5 +62,7 @@
 
     <style name="BucketlistAddEdit">AddEditBucketlist</style>
 
-
+    <style name="CircularProgress" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/colorBackground</item>
+    </style>
 </resources>

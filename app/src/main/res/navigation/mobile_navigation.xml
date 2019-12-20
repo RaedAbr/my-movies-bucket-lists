@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/BucketlistFragment">
 
     <fragment
-        android:id="@+id/nav_home"
+        android:id="@+id/BucketlistFragment"
         android:name="mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist.BucketlistFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_bucketlists" >
         <action
-            android:id="@+id/action_nav_home_to_nav_addEditBucketlistFragment"
-            app:destination="@id/nav_addEditBucketlistFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            android:id="@+id/action_BucketlistsFragment_to_AddEditBucketlistFragment"
+            app:destination="@id/AddEditBucketlistFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_nav_home_to_oneBucketlistFragment"
-            app:destination="@id/oneBucketlistFragment"
+            android:id="@+id/action_BucketlistsFragment_to_OneBucketlistFragment"
+            app:destination="@id/OneBucketlistFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -27,43 +27,14 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="mse.mobop.mymoviesbucketlists.ui.fragment.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
-
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="mse.mobop.mymoviesbucketlists.ui.fragment.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
-
-    <fragment
-        android:id="@+id/nav_tools"
-        android:name="mse.mobop.mymoviesbucketlists.ui.fragment.tools.ToolsFragment"
-        android:label="@string/menu_tools"
-        tools:layout="@layout/fragment_tools" />
-
-    <fragment
-        android:id="@+id/nav_share"
-        android:name="mse.mobop.mymoviesbucketlists.ui.fragment.share.ShareFragment"
-        android:label="@string/menu_share"
-        tools:layout="@layout/fragment_share" />
-
-    <fragment
-        android:id="@+id/nav_send"
-        android:name="mse.mobop.mymoviesbucketlists.ui.fragment.send.SendFragment"
-        android:label="@string/menu_send"
-        tools:layout="@layout/fragment_send" />
-    <fragment
-        android:id="@+id/nav_addEditBucketlistFragment"
+        android:id="@+id/AddEditBucketlistFragment"
         android:name="mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist.AddEditBucketlistFragment"
         android:label="fragment_add_edit_bucketlist"
         tools:layout="@layout/fragment_add_edit_bucketlist" >
         <argument
             android:name="fragmentTitle"
-            app:argType="string"
-            android:defaultValue="New list" />
+            app:argType="reference"
+            android:defaultValue="@string/new_bucketlist" />
         <argument
             android:name="bucketlistId"
             app:argType="string"
@@ -75,19 +46,32 @@
             android:defaultValue="ADD" />
     </fragment>
     <fragment
-        android:id="@+id/oneBucketlistFragment"
+        android:id="@+id/OneBucketlistFragment"
         android:name="mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist.OneBucketlistFragment"
         android:label="fragment_one_bucketlist"
         tools:layout="@layout/fragment_one_bucketlist" >
         <action
-            android:id="@+id/action_oneBucketlistFragment_to_nav_addEditBucketlistFragment"
-            app:destination="@id/nav_addEditBucketlistFragment"
+            android:id="@+id/action_OneBucketlistFragment_to_AddEditBucketlistFragment"
+            app:destination="@id/AddEditBucketlistFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpToInclusive="false" />
         <argument
             android:name="bucketlistId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_OneBucketlistFragment_to_AddMoviesFragment"
+            app:destination="@id/addMoviesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+    <fragment
+        android:id="@+id/addMoviesFragment"
+        android:name="mse.mobop.mymoviesbucketlists.ui.fragment.movie.AddMoviesFragment"
+        tools:layout="@layout/fragment_add_movies"
+        android:label="AddMoviesFragment" />
 </navigation>

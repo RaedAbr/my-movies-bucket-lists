@@ -1,5 +1,6 @@
 package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.LinearLayout
@@ -20,6 +21,7 @@ import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.adapters.BucketlistAdapter
 import mse.mobop.mymoviesbucketlists.firestore.BucketlistFirestore
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
+import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.SwipeController
 import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
 
@@ -31,6 +33,8 @@ class BucketlistFragment : Fragment() {
 
     private lateinit var recyclerAdapterOwned: BucketlistAdapter
     private lateinit var recyclerAdapterShared: BucketlistAdapter
+
+    private var titleListener: OnNavigatingToFragmentListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +53,11 @@ class BucketlistFragment : Fragment() {
 
         val addBucketlistFab: FloatingActionButton = root.findViewById(R.id.add_bucketlist_fab)
         addBucketlistFab.setOnClickListener {
-            findNavController().navigate(R.id.action_nav_home_to_nav_addEditBucketlistFragment)
+            findNavController().navigate(R.id.action_BucketlistsFragment_to_AddEditBucketlistFragment)
+        }
+
+        if (titleListener != null) {
+            titleListener!!.onNavigatingToFragment(getString(R.string.app_name))
         }
 
         setUpRecyclerViewOwned(root)
@@ -114,7 +122,7 @@ class BucketlistFragment : Fragment() {
             val bucketlist = documentSnapshot.toObject(Bucketlist::class.java)
             if (bucketlist != null) {
                 val direction =
-                    BucketlistFragmentDirections.actionNavHomeToOneBucketlistFragment(
+                    BucketlistFragmentDirections.actionBucketlistsFragmentToOneBucketlistFragment(
                         bucketlistId = bucketlist.id!!
                     )
                 findNavController().navigate(direction)
@@ -184,5 +192,19 @@ class BucketlistFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try {
+            titleListener = context as OnNavigatingToFragmentListener
+        } catch (e: ClassCastException) {
+            throw ClassCastException(
+                "$context must implement OnNavigatingToFragmentListener"
+            )
+        }
+    }
 
+    override fun onDetach() {
+        super.onDetach()
+        titleListener = null
+    }
 }

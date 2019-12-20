@@ -4,28 +4,28 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.ui.onNavDestinationSelected
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.nav_header_main.view.*
 import mse.mobop.mymoviesbucketlists.utils.ARG_SIGN_IN_SUCCESSFULLY
 import mse.mobop.mymoviesbucketlists.R
+import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
 import org.jetbrains.anko.contentView
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+OnNavigatingToFragmentListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
-    private lateinit var navView: NavigationView
-    private lateinit var drawerLayout: DrawerLayout
     private var user = FirebaseAuth.getInstance().currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,26 +43,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //            return
 //        }
 
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        drawerLayout = findViewById(R.id.drawer_layout)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home,
-                R.id.nav_gallery,
-                R.id.nav_slideshow,
-                R.id.nav_tools,
-                R.id.nav_share,
-                R.id.nav_send
-            ), drawerLayout
+                R.id.BucketlistFragment
+//                R.id.AddMoviesFragment,
+//                R.id.nav_slideshow,
+//                R.id.nav_tools,
+//                R.id.nav_share,
+//                R.id.nav_send
+            ), drawer_layout
         )
 
-        navView = findViewById(R.id.nav_view)
-        navView.setNavigationItemSelectedListener(this)
-        navView.getHeaderView(0).findViewById<TextView>(R.id.username_textview).text = user!!.displayName
+        nav_view.setNavigationItemSelectedListener(this)
+        nav_view.getHeaderView(0).username_textview.text = user!!.displayName
         navController = findNavController(R.id.nav_host_fragment)
 //        navView.setupWithNavController(navController)
     }
@@ -108,11 +105,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 true
             }
             else -> {
-                drawerLayout.closeDrawers()
+                drawer_layout.closeDrawers()
                 menuItem.onNavDestinationSelected(navController)
 //                navView.setupWithNavController(navController)
             }
         }
+    }
+
+    override fun onNavigatingToFragment(title: String?) {
+        supportActionBar!!.title = title
     }
 
 //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

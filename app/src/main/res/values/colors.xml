@@ -6,4 +6,5 @@
     <color name="black">#000</color>
     <color name="colorBackground">#ECF4FF</color>
     <color name="colorRecyclerHeader">#3F637C</color>
+    <color name="placeholder_grey">#AAADC4</color>
 </resources>

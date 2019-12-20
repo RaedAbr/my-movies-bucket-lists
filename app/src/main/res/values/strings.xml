@@ -14,10 +14,10 @@
     <string name="list_name">List name</string>
     <string name="created_by">Created by</string>
     <string name="creator">Creator</string>
-    <string name="new_list">New list</string>
-    <string name="edit_list">Edit list</string>
+    <string name="new_bucketlist">New bucketlist</string>
+    <string name="edit_bucketlist">Edit bucketlist</string>
     <string name="save">Save</string>
-    <string name="_23_11_2019">23.11.2019 - 04:04:09</string>
+    <string name="_23_11_2019">23.11.2019 – 04:04:09</string>
     <string name="signout">Signout</string>
     <string name="edit">Edit</string>
     <string name="email">Email</string>
@@ -36,6 +36,12 @@
     <string name="shared_with_me">Shared with me</string>
     <string name="_2">2</string>
     <string name="down_arrow">﹀</string>
-
-    <style name="create_one">Create one</style>
+    <string name="search_movie">Search movie</string>
+    <string name="type_movie_title">Type movie title</string>
+    <string name="add_movies">Add movies</string>
+    <string name="create_one">Create one</string>
+    <string name="movie_poster">Movie poster</string>
+    <string name="no_poster">No poster</string>
+    <string name="top_rated_movies_from_themoviedb_org">Top rated movies (from themoviedb.org)</string>
+    <string name="results_for">Results for:</string>
 </resources>

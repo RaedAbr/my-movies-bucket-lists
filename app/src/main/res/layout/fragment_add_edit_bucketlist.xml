@@ -8,13 +8,6 @@
     style="@style/Fragment"
     tools:context=".ui.fragment.bucketlist.AddEditBucketlistFragment">
 
-    <TextView
-        android:id="@+id/fragment_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/new_list"
-        style="@style/FragmentTitle"/>
-
     <EditText
         android:id="@+id/bucketlist_name"
         android:layout_width="match_parent"
