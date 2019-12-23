@@ -148,7 +148,6 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
                         + " | " + movie.originalLanguage!!.toUpperCase())
             mMovieDesc.text = movie.overview!!
 
-            var movieHasPoster = true
             Glide
                 .with(context)
                 .load(BASE_URL_IMG + movie.posterPath)
@@ -161,6 +160,11 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
                         isFirstResource: Boolean
                     ): Boolean { // image ready, hide progress now
                         mProgress.visibility = View.GONE
+                        mPosterImg.setOnLongClickListener {
+                            Log.e("moviePosterSetOnLongClickListener", movie.toString())
+                            showDialogPoster(movie)
+                            false
+                        }
                         Log.e("onResourceReady", model.toString())
                         return false // return false if you want Glide to handle everything else.
                     }
@@ -170,9 +174,9 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
                         target: com.bumptech.glide.request.target.Target<Drawable>?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        movieHasPoster = false
                         mProgress.visibility = View.GONE
                         mNoPoster.visibility = View.VISIBLE
+                        mPosterImg.setOnLongClickListener(null)
                         Log.e("onLoadFailed", model.toString())
                         Log.e("onLoadFailed", "id: ${movie.id}\ttitle: ${movie.title}")
                         return false
@@ -191,13 +195,6 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
                 }
                 mMovieDesc.toggle()
                 lastClickedMovieDescription = mMovieDesc
-            }
-
-            if (movieHasPoster) {
-                mPosterImg.setOnLongClickListener {
-                    showDialogPoster(movie)
-                    false
-                }
             }
         }
 
@@ -225,6 +222,7 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
                         ): Boolean { // image ready, hide progress now
 //                            mProgress.visibility = View.GONE
                             Log.e("onResourceReadyyyy", model.toString())
+                            Log.e("onResourceReadyyyy", "id: ${movie.id}\ttitle: ${movie.title}\t path: ${movie.posterPath}")
 //                            dialog.window!!.setLayout(resource!!.intrinsicWidth, resource!!.intrinsicHeight)
                             return false // return false if you want Glide to handle everything else.
                         }
