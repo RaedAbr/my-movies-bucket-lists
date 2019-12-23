@@ -65,4 +65,9 @@
     <style name="CircularProgress" parent="Theme.AppCompat.Light">
         <item name="colorAccent">@color/colorBackground</item>
     </style>
+
+    <style name="TransparentDialog" parent="android:Theme.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>

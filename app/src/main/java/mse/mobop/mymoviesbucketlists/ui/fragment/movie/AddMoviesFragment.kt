@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.fragment_add_movies.*
 import kotlinx.android.synthetic.main.fragment_add_movies.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.adapters.MoviesPaginationAdapter
@@ -24,7 +25,6 @@ import mse.mobop.mymoviesbucketlists.ui.recyclerview.PaginationScrollListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.reflect.KFunction
 
 
 /**
@@ -141,9 +141,9 @@ class AddMoviesFragment: Fragment() {
 
                 val results: List<Movie> = moviesSearchResult.results!!
                 progressBar!!.visibility = View.GONE
-                val headerMovie = Movie()
-                headerMovie.title = recyclerViewHeader
-                adapter!!.add(headerMovie)
+
+                movie_header.text = recyclerViewHeader
+
                 adapter!!.addAll(results)
                 if (currentPage < totalPageCount) {
                     currentPage += 1
@@ -216,7 +216,7 @@ class AddMoviesFragment: Fragment() {
                 this@AddMoviesFragment.query = query ?: ""
                 if (query != null && query.isNotEmpty()) {
                     initRecyclerView()
-                    recyclerViewHeader = getString(R.string.results_for) + ": $query"
+                    recyclerViewHeader = getString(R.string.results_for) + " $query"
                     apiCall = ::callSearchMoviesApi
                     loadFirstPage()
                 }

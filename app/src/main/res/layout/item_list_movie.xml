@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:background="@android:color/white"
+    android:layout_marginTop="@dimen/activity_margin_half">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/activity_margin_half"
-        android:layout_marginStart="@dimen/activity_margin_half"
-        android:layout_marginTop="20dp"
+        android:layout_height="match_parent"
         app:cardBackgroundColor="@color/placeholder_grey"
         app:cardCornerRadius="3dp"
-        app:cardPreventCornerOverlap="false">
+        app:cardPreventCornerOverlap="false"
+        app:layout_constraintEnd_toStartOf="@+id/movie_linear_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ProgressBar
             android:id="@+id/movie_progress"
@@ -22,15 +25,15 @@
             android:layout_width="@dimen/activity_margin"
             android:layout_height="@dimen/activity_margin"
             android:layout_gravity="center"
-            android:theme="@style/CircularProgress"/>
+            android:theme="@style/CircularProgress" />
 
         <TextView
             android:id="@+id/movie_no_poster"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="gone"
-            android:text="@string/no_poster"/>
+            android:text="@string/no_poster"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/movie_poster"
@@ -41,51 +44,48 @@
     </androidx.cardview.widget.CardView>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="@dimen/activity_margin"
-        android:background="@android:color/white"
+        android:id="@+id/movie_linear_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:paddingBottom="8dp"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_margin"
-        android:paddingEnd="@dimen/activity_margin"
-        android:paddingStart="@dimen/poster_thumb_width"
-        android:paddingTop="@dimen/activity_margin_half">
-
-        <TextView
-            android:id="@+id/movie_year"
-            style="@style/TextAppearance.AppCompat.Caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/activity_margin_content"
-            android:alpha="0.38"
-            android:gravity="end"
-            android:maxLines="1"
-            android:textStyle="bold"
-            tools:text="2009 | EN"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cardView"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/movie_title"
             style="@style/TextAppearance.AppCompat.Subhead"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/activity_margin_content"
-            android:layout_marginTop="@dimen/activity_margin_quarter"
-            android:maxLines="1"
             android:ellipsize="end"
-            tools:text="Movie Title"/>
+            android:maxLines="2"
+            tools:text="Movie Title" />
 
         <TextView
-            android:id="@+id/movie_desc"
+            android:id="@+id/movie_year"
             style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/activity_margin_content"
-            android:layout_marginTop="@dimen/activity_margin_half"
-            android:ellipsize="end"
+            android:alpha="0.38"
+            android:gravity="end"
+            android:maxLines="1"
+            android:textStyle="bold"
+            tools:text="2009 | EN" />
+
+        <at.blogc.android.views.ExpandableTextView
+            android:id="@+id/movie_desc"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Nowadays, user engagement is considered one of the most important metrics for the success of your app"
             android:maxLines="2"
-            tools:text="Nowadays, user engagement is considered one of the most important metrics for the success of your app"/>
+            android:ellipsize="end"
+            app:animation_duration="100"/>
 
     </LinearLayout>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
