@@ -1,11 +1,10 @@
 package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 //import mse.mobop.mymoviesbucketlists.ARG_BUCKETLIST_OBJECT
 import mse.mobop.mymoviesbucketlists.firestore.BucketlistFirestore
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
+import mse.mobop.mymoviesbucketlists.model.Movie
 
 class BucketlistViewModel(id: String? = null) {
 
@@ -19,6 +18,8 @@ class BucketlistViewModel(id: String? = null) {
 
     fun insert(bucketlist: Bucketlist) = BucketlistFirestore.createBucketlist(bucketlist)
     fun update(bucketlist: Bucketlist) = BucketlistFirestore.updateBucketlist(bucketlist)
+    fun addMoviesToBucketlist(bucketlistId: String, movies: ArrayList<Movie>) =
+        BucketlistFirestore.updateMoviesList(bucketlistId, movies)
 
     fun stopSnapshotListener() {
         if (bucketlist.value != null) {

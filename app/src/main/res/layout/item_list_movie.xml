@@ -5,8 +5,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
-    android:layout_marginTop="@dimen/activity_margin_half">
+    android:background="@color/white"
+    android:layout_marginBottom="@dimen/activity_margin_half">
+
+    <CheckBox
+        android:id="@+id/movie_selected_checkbox"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:enabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:checked="true"
+        android:button="@drawable/checkbox_movie_selected"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -56,35 +66,41 @@
         app:layout_constraintStart_toEndOf="@id/cardView"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/movie_title"
-            style="@style/TextAppearance.AppCompat.Subhead"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            tools:text="Movie Title" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/movie_title"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                tools:text="Movie Title"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/movie_year"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:alpha="0.38"
+                android:textStyle="bold"
+                tools:text="2009 | EN" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/movie_year"
-            style="@style/TextAppearance.AppCompat.Caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:alpha="0.38"
-            android:gravity="end"
-            android:maxLines="1"
-            android:textStyle="bold"
-            tools:text="2009 | EN" />
-
-        <at.blogc.android.views.ExpandableTextView
             android:id="@+id/movie_desc"
             style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Nowadays, user engagement is considered one of the most important metrics for the success of your app"
-            android:maxLines="2"
+            tools:text="@string/movie_decritpion_sample"
+            android:maxLines="3"
             android:ellipsize="end"
-            app:animation_duration="100"/>
+            android:layout_marginTop="8dp"/>
 
     </LinearLayout>
 

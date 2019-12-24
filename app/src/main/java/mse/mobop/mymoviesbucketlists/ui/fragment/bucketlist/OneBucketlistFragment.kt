@@ -42,15 +42,18 @@ class OneBucketlistFragment : Fragment() {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_one_bucketlist, container, false)
 
-        val addMoviesFab: FloatingActionButton = root.findViewById(R.id.add_movies_fab)
-        addMoviesFab.setOnClickListener {
-            findNavController().navigate(R.id.action_OneBucketlistFragment_to_AddMoviesFragment)
-            R.id.action_OneBucketlistFragment_to_AddEditBucketlistFragment
-        }
-
         // get bandle args from parent fragment
         val bandle = OneBucketlistFragmentArgs.fromBundle(arguments!!)
         bucketlistId = bandle.bucketlistId
+
+        val addMoviesFab: FloatingActionButton = root.findViewById(R.id.add_movies_fab)
+        addMoviesFab.setOnClickListener {
+            val direction =
+                OneBucketlistFragmentDirections.actionOneBucketlistFragmentToAddMoviesFragment(
+                    bucketlistId = bucketlistId
+                )
+            findNavController().navigate(direction)
+        }
 
         bucketlistViewModel = BucketlistViewModel(bucketlistId)
         bucketlistViewModel.bucketlist.observe(this, Observer {

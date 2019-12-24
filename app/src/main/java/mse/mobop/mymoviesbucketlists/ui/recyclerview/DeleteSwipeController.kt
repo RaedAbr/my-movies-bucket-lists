@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import mse.mobop.mymoviesbucketlists.R
 
-abstract class SwipeController(swipeDir: Int): ItemTouchHelper.SimpleCallback(0, swipeDir) {
+abstract class DeleteSwipeController(swipeDir: Int): ItemTouchHelper.SimpleCallback(0, swipeDir) {
     override fun onMove(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,

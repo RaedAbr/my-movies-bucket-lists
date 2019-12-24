@@ -18,11 +18,11 @@ import kotlinx.android.synthetic.main.fragment_bucketlists.view.*
 import kotlinx.android.synthetic.main.recycler_bucketlists_owned.view.*
 import kotlinx.android.synthetic.main.recycler_bucketlists_shared.view.*
 import mse.mobop.mymoviesbucketlists.R
-import mse.mobop.mymoviesbucketlists.adapters.BucketlistAdapter
+import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.BucketlistAdapter
 import mse.mobop.mymoviesbucketlists.firestore.BucketlistFirestore
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
 import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
-import mse.mobop.mymoviesbucketlists.ui.recyclerview.SwipeController
+import mse.mobop.mymoviesbucketlists.ui.recyclerview.DeleteSwipeController
 import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
 
 
@@ -83,7 +83,7 @@ class BucketlistFragment : Fragment() {
         recyclerViewOwned.setHasFixedSize(false)
         recyclerViewOwned.adapter = recyclerAdapterOwned
 
-        ItemTouchHelper(object: SwipeController(ItemTouchHelper.RIGHT) {
+        ItemTouchHelper(object: DeleteSwipeController(ItemTouchHelper.RIGHT) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 recyclerAdapterOwned.deleteItem(view, viewHolder.adapterPosition)
             }
@@ -134,7 +134,7 @@ class BucketlistFragment : Fragment() {
         private val recyclerHeader: LinearLayout,
         private val headerNbr: TextView
     ): BucketlistAdapter.OnDataChangedListener {
-        override fun onDataChaneg(itemCount: Int) {
+        override fun onDataChaneged(itemCount: Int) {
             if (itemCount == 0) {
                 recyclerHeader.visibility = View.GONE
             } else {

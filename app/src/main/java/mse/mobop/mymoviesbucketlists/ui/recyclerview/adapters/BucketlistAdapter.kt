@@ -1,4 +1,4 @@
-package mse.mobop.mymoviesbucketlists.adapters
+package mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.firebase.ui.firestore.ObservableSnapshotArray
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.android.synthetic.main.item_bucketlist_shared.view.*
@@ -48,7 +47,7 @@ class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private v
 
     override fun onDataChanged() {
         if (onDataChangedListener != null) {
-            onDataChangedListener!!.onDataChaneg(itemCount)
+            onDataChangedListener!!.onDataChaneged(itemCount)
         }
         super.onDataChanged()
     }
@@ -71,7 +70,7 @@ class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private v
     }
 
     interface OnDataChangedListener {
-        fun onDataChaneg(itemCount: Int)
+        fun onDataChaneged(itemCount: Int)
     }
 
     inner class BucketlistHolder(itemView: View, private val type: Type): RecyclerView.ViewHolder(itemView) {

@@ -1,10 +1,11 @@
-package mse.mobop.mymoviesbucketlists.adapters
+package mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import at.blogc.android.views.ExpandableTextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -31,7 +31,11 @@ import mse.mobop.mymoviesbucketlists.model.Movie
 class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private var movieResults: ArrayList<Movie> = ArrayList()
     private var isLoadingAdded = false
-    private var lastClickedMovieDescription: ExpandableTextView? = null
+    private var lastClickedMoviePosition: Int = -1
+    private var onItemLongClickListener: OnItemLongClickListener? = null
+    fun setOnItemLongClickListener(onItemLongClickListener: OnItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -122,9 +126,13 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
         notifyDataSetChanged()
     }
 
-//    private fun getItem(position: Int): Movie {
-//        return movieResults[position]
-//    }
+    fun getItem(position: Int): Movie {
+        return movieResults[position]
+    }
+
+    fun getSelectedItems(): List<Movie> {
+        return movieResults.filter { movie -> movie.isSelected }
+    }
     /*
    View Holders
    _________________________________________________________________________________________________
@@ -132,13 +140,13 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
     /**
      * Main list's content ViewHolder
      */
-    private inner class MovieVH(itemView: View): RecyclerView.ViewHolder(itemView) {
-        internal val mMovieTitle: TextView = itemView.movie_title
-        internal val mMovieDesc: ExpandableTextView = itemView.movie_desc
-        internal val mYear: TextView = itemView.movie_year // displays "year | language"
-        internal val mPosterImg: ImageView = itemView.movie_poster
-        internal val mProgress: ProgressBar = itemView.movie_progress
-        internal val mNoPoster: TextView = itemView.movie_no_poster
+    private inner class MovieVH(private val movieItemView: View): RecyclerView.ViewHolder(movieItemView) {
+        private val mMovieTitle: TextView = movieItemView.movie_title
+        private val mMovieDesc: TextView = movieItemView.movie_desc
+        private val mYear: TextView = movieItemView.movie_year // displays "year | language"
+        internal val mPosterImg: ImageView = movieItemView.movie_poster
+        internal val mProgress: ProgressBar = movieItemView.movie_progress
+        internal val mNoPoster: TextView = movieItemView.movie_no_poster
 
         @SuppressLint("DefaultLocale")
         fun bind(movie: Movie, context: Context) {
@@ -147,6 +155,26 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
                 mYear.text = (movie.releaseDate.substring(0, 4) // we want the year only
                         + " | " + movie.originalLanguage!!.toUpperCase())
             mMovieDesc.text = movie.overview!!
+
+            movieItemView.movie_selected_checkbox.isChecked = movie.isSelected
+            if (movie.isSelected) {
+//                itemView.background = itemView.context.getDrawable(R.drawable.background_movie_selected)
+                movieItemView.setBackgroundResource(R.drawable.background_movie_selected)
+            } else {
+//                itemView.background = null
+                movieItemView.setBackgroundResource(R.color.white)
+            }
+            if (movie.isExpanded) {
+                mMovieDesc.ellipsize = null
+                mMovieDesc.maxLines = Int.MAX_VALUE
+                mMovieTitle.ellipsize = null
+                mMovieTitle.maxLines = Int.MAX_VALUE
+            } else {
+                mMovieDesc.maxLines = 3
+                mMovieDesc.ellipsize = TextUtils.TruncateAt.END
+                mMovieTitle.maxLines = 1
+                mMovieTitle.ellipsize = TextUtils.TruncateAt.END
+            }
 
             Glide
                 .with(context)
@@ -187,17 +215,26 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
                 .transition(withCrossFade())
                 .into(mPosterImg)
 
-            itemView.movie_linear_layout.setOnClickListener {
-                if (lastClickedMovieDescription != null &&
-                    lastClickedMovieDescription != mMovieDesc &&
-                    lastClickedMovieDescription!!.isExpanded) {
-                    lastClickedMovieDescription!!.toggle()
+            movieItemView.movie_linear_layout.setOnClickListener {
+                if (lastClickedMoviePosition != -1 &&
+                    lastClickedMoviePosition != adapterPosition &&
+                    movieResults[lastClickedMoviePosition].isExpanded) {
+                    movieResults[lastClickedMoviePosition].isExpanded = false
                 }
-                mMovieDesc.toggle()
-                lastClickedMovieDescription = mMovieDesc
+                movieResults[adapterPosition].isExpanded = !movieResults[adapterPosition].isExpanded
+                lastClickedMoviePosition = adapterPosition
+                notifyDataSetChanged()
+            }
+
+            if (onItemLongClickListener != null) {
+                movieItemView.movie_linear_layout.setOnLongClickListener {
+                    onItemLongClickListener!!.onItemLongClick(adapterPosition)
+                    true
+                }
             }
         }
 
+        @SuppressLint("InflateParams")
         fun showDialogPoster(movie: Movie) {
             val builder = AlertDialog.Builder(context/*, R.style.TransparentDialog*/)
             val inflater: LayoutInflater = (context as AppCompatActivity).layoutInflater
@@ -221,6 +258,7 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
                             isFirstResource: Boolean
                         ): Boolean { // image ready, hide progress now
 //                            mProgress.visibility = View.GONE
+                            dialogLayout.poster_progress.visibility = View.GONE
                             Log.e("onResourceReadyyyy", model.toString())
                             Log.e("onResourceReadyyyy", "id: ${movie.id}\ttitle: ${movie.title}\t path: ${movie.posterPath}")
 //                            dialog.window!!.setLayout(resource!!.intrinsicWidth, resource!!.intrinsicHeight)
@@ -254,6 +292,10 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
 
     private inner class LoadingVH(itemView: View?) :
         RecyclerView.ViewHolder(itemView!!)
+
+    interface OnItemLongClickListener {
+        fun onItemLongClick(position: Int)
+    }
 
     companion object {
         private const val ITEM = 0

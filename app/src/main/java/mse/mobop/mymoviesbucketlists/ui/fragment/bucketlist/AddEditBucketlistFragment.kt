@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_add_edit_bucketlist.*
 import kotlinx.android.synthetic.main.fragment_add_edit_bucketlist.view.*
 import mse.mobop.mymoviesbucketlists.*
-import mse.mobop.mymoviesbucketlists.adapters.SearchUserAdapter
+import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.SearchUserAdapter
 import mse.mobop.mymoviesbucketlists.firestore.UserFirestore
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
 import mse.mobop.mymoviesbucketlists.model.User

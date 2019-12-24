@@ -1,4 +1,4 @@
-package mse.mobop.mymoviesbucketlists.adapters
+package mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters
 
 import android.content.Context
 import android.view.LayoutInflater

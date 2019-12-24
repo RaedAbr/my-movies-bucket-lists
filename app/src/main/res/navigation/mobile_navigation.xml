@@ -73,5 +73,9 @@
         android:id="@+id/addMoviesFragment"
         android:name="mse.mobop.mymoviesbucketlists.ui.fragment.movie.AddMoviesFragment"
         tools:layout="@layout/fragment_add_movies"
-        android:label="AddMoviesFragment" />
+        android:label="AddMoviesFragment" >
+        <argument
+            android:name="bucketlistId"
+            app:argType="string" />
+    </fragment>
 </navigation>

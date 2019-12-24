@@ -5,11 +5,20 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center">
 
+    <ProgressBar
+        android:id="@+id/poster_progress"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:theme="@style/CircularProgress" />
+
     <ImageView
         android:id="@+id/movie_poster_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/movie_poster" />
 
 </LinearLayout>

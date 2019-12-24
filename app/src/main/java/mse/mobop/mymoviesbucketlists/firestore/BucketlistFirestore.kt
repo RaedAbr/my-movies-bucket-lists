@@ -4,12 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.*
 import mse.mobop.mymoviesbucketlists.utils.BUCKETLIST_COLLECTION
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
+import mse.mobop.mymoviesbucketlists.model.Movie
+import kotlin.collections.ArrayList
 
 object BucketlistFirestore {
     private val firestoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
@@ -90,6 +89,16 @@ object BucketlistFirestore {
             .addOnFailureListener {
                 Log.e("bucketlist",  bucketlist.id + " Error writing document")
             }
+    }
+
+    fun updateMoviesList(bucketlistId: String, movies: ArrayList<Movie>) {
+        val array = arrayOfNulls<Movie>(movies.size)
+        movies.toArray(array)
+
+        bucketlistsCollRef.document(bucketlistId)
+            .update("movies", FieldValue.arrayUnion(*array))
+            .addOnSuccessListener { Log.e("updateMoviesList", "Movies successfully added!") }
+            .addOnFailureListener { e -> Log.e("updateMoviesList", "Error adding movies", e) }
     }
 
     fun stopListener(id: String) {

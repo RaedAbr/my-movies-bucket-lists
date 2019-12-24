@@ -1,15 +1,13 @@
 package mse.mobop.mymoviesbucketlists.ui.recyclerview
 
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 
-abstract class PaginationScrollListener(var layoutManager: LinearLayoutManager) :
+abstract class MoviesPaginationScrollListener(var layoutManager: LinearLayoutManager) :
     RecyclerView.OnScrollListener() {
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        Log.e("PaginationScrollListener", "isloading: $isLoading \t isLastPage: $isLastPage")
         super.onScrolled(recyclerView, dx, dy)
         val visibleItemCount = layoutManager.childCount
         val totalItemCount = layoutManager.itemCount

@@ -44,4 +44,8 @@
     <string name="no_poster">No poster</string>
     <string name="top_rated_movies_from_themoviedb_org">Top rated movies (from themoviedb.org)</string>
     <string name="results_for">Results for:</string>
+    <string name="movie_decritpion_sample">Nowadays, user engagement is considered one of the most
+        for the success of your app. Nowadays, user engagement is considered one of the most
+        important metrics for the success of your app. Nowadays, user engagement is considered one
+        of the mostimportant metrics for the success of your app</string>
 </resources>

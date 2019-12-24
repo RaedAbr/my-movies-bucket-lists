@@ -1,5 +1,6 @@
 package mse.mobop.mymoviesbucketlists.model
 
+import com.google.firebase.firestore.Exclude
 import com.google.gson.annotations.SerializedName
 
 data class Movie(
@@ -16,5 +17,7 @@ data class Movie(
     @SerializedName("title") var title : String? = "",
     @SerializedName("vote_average") val voteAverage : Double? = 0.0,
     @SerializedName("overview") val overview : String? = "",
-    @SerializedName("release_date") val releaseDate : String? = ""
+    @SerializedName("release_date") val releaseDate : String? = "",
+    @get:Exclude var isSelected: Boolean = false,
+    @get:Exclude var isExpanded: Boolean = false
 )
