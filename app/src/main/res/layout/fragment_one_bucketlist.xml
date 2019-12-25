@@ -7,50 +7,73 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragment.bucketlist.OneBucketlistFragment">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        style="@style/Fragment"
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/linearLayout"
+            style="@style/Fragment"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
+            android:orientation="vertical"
+            android:elevation="4dp"
+            android:background="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/created_by"
-                android:layout_marginEnd="5dp"
-                style="@style/Bucketlist.CreatedBy" />
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Bucketlist.CreatedBy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:text="@string/created_by" />
+
+                <TextView
+                    android:id="@+id/bucketlist_creator"
+                    style="@style/Bucketlist.CreatedBy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/creator" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/bucketlist_date"
+                    style="@style/Bucketlist.DateTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:text="@string/_23_11_2019" />
+            </LinearLayout>
+
             <TextView
-                android:id="@+id/bucketlist_creator"
+                android:id="@+id/bucketlist_shared_with"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/creator"
-                style="@style/Bucketlist.CreatedBy"/>
+                android:singleLine="false"
+                android:text="@string/shared_with" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <include
+            layout="@layout/recycler_bucketlist_movies"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout"/>
 
-            <TextView
-                android:id="@+id/bucketlist_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/_23_11_2019"
-                style="@style/Bucketlist.DateTime"
-                android:layout_marginEnd="5dp"/>
-        </LinearLayout>
-        <TextView
-            android:id="@+id/bucketlist_shared_with"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="false"
-            android:text="@string/shared_with"/>
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_movies_fab"

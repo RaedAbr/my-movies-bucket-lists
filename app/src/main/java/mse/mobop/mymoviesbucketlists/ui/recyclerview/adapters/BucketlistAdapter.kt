@@ -73,16 +73,16 @@ class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private v
         fun onDataChaneged(itemCount: Int)
     }
 
-    inner class BucketlistHolder(itemView: View, private val type: Type): RecyclerView.ViewHolder(itemView) {
+    inner class BucketlistHolder(private val view: View, private val type: Type): RecyclerView.ViewHolder(view) {
         fun bind(bucketlist: Bucketlist) {
-            itemView.bucketlist_name.text = bucketlist.name
-            itemView.bucketlist_date.text = dateConverter(bucketlist.creationTimestamp ?: Timestamp(Date()))
+            view.bucketlist_name.text = bucketlist.name
+            view.bucketlist_date.text = dateConverter(bucketlist.creationTimestamp ?: Timestamp(Date()))
             if (type == Type.SHARED) {
-                itemView.bucketlist_creator.text = bucketlist.createdBy!!.name
+                view.bucketlist_creator.text = bucketlist.createdBy!!.name
             }
 
             if (onItemClicklistener != null) {
-                itemView.setOnClickListener {
+                view.setOnClickListener {
                     if (adapterPosition != RecyclerView.NO_POSITION) {
                         onItemClicklistener!!.onItemClick(snapshots.getSnapshot(adapterPosition), adapterPosition)
                     }

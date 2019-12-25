@@ -4,28 +4,35 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.inputmethod.EditorInfo
-import android.widget.EditText
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_add_movies.*
 import kotlinx.android.synthetic.main.fragment_add_movies.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.model.Movie
 import mse.mobop.mymoviesbucketlists.model.MoviesSearchResult
+import mse.mobop.mymoviesbucketlists.model.User
 import mse.mobop.mymoviesbucketlists.tmdapi.MovieApi
 import mse.mobop.mymoviesbucketlists.tmdapi.MovieService
 import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
+import mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist.BucketlistFragment
 import mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist.BucketlistViewModel
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.MoviesPaginationScrollListener
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.MoviesPaginationAdapter
+import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.ViewPagerAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,12 +42,14 @@ import retrofit2.Response
  * A simple [Fragment] subclass.
  */
 class AddMoviesFragment: Fragment() {
-    private val bucketlistViewModel = BucketlistViewModel()
+    private lateinit var bucketlistViewModel: BucketlistViewModel
+    private var selectedMovies: ArrayList<Movie> = ArrayList()
 
     private var titleListener: OnNavigatingToFragmentListener? = null
 
-    private var adapter: MoviesPaginationAdapter? = null
-    private var linearLayoutManager: LinearLayoutManager? = null
+    private var recyclerAdapter: MoviesPaginationAdapter? = null
+
+//    private var viewPagerAdapter: ViewPagerAdapter? = null
 
     private var query: String = ""
 
@@ -86,6 +95,25 @@ class AddMoviesFragment: Fragment() {
             titleListener!!.onNavigatingToFragment(getString(R.string.add_movies))
         }
 
+        val bandle = AddMoviesFragmentArgs.fromBundle(arguments!!)
+        val bucketlistId = bandle.bucketlistId
+        bucketlistViewModel = BucketlistViewModel(bucketlistId)
+        bucketlistViewModel.bucketlist.observe(this, Observer {
+            if (it == null) { // this means that the data has been deleted by another user
+                Toast.makeText(context, "Bucketlist has been deleted by the owner!", Toast.LENGTH_SHORT).show()
+                activity!!.onBackPressed()
+            } else {
+                if (recyclerAdapter != null) {
+                    recyclerAdapter!!.setMoviesAlreadyAdded(it.movies as ArrayList<Movie>)
+                }
+            }
+        })
+
+//        val viewPager: ViewPager = root.viewpager
+//        setupViewPager(viewPager)
+//        val tabLayout: TabLayout = root.tabs
+//        tabLayout.setupWithViewPager(viewPager)
+
         progressBar = root.main_progress
 
         setUpSearchView(root)
@@ -94,6 +122,13 @@ class AddMoviesFragment: Fragment() {
 
         return root
     }
+
+//    private fun setupViewPager(viewPager: ViewPager) {
+//        viewPagerAdapter = ViewPagerAdapter(childFragmentManager)
+//        viewPagerAdapter!!.addFragment(BucketlistFragment(), "Fragment1")
+//        viewPagerAdapter!!.addFragment(BucketlistFragment(), "Fragment2")
+//        viewPager.adapter = viewPagerAdapter
+//    }
 
     private fun setUpSearchView(root: View?) {
         val searchView: SearchView = root!!.movie_search
@@ -127,23 +162,31 @@ class AddMoviesFragment: Fragment() {
     private fun setUpMoviesRecyclerView(root: View) {
         recyclerView = root.main_recycler
 
-        adapter = MoviesPaginationAdapter(activity!!)
-        adapter!!.setOnItemLongClickListener(object: MoviesPaginationAdapter.OnItemLongClickListener{
+        recyclerAdapter = MoviesPaginationAdapter(activity!!)
+        recyclerAdapter!!.setOnItemLongClickListener(object: MoviesPaginationAdapter.OnItemLongClickListener{
             override fun onItemLongClick(position: Int) {
                 Log.e("onItemLongClick", "$position")
-                val movie = adapter!!.getItem(position)
+                val movie = recyclerAdapter!!.getItem(position)
                 movie.isSelected = !movie.isSelected
-                adapter!!.notifyDataSetChanged()
+                if (movie.isSelected) {
+                    selectedMovies.add(movie)
+                } else {
+                    selectedMovies.remove(movie)
+                }
+                recyclerAdapter!!.notifyDataSetChanged()
+
+                Snackbar.make(root, "${selectedMovies.size} movies selected", Snackbar.LENGTH_SHORT)
+                    .show()
             }
 
         })
 
-        linearLayoutManager = LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
+        val linearLayoutManager = LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
         recyclerView!!.layoutManager = linearLayoutManager
         recyclerView!!.itemAnimator = DefaultItemAnimator()
-        recyclerView!!.adapter = adapter
+        recyclerView!!.adapter = recyclerAdapter
 
-        moviesPaginationScrollListener = object: MoviesPaginationScrollListener(linearLayoutManager!!) {
+        moviesPaginationScrollListener = object: MoviesPaginationScrollListener(linearLayoutManager) {
             override fun loadMoreItems() {
                 this@AddMoviesFragment.isLoading = true
                 currentPage += 1
@@ -153,18 +196,6 @@ class AddMoviesFragment: Fragment() {
         }
 
         recyclerView!!.addOnScrollListener(moviesPaginationScrollListener)
-
-//        val selectSwipeController = SelectSwipeController(ItemTouchHelper.LEFT)
-//        selectSwipeController.setOnSwipeReleasedAction(object : OnSwipeReleasedAction {
-//            override fun onSwipeReleased(position: Int) {
-//                Log.e("onSwipeReleased", "$position")
-//                val movie = adapter!!.getItem(position)
-//                movie.isSelected = !movie.isSelected
-//                adapter!!.notifyDataSetChanged()
-//            }
-//        })
-//
-//        ItemTouchHelper(selectSwipeController).attachToRecyclerView(recyclerView)
 
         //init service and load data
         movieService = MovieApi.client!!.create(MovieService::class.java)
@@ -190,10 +221,10 @@ class AddMoviesFragment: Fragment() {
                 val results: List<Movie> = moviesSearchResult.results!!
                 progressBar!!.visibility = View.GONE
 
-                adapter!!.addAll(results)
+                recyclerAdapter!!.addAll(results)
                 if (currentPage < totalPageCount) {
                     currentPage += 1
-                    adapter!!.addLoadingFooter()
+                    recyclerAdapter!!.addLoadingFooter()
                 } else {
                     isLastPage = true
                 }
@@ -218,14 +249,14 @@ class AddMoviesFragment: Fragment() {
                 call: Call<MoviesSearchResult?>?,
                 response: Response<MoviesSearchResult?>?
             ) {
-                adapter!!.removeLoadingFooter()
+                recyclerAdapter!!.removeLoadingFooter()
                 isLoading = false
                 val moviesSearchResult: MoviesSearchResult = response!!.body()!!
                 val results: List<Movie>? = moviesSearchResult.results!!
                 Log.e("currentPage", currentPage.toString())
                 Log.e("totalPageCount", totalPageCount.toString())
-                adapter!!.addAll(results!!)
-                if (currentPage < totalPageCount) adapter!!.addLoadingFooter() else isLastPage = true
+                recyclerAdapter!!.addAll(results!!)
+                if (currentPage < totalPageCount) recyclerAdapter!!.addLoadingFooter() else isLastPage = true
             }
 
             override fun onFailure(
@@ -252,7 +283,7 @@ class AddMoviesFragment: Fragment() {
     }
 
     private fun resetRecyclerView() {
-        adapter!!.clear()
+        recyclerAdapter!!.clear()
         isLoading = false
         isLastPage = false
         currentPage = PAGE_START
@@ -274,14 +305,18 @@ class AddMoviesFragment: Fragment() {
     }
 
     private fun addMovies(): Boolean {
-        val bandle = AddMoviesFragmentArgs.fromBundle(arguments!!)
-        val bucketlistId = bandle.bucketlistId
-        val selectedMovies = adapter!!.getSelectedItems() as ArrayList<Movie>
+        if (selectedMovies.size == 0) {
+            Toast.makeText(context, "Please select one or more movies!", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        selectedMovies = selectedMovies.map {
+            val currenUser = FirebaseAuth.getInstance().currentUser
+            it.addedBy = User(currenUser!!.uid, currenUser.displayName!!)
+            it
+        } as ArrayList<Movie>
 
-        bucketlistViewModel.addMoviesToBucketlist(bucketlistId, selectedMovies)
+        bucketlistViewModel.addMoviesToBucketlist(bucketlistViewModel.bucketlist.value!!, selectedMovies)
 
-//        val direction = AddMoviesFragmentDirections
-//            .actionAddMoviesFragmentToOneBucketlistFragment(bucketlistId)
         findNavController().popBackStack()
         return true
     }

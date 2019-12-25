@@ -18,6 +18,7 @@ data class Movie(
     @SerializedName("vote_average") val voteAverage : Double? = 0.0,
     @SerializedName("overview") val overview : String? = "",
     @SerializedName("release_date") val releaseDate : String? = "",
+    var addedBy: User? = null,
     @get:Exclude var isSelected: Boolean = false,
     @get:Exclude var isExpanded: Boolean = false
 )

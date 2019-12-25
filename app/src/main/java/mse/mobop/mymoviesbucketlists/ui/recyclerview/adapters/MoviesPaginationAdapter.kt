@@ -26,10 +26,15 @@ import kotlinx.android.synthetic.main.alert_dialog_movie_poster.view.*
 import kotlinx.android.synthetic.main.item_list_movie.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.model.Movie
+import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG
+import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG_POSTER
+import mse.mobop.mymoviesbucketlists.utils.ITEM
+import mse.mobop.mymoviesbucketlists.utils.LOADING
 
 
 class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private var movieResults: ArrayList<Movie> = ArrayList()
+    private var moviesAlreadyAdded: ArrayList<Movie> = ArrayList()
     private var isLoadingAdded = false
     private var lastClickedMoviePosition: Int = -1
     private var onItemLongClickListener: OnItemLongClickListener? = null
@@ -56,7 +61,7 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
         when (getItemViewType(position)) {
             ITEM -> {
                 val movieVH = holder as MovieVH
-                movieVH.bind(movie, context)
+                movieVH.bind(movie)
             }
             LOADING -> { }
         }
@@ -79,34 +84,22 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
     */
     fun add(mc: Movie) {
         movieResults.add(mc)
-//        notifyItemInserted(movieResults.size - 1)
         notifyDataSetChanged()
     }
 
     fun addAll(mcList: List<Movie>) {
-//        for (mc in mcList) {
-//            add(mc)
-//        }
-        movieResults.addAll(mcList)
+        var filteredList = mcList
+        moviesAlreadyAdded.forEach { existedMovie ->
+            filteredList = filteredList.filter { it.id != existedMovie.id}
+        }
+        movieResults.addAll(filteredList)
         notifyDataSetChanged()
     }
-
-//    private fun remove(city: Movie?) {
-//        val position = movieResults.indexOf(city)
-//        if (position > -1) {
-//            movieResults.removeAt(position)
-////            notifyItemRemoved(position)
-//            notifyDataSetChanged()
-//        }
-//    }
 
     fun clear() {
         isLoadingAdded = false
         movieResults.clear()
         notifyDataSetChanged()
-//        while (itemCount > 0) {
-//            remove(getItem(0))
-//        }
     }
 
     val isEmpty: Boolean
@@ -120,9 +113,7 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
     fun removeLoadingFooter() {
         isLoadingAdded = false
         val position = movieResults.size - 1
-//        val item: Movie = getItem(position)
         movieResults.removeAt(position)
-//        notifyItemRemoved(position)
         notifyDataSetChanged()
     }
 
@@ -130,8 +121,8 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
         return movieResults[position]
     }
 
-    fun getSelectedItems(): List<Movie> {
-        return movieResults.filter { movie -> movie.isSelected }
+    fun setMoviesAlreadyAdded(movies: ArrayList<Movie>) {
+        this.moviesAlreadyAdded = movies
     }
     /*
    View Holders
@@ -149,7 +140,7 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
         internal val mNoPoster: TextView = movieItemView.movie_no_poster
 
         @SuppressLint("DefaultLocale")
-        fun bind(movie: Movie, context: Context) {
+        fun bind(movie: Movie) {
             mMovieTitle.text = movie.title
             if (movie.releaseDate!!.length > 4)
                 mYear.text = (movie.releaseDate.substring(0, 4) // we want the year only
@@ -177,7 +168,7 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
             }
 
             Glide
-                .with(context)
+                .with(movieItemView.context)
                 .load(BASE_URL_IMG + movie.posterPath)
                 .listener(object : RequestListener<Drawable> {
                     override fun onResourceReady(
@@ -295,12 +286,5 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
 
     interface OnItemLongClickListener {
         fun onItemLongClick(position: Int)
-    }
-
-    companion object {
-        private const val ITEM = 0
-        private const val LOADING = 1
-        private const val BASE_URL_IMG = "https://image.tmdb.org/t/p/w154"
-        private const val BASE_URL_IMG_POSTER = "https://image.tmdb.org/t/p/w342"
     }
 }

@@ -18,8 +18,8 @@ class BucketlistViewModel(id: String? = null) {
 
     fun insert(bucketlist: Bucketlist) = BucketlistFirestore.createBucketlist(bucketlist)
     fun update(bucketlist: Bucketlist) = BucketlistFirestore.updateBucketlist(bucketlist)
-    fun addMoviesToBucketlist(bucketlistId: String, movies: ArrayList<Movie>) =
-        BucketlistFirestore.updateMoviesList(bucketlistId, movies)
+    fun addMoviesToBucketlist(bucketlist: Bucketlist, movies: ArrayList<Movie>) =
+        BucketlistFirestore.updateMoviesList(bucketlist.id!!, movies)
 
     fun stopSnapshotListener() {
         if (bucketlist.value != null) {

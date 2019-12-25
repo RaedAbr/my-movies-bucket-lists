@@ -82,6 +82,7 @@ class BucketlistFragment : Fragment() {
         recyclerViewOwned.layoutManager = LinearLayoutManager(view.context)
         recyclerViewOwned.setHasFixedSize(false)
         recyclerViewOwned.adapter = recyclerAdapterOwned
+        recyclerViewOwned.isNestedScrollingEnabled = false
 
         ItemTouchHelper(object: DeleteSwipeController(ItemTouchHelper.RIGHT) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -109,6 +110,7 @@ class BucketlistFragment : Fragment() {
         recyclerViewShared.layoutManager = LinearLayoutManager(view.context)
         recyclerViewShared.setHasFixedSize(false)
         recyclerViewShared.adapter = recyclerAdapterShared
+        recyclerViewShared.isNestedScrollingEnabled = false
 
         recyclerAdapterShared.setOnItemClickListener(OnBucketlistItemClickListener())
 

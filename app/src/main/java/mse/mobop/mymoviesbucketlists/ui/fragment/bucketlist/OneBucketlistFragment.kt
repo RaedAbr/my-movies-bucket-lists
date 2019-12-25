@@ -1,6 +1,5 @@
 package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 
-
 import android.content.Context
 import android.os.Bundle
 import android.view.*
@@ -9,13 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_one_bucketlist.*
+import kotlinx.android.synthetic.main.recycler_bucketlist_movies.view.*
 import mse.mobop.mymoviesbucketlists.utils.BucketlistAction
 
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
+import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.BucketlistMoviesAdapter
 import mse.mobop.mymoviesbucketlists.utils.dateConverter
 import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
 
@@ -26,6 +28,8 @@ class OneBucketlistFragment : Fragment() {
     private lateinit var bucketlistViewModel: BucketlistViewModel
     private lateinit var bucketlistId: String
     private var titleListener: OnNavigatingToFragmentListener? = null
+
+    private lateinit var bucketlistMoviesAdapter: BucketlistMoviesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +58,8 @@ class OneBucketlistFragment : Fragment() {
                 )
             findNavController().navigate(direction)
         }
+
+        setUpRecyclerMoviesList(root)
 
         bucketlistViewModel = BucketlistViewModel(bucketlistId)
         bucketlistViewModel.bucketlist.observe(this, Observer {
@@ -87,10 +93,19 @@ class OneBucketlistFragment : Fragment() {
                         }
                     }
                 }
+                bucketlistMoviesAdapter.setMovies(it.movies)
             }
         })
 
         return root
+    }
+
+    private fun setUpRecyclerMoviesList(root: View) {
+        bucketlistMoviesAdapter = BucketlistMoviesAdapter()
+        val recyclerView = root.recycler_bucketlist_movies
+        recyclerView.layoutManager = LinearLayoutManager(root.context)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.adapter = bucketlistMoviesAdapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
