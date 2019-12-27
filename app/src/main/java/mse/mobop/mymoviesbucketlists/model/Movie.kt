@@ -1,5 +1,6 @@
 package mse.mobop.mymoviesbucketlists.model
 
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Exclude
 import com.google.gson.annotations.SerializedName
 
@@ -19,6 +20,9 @@ data class Movie(
     @SerializedName("overview") val overview : String? = "",
     @SerializedName("release_date") val releaseDate : String? = "",
     var addedBy: User? = null,
+    var addedTimestamp: Timestamp? = null,
+    var isWatched: Boolean = false,
+    var watchedTimestamp: Timestamp? = null,
     @get:Exclude var isSelected: Boolean = false,
     @get:Exclude var isExpanded: Boolean = false
 )

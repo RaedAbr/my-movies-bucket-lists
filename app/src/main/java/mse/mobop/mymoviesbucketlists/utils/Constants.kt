@@ -15,7 +15,6 @@ const val BUCKETLIST_COLLECTION = "bucketlists"
 const val USER_COLLECTION = "users"
 
 // Other constants
-const val ITEM = 0
-const val LOADING = 1
 const val BASE_URL_IMG = "https://image.tmdb.org/t/p/w154"
 const val BASE_URL_IMG_POSTER = "https://image.tmdb.org/t/p/w500"
+const val BASE_URL_IMG_BACKDROP = "https://image.tmdb.org/t/p/w780"

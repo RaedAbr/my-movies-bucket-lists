@@ -14,14 +14,14 @@
 
         <LinearLayout
             android:id="@+id/linearLayout"
-            style="@style/Fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:elevation="4dp"
-            android:background="@color/white"
+            android:background="@color/colorHeader"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:padding="10dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -33,6 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
+                    android:textColor="@color/white"
                     android:text="@string/created_by" />
 
                 <TextView
@@ -40,6 +41,7 @@
                     style="@style/Bucketlist.CreatedBy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="@string/creator" />
             </LinearLayout>
 
@@ -53,7 +55,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
-                    android:text="@string/_23_11_2019" />
+                    android:text="@string/_23_11_2019"
+                    android:drawableStart="@drawable/ic_time_drawable"/>
             </LinearLayout>
 
             <TextView
@@ -61,17 +64,41 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="false"
+                android:textColor="@color/lightGray"
                 android:text="@string/shared_with" />
         </LinearLayout>
 
-        <include
-            layout="@layout/recycler_bucketlist_movies"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout"/>
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+            <include
+                layout="@layout/recycler_bucketlist_movies"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
+            <TextView
+                android:id="@+id/bucketlist_no_movies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_movies_in_this_bucket_list"
+                android:layout_margin="8dp"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
+            <ProgressBar
+                android:id="@+id/bucketlist_movies_progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

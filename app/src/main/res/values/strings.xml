@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Movies Bucketlists</string>
+    <string name="app_name">My Movies Bucket lists</string>
     <string name="nav_header_title">@string/app_name</string>
     <string name="nav_header_subtitle">What movie will I watch next?</string>
     <string name="nav_header_desc">Navigation header</string>
@@ -13,9 +13,10 @@
     <string name="menu_send">Send</string>
     <string name="list_name">List name</string>
     <string name="created_by">Created by</string>
+    <string name="by">by</string>
     <string name="creator">Creator</string>
-    <string name="new_bucketlist">New bucketlist</string>
-    <string name="edit_bucketlist">Edit bucketlist</string>
+    <string name="new_bucket_list">New bucket list</string>
+    <string name="edit_bucket_list">Edit bucket list</string>
     <string name="save">Save</string>
     <string name="_23_11_2019">23.11.2019 – 04:04:09</string>
     <string name="signout">Signout</string>
@@ -30,7 +31,7 @@
     <string name="username">Username</string>
     <string name="snackbar_undo">Undo</string>
     <string name="shared_with">Shared with:</string>
-    <string name="bucketlist_not_shared">This bucketlist is not shared</string>
+    <string name="bucketlist_not_shared">Hasn\'t been shared yet</string>
     <string name="me">me</string>
     <string name="created_by_me">Created by me</string>
     <string name="shared_with_me">Shared with me</string>
@@ -49,4 +50,14 @@
         important metrics for the success of your app. Nowadays, user engagement is considered one
         of the mostimportant metrics for the success of your app</string>
     <string name="added_by">Added by</string>
+    <string name="no_backdrop_available">No backdrop available</string>
+    <string name="movie_title">Movie title</string>
+    <string name="snackbar_text">Bucket list deleted</string>
+    <string name="you_have_no_bucket_list">You have no bucket list</string>
+    <string name="no_bucket_lists_shared_with_you">No bucket lists shared with you</string>
+    <string name="no_movies_in_this_bucket_list">No movies in this bucket list</string>
+    <string name="delete">DELETE</string>
+    <string name="cancel">CANCEL</string>
+    <string name="remove_bucketlist_dialog_title">Remove bucket list?</string>
+    <string name="remove_bucketlist_dialog_message">By deleting this bucket list, it will be no longer available to users you share with.</string>
 </resources>

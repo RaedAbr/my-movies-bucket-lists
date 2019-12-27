@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     style="@style/BucketlistCard">
@@ -8,44 +8,63 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:padding="8dp">
 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/bucketlist_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/list_name"
+                style="@style/Bucketlist.Name"
+                android:ellipsize="end"
+                android:maxLines="1"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/bucketlist_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/_23_11_2019"
+                    style="@style/Bucketlist.DateTime"
+                    android:layout_marginEnd="5dp"
+                    android:drawableStart="@drawable/ic_time_drawable"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/by"
+                    android:layout_marginEnd="5dp"
+                    style="@style/Bucketlist.DateTime" />
+                <TextView
+                    android:id="@+id/bucketlist_creator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/creator"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    style="@style/Bucketlist.DateTime"/>
+            </LinearLayout>
+        </LinearLayout>
+
         <TextView
-            android:id="@+id/bucketlist_name"
+            android:id="@+id/bucketlist_movies_count"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/list_name"
-            style="@style/Bucketlist.Name"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/created_by"
-                android:layout_marginEnd="5dp"
-                style="@style/Bucketlist.CreatedBy" />
-            <TextView
-                android:id="@+id/bucketlist_creator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/creator"
-                style="@style/Bucketlist.CreatedBy"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/bucketlist_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/_23_11_2019"
-                style="@style/Bucketlist.DateTime"
-                android:layout_marginEnd="5dp"/>
-        </LinearLayout>
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            tools:text="8"
+            android:drawableEnd="@drawable/ic_movie_drawable"
+            style="@style/Bucketlist.CreatedBy"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

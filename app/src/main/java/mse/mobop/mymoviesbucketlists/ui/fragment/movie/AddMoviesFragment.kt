@@ -15,9 +15,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayout
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_add_movies.*
 import kotlinx.android.synthetic.main.fragment_add_movies.view.*
@@ -28,14 +27,14 @@ import mse.mobop.mymoviesbucketlists.model.User
 import mse.mobop.mymoviesbucketlists.tmdapi.MovieApi
 import mse.mobop.mymoviesbucketlists.tmdapi.MovieService
 import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
-import mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist.BucketlistFragment
 import mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist.BucketlistViewModel
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.MoviesPaginationScrollListener
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.MoviesPaginationAdapter
-import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.ViewPagerAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -98,9 +97,9 @@ class AddMoviesFragment: Fragment() {
         val bandle = AddMoviesFragmentArgs.fromBundle(arguments!!)
         val bucketlistId = bandle.bucketlistId
         bucketlistViewModel = BucketlistViewModel(bucketlistId)
-        bucketlistViewModel.bucketlist.observe(this, Observer {
+        bucketlistViewModel.bucketlist.observe(viewLifecycleOwner, Observer {
             if (it == null) { // this means that the data has been deleted by another user
-                Toast.makeText(context, "Bucketlist has been deleted by the owner!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Bucket list has been deleted by the owner!", Toast.LENGTH_LONG).show()
                 activity!!.onBackPressed()
             } else {
                 if (recyclerAdapter != null) {
@@ -291,13 +290,13 @@ class AddMoviesFragment: Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        activity!!.menuInflater.inflate(R.menu.search_menu, menu)
+        activity!!.menuInflater.inflate(R.menu.save_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
-            R.id.action_add_movies -> {
+            R.id.action_save -> {
                 addMovies()
             }
             else -> super.onOptionsItemSelected(item)
@@ -312,6 +311,7 @@ class AddMoviesFragment: Fragment() {
         selectedMovies = selectedMovies.map {
             val currenUser = FirebaseAuth.getInstance().currentUser
             it.addedBy = User(currenUser!!.uid, currenUser.displayName!!)
+            it.addedTimestamp = Timestamp(Date())
             it
         } as ArrayList<Movie>
 

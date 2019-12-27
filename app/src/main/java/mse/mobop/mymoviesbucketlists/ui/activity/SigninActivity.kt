@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.View
@@ -21,6 +22,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.android.synthetic.main.activity_signin.*
+import kotlinx.android.synthetic.main.activity_signin.email_textview
+import kotlinx.android.synthetic.main.activity_signin.password_textview
 import mse.mobop.mymoviesbucketlists.utils.ARG_SIGN_IN_SUCCESSFULLY
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.utils.RC_GOOGLE_SIGN_IN
@@ -37,7 +40,8 @@ class SigninActivity: AppCompatActivity() {
         val ss = SpannableString(text)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                Toast.makeText(widget.context, "Clicked", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this@SigninActivity, SignupActivity::class.java))
+                finish()
             }
         }
         val displayedText = "Create one"
@@ -45,11 +49,7 @@ class SigninActivity: AppCompatActivity() {
         val endIndex = text.indexOf(displayedText) + displayedText.length
         ss.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         link_signup.text = ss
-
-        link_signup.setOnClickListener {
-            startActivity(Intent(this, SignupActivity::class.java))
-            finish()
-        }
+        link_signup.movementMethod = LinkMovementMethod.getInstance()
 
         signin_button.setOnClickListener { view ->
             val email = email_textview.text.toString().trim()
@@ -131,7 +131,7 @@ class SigninActivity: AppCompatActivity() {
                                 goToMainActivity()
                             } else {
                                 toggleProgressBar()
-                                Toast.makeText(this, "Google sign in failed:(", Toast.LENGTH_LONG)
+                                Toast.makeText(this, "Google sign in failed", Toast.LENGTH_LONG)
                                     .show()
                             }
                         }

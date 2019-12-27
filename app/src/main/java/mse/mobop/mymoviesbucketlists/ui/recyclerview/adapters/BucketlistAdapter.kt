@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.android.synthetic.main.item_bucketlist_shared.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
@@ -54,7 +53,7 @@ class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private v
 
     fun deleteItem(view: View, position: Int) {
         snapshots.getSnapshot(position).reference.delete()
-        Toast.makeText(view.context, "List deleted", Toast.LENGTH_SHORT).show()
+        Toast.makeText(view.context, "Bucket list deleted", Toast.LENGTH_SHORT).show()
     }
 
     fun setOnItemClickListener(onItemClickListener: OnItemClickListener) {
@@ -66,7 +65,7 @@ class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private v
     }
 
     interface OnItemClickListener {
-        fun onItemClick(documentSnapshot: DocumentSnapshot, position: Int)
+        fun onItemClick(bucketlistId: String)
     }
 
     interface OnDataChangedListener {
@@ -76,7 +75,11 @@ class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private v
     inner class BucketlistHolder(private val view: View, private val type: Type): RecyclerView.ViewHolder(view) {
         fun bind(bucketlist: Bucketlist) {
             view.bucketlist_name.text = bucketlist.name
-            view.bucketlist_date.text = dateConverter(bucketlist.creationTimestamp ?: Timestamp(Date()))
+            if (bucketlist.creationTimestamp != null) {
+                view.bucketlist_date.text = dateConverter(bucketlist.creationTimestamp!!)
+            }
+            view.bucketlist_movies_count.text = bucketlist.movies.size.toString()
+
             if (type == Type.SHARED) {
                 view.bucketlist_creator.text = bucketlist.createdBy!!.name
             }
@@ -84,7 +87,7 @@ class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private v
             if (onItemClicklistener != null) {
                 view.setOnClickListener {
                     if (adapterPosition != RecyclerView.NO_POSITION) {
-                        onItemClicklistener!!.onItemClick(snapshots.getSnapshot(adapterPosition), adapterPosition)
+                        onItemClicklistener!!.onItemClick(snapshots[adapterPosition].id!!)
                     }
                 }
             }

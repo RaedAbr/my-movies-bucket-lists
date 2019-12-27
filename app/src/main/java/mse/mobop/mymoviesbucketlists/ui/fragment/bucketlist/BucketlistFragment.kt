@@ -1,9 +1,12 @@
 package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 
 import android.content.Context
+import android.content.DialogInterface
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.*
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -11,18 +14,20 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.android.synthetic.main.fragment_bucketlists.view.*
 import kotlinx.android.synthetic.main.recycler_bucketlists_owned.view.*
 import kotlinx.android.synthetic.main.recycler_bucketlists_shared.view.*
 import mse.mobop.mymoviesbucketlists.R
-import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.BucketlistAdapter
 import mse.mobop.mymoviesbucketlists.firestore.BucketlistFirestore
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
+import mse.mobop.mymoviesbucketlists.ui.DeleteBucketlistAlertDialog
 import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
-import mse.mobop.mymoviesbucketlists.ui.recyclerview.DeleteSwipeController
+import mse.mobop.mymoviesbucketlists.ui.recyclerview.ItemSwipeController
+import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.BucketlistAdapter
+import mse.mobop.mymoviesbucketlists.utils.BucketlistAction
 import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
 
 
@@ -84,16 +89,44 @@ class BucketlistFragment : Fragment() {
         recyclerViewOwned.adapter = recyclerAdapterOwned
         recyclerViewOwned.isNestedScrollingEnabled = false
 
-        ItemTouchHelper(object: DeleteSwipeController(ItemTouchHelper.RIGHT) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                recyclerAdapterOwned.deleteItem(view, viewHolder.adapterPosition)
+        val swipeController = ItemSwipeController(object : ItemSwipeController.OnSwipedListener {
+            override fun onDeleteButtonClick(position: Int) {
+                DeleteBucketlistAlertDialog(this@BucketlistFragment.context!!,
+                    DialogInterface.OnClickListener { _, _ ->
+                        recyclerAdapterOwned.deleteItem(view, position)
+                    })
+                    .create()
+                    .show()
             }
-        }).attachToRecyclerView(recyclerViewOwned)
+
+            override fun onEditButtonClick(position: Int) {
+                val bucketlist = recyclerAdapterOwned.snapshots[position]
+                val direction = BucketlistFragmentDirections.actionBucketlistsFragmentToAddEditBucketlistFragment(
+                    fragmentTitle = R.string.edit_bucket_list,
+                    bucketlistId = bucketlist.id,
+                    action = BucketlistAction.EDIT
+                )
+                findNavController().navigate(direction)
+            }
+        })
+
+        val itemTouchhelper = ItemTouchHelper(swipeController)
+        itemTouchhelper.attachToRecyclerView(recyclerViewOwned)
+
+        recyclerViewOwned.addItemDecoration(object : ItemDecoration() {
+            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                swipeController.onDraw(c)
+            }
+        })
 
         recyclerAdapterOwned.setOnItemClickListener(OnBucketlistItemClickListener())
 
         recyclerAdapterOwned.setOnDataChangeListener(OnBucketlistChangeDataListener(
-            view.owned_header, view.owned_header_nbr
+            view.owned_header_nbr,
+            view.recycler_bucketlists_owned_progressbar,
+            view.recycler_owned_no_items,
+            view.owned_header_arrow,
+            view.owned_header
         ))
     }
 
@@ -115,32 +148,41 @@ class BucketlistFragment : Fragment() {
         recyclerAdapterShared.setOnItemClickListener(OnBucketlistItemClickListener())
 
         recyclerAdapterShared.setOnDataChangeListener(OnBucketlistChangeDataListener(
-            view.shared_header, view.shared_header_nbr
+            view.shared_header_nbr,
+            view.recycler_bucketlists_shared_progressbar,
+            view.recycler_shared_no_items,
+            view.shared_header_arrow,
+            view.shared_header
         ))
     }
 
     private inner class OnBucketlistItemClickListener: BucketlistAdapter.OnItemClickListener {
-        override fun onItemClick(documentSnapshot: DocumentSnapshot, position: Int) {
-            val bucketlist = documentSnapshot.toObject(Bucketlist::class.java)
-            if (bucketlist != null) {
-                val direction =
-                    BucketlistFragmentDirections.actionBucketlistsFragmentToOneBucketlistFragment(
-                        bucketlistId = bucketlist.id!!
-                    )
-                findNavController().navigate(direction)
-            }
+        override fun onItemClick(bucketlistId: String) {
+            val direction =
+                BucketlistFragmentDirections.actionBucketlistsFragmentToOneBucketlistFragment(
+                    bucketlistId = bucketlistId
+                )
+            findNavController().navigate(direction)
         }
     }
 
     private inner class OnBucketlistChangeDataListener(
-        private val recyclerHeader: LinearLayout,
-        private val headerNbr: TextView
+        private val headerNbr: TextView,
+        private val progressBar: ProgressBar,
+        private val noItemsTextView: TextView,
+        private val headerArrow: TextView,
+        private val headerLayout: LinearLayout
     ): BucketlistAdapter.OnDataChangedListener {
         override fun onDataChaneged(itemCount: Int) {
+            progressBar.visibility = View.GONE
             if (itemCount == 0) {
-                recyclerHeader.visibility = View.GONE
+                noItemsTextView.visibility = View.VISIBLE
+                headerArrow.visibility = View.GONE
+                headerLayout.isClickable = false
             } else {
-                recyclerHeader.visibility = View.VISIBLE
+                noItemsTextView.visibility = View.GONE
+                headerArrow.visibility = View.VISIBLE
+                headerLayout.isClickable = true
             }
             headerNbr.text = itemCount.toString()
         }

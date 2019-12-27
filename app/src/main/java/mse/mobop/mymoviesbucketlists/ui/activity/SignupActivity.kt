@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.View
@@ -27,7 +28,9 @@ class SignupActivity: AppCompatActivity() {
         val ss = SpannableString(text)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                Toast.makeText(widget.context, "Clicked", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this@SignupActivity, SigninActivity::class.java))
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                finish()
             }
         }
         val displayedText = "Sign in"
@@ -35,12 +38,7 @@ class SignupActivity: AppCompatActivity() {
         val endIndex = text.indexOf(displayedText) + displayedText.length
         ss.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         link_signin.text = ss
-
-        link_signin.setOnClickListener {
-            startActivity(Intent(this, SigninActivity::class.java))
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-            finish()
-        }
+        link_signin.movementMethod = LinkMovementMethod.getInstance()
 
         signup_button.setOnClickListener {
             val username = username_textview.text.toString().trim()

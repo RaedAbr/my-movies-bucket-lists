@@ -27,11 +27,9 @@
 
             <ProgressBar
                 android:id="@+id/movie_progress"
-                style="@style/Widget.AppCompat.ProgressBar"
                 android:layout_width="@dimen/activity_margin"
                 android:layout_height="@dimen/activity_margin"
-                android:layout_gravity="center"
-                android:theme="@style/CircularProgress" />
+                android:layout_gravity="center" />
 
             <TextView
                 android:id="@+id/movie_no_poster"
@@ -71,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
-            android:drawableStart="@drawable/ic_added_by_resized"
+            android:drawableStart="@drawable/ic_added_by_drawable"
             android:text="@string/username"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

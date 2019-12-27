@@ -6,5 +6,5 @@
         android:color="@android:color/white" />
     <stroke
         android:width="2dip"
-        android:color="@color/colorSelected"/>
+        android:color="@color/colorPrimaryDark"/>
 </shape>

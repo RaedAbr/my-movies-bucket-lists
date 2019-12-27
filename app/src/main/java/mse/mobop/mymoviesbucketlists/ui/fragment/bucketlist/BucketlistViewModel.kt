@@ -26,4 +26,8 @@ class BucketlistViewModel(id: String? = null) {
             BucketlistFirestore.stopListener(bucketlist.value!!.id!!)
         }
     }
+
+    fun delete(bucketlistId: String) {
+        BucketlistFirestore.deleteBucketlist(bucketlistId)
+    }
 }

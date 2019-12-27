@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -12,7 +12,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/bottom_recycler_padding" >
 
             <LinearLayout
                 android:id="@+id/owned_header"
@@ -20,7 +21,7 @@
                 android:layout_height="25dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:background="@color/colorRecyclerHeader"
+                android:background="@color/colorHeader"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp">
                 <TextView
@@ -34,6 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
+                    tools:visibility="visible"
                     android:text="@string/_2"
                     android:textColor="@color/colorPrimaryDark"/>
                 <TextView
@@ -56,7 +58,7 @@
                 android:layout_height="25dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:background="@color/colorRecyclerHeader"
+                android:background="@color/colorHeader"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:layout_marginTop="1dp">
@@ -71,6 +73,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
+                    tools:visibility="visible"
                     android:text="@string/_2"
                     android:textColor="@color/colorPrimaryDark"/>
                 <TextView
@@ -85,6 +88,7 @@
             <include layout="@layout/recycler_bucketlists_shared"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"/>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

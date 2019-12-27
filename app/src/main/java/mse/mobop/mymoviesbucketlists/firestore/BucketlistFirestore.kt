@@ -101,7 +101,22 @@ object BucketlistFirestore {
             .addOnFailureListener { e -> Log.e("updateMoviesList", "Error adding movies", e) }
     }
 
-    fun stopListener(id: String) {
-        snapshotListenersMap.getValue(id).remove()
+    fun deleteBucketlist(bucketlistId: String) {
+        bucketlistsCollRef.document(bucketlistId).delete()
+    }
+
+    fun toggleIsMovieWatched(bucketlistId: String, movie: Movie) {
+        bucketlistsCollRef.document(bucketlistId)
+            .update("movies", FieldValue.arrayRemove(movie))
+        movie.apply {
+            isWatched = !isWatched
+        }
+        bucketlistsCollRef.document(bucketlistId)
+            .update("movies", FieldValue.arrayUnion(movie))
+
+    }
+
+    fun stopListener(bucketlistId: String) {
+        snapshotListenersMap.getValue(bucketlistId).remove()
     }
 }

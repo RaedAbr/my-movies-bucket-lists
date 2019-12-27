@@ -74,4 +74,5 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.0.1'
     implementation 'at.blogc:expandabletextview:1.0.5'
+    implementation 'com.github.bosphere.android-fadingedgelayout:fadingedgelayout:1.0.0'
 }

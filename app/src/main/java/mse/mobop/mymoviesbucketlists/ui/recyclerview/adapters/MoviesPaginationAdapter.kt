@@ -22,14 +22,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestListener
-import kotlinx.android.synthetic.main.alert_dialog_movie_poster.view.*
+import kotlinx.android.synthetic.main.dialog_movie_poster.view.*
 import kotlinx.android.synthetic.main.item_list_movie.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.model.Movie
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG_POSTER
-import mse.mobop.mymoviesbucketlists.utils.ITEM
-import mse.mobop.mymoviesbucketlists.utils.LOADING
 
 
 class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
@@ -101,9 +99,6 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
         movieResults.clear()
         notifyDataSetChanged()
     }
-
-    val isEmpty: Boolean
-        get() = itemCount == 0
 
     fun addLoadingFooter() {
         isLoadingAdded = true
@@ -229,7 +224,7 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
         fun showDialogPoster(movie: Movie) {
             val builder = AlertDialog.Builder(context/*, R.style.TransparentDialog*/)
             val inflater: LayoutInflater = (context as AppCompatActivity).layoutInflater
-            val dialogLayout: View = inflater.inflate(R.layout.alert_dialog_movie_poster, null)
+            val dialogLayout: View = inflater.inflate(R.layout.dialog_movie_poster, null)
 
             val dialog = builder.create()
             dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -286,5 +281,10 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
 
     interface OnItemLongClickListener {
         fun onItemLongClick(position: Int)
+    }
+
+    companion object {
+        private const val ITEM = 0
+        private const val LOADING = 1
     }
 }

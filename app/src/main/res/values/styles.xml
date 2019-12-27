@@ -50,8 +50,12 @@
         <item name="android:background">@color/white</item>
     </style>
     <style name="Bucketlist.Name" parent="TextAppearance.AppCompat.Light.SearchResult.Title" />
-    <style name="Bucketlist.CreatedBy" parent="TextAppearance.AppCompat.Light.SearchResult.Subtitle" />
-    <style name="Bucketlist.DateTime" parent="TextAppearance.AppCompat.Caption" />
+    <style name="Bucketlist.CreatedBy" parent="TextAppearance.AppCompat.Light.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/lightGray</item>
+    </style>
+    <style name="Bucketlist.DateTime" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">@color/lightGray</item>
+    </style>
 
     <style name="Toolbar" parent="@style/AppTheme.AppBarOverlay"/>
 
@@ -60,10 +64,6 @@
     </style>
 
     <style name="BucketlistAddEdit">AddEditBucketlist</style>
-
-    <style name="CircularProgress" parent="Theme.AppCompat.Light">
-        <item name="colorAccent">@color/colorBackground</item>
-    </style>
 
     <style name="TransparentDialog" parent="android:Theme.Dialog">
         <item name="android:windowIsTranslucent">true</item>
