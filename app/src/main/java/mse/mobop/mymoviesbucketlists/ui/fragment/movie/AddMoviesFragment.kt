@@ -47,6 +47,7 @@ class AddMoviesFragment: Fragment() {
     private var titleListener: OnNavigatingToFragmentListener? = null
 
     private var recyclerAdapter: MoviesPaginationAdapter? = null
+    private var optionsMenu: Menu? = null
 
 //    private var viewPagerAdapter: ViewPagerAdapter? = null
 
@@ -174,6 +175,12 @@ class AddMoviesFragment: Fragment() {
                 }
                 recyclerAdapter!!.notifyDataSetChanged()
 
+                if (selectedMovies.isEmpty()) {
+                    optionsMenu?.setGroupVisible(0, false)
+                } else {
+                    optionsMenu?.setGroupVisible(0, true)
+                }
+
                 Snackbar.make(root, "${selectedMovies.size} movies selected", Snackbar.LENGTH_SHORT)
                     .show()
             }
@@ -291,6 +298,8 @@ class AddMoviesFragment: Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         activity!!.menuInflater.inflate(R.menu.save_menu, menu)
+        optionsMenu = menu
+        menu.setGroupVisible(0, false)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
