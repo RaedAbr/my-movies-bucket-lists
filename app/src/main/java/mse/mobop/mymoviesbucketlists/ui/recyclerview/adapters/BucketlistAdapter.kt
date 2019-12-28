@@ -75,30 +75,36 @@ class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private v
             if (bucketlist.sharedWith.isEmpty()) {
                 view.bucketlist_shared_with.text = view.context.getString(R.string.bucketlist_not_shared)
                 view.bucketlist_shared_with.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.ic_visibility_off,
+                    R.drawable.ic_group_off,
                     0, 0, 0
                 )
             } else {
                 view.bucketlist_shared_with.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.ic_visibility_on,
+                    R.drawable.ic_group,
                     0, 0, 0
                 )
-                val sharedWithString = StringBuilder(view.context.getString(R.string.shared_with).plus(" "))
+                var sharedWithString = StringBuilder()
                 bucketlist.sharedWith.forEach { user ->
                     run {
-                        if (FirebaseAuth.getInstance().currentUser!!.uid != user.name) {
-                            sharedWithString.append(user.name + ", ")
+                        if (FirebaseAuth.getInstance().currentUser!!.uid == user.id) {
+                            sharedWithString.insert(0, " me")
+                        } else {
+                            sharedWithString.append(", " + user.name)
                         }
-                        view.bucketlist_shared_with.text = sharedWithString.dropLast(2)
+//                        view.bucketlist_shared_with.text = sharedWithString.dropLast(2)
                     }
                 }
+                if (bucketlist.createdBy!!.id == FirebaseAuth.getInstance().currentUser!!.uid) {
+                    sharedWithString = StringBuilder(sharedWithString.drop(1))
+                }
+                view.bucketlist_shared_with.text = sharedWithString.insert(0, view.context.getString(R.string.shared_with))
             }
 
             if (type == Type.SHARED) {
-                view.bucketlist_creator.text = StringBuilder()
+                view.bucketlist_creator_name.text = StringBuilder()
                     .append(view.context.getString(R.string.by) + " " + bucketlist.createdBy!!.name)
             } else {
-                view.bucketlist_creator.visibility = View.GONE
+                view.bucketlist_creator_layout.visibility = View.GONE
             }
 
             if (onItemClicklistener != null) {

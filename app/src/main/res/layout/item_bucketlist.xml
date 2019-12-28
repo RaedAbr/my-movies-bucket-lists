@@ -42,15 +42,28 @@
                     android:drawableTint="@color/lightGray"
                     android:drawablePadding="3dp"
                     android:drawableStart="@drawable/ic_time"/>
-                <TextView
-                    android:id="@+id/bucketlist_creator"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/by_creator"
-                    android:textStyle="bold"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    style="@style/Bucketlist.DateTime"/>
+                    android:layout_height="match_parent"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/bucketlist_creator_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_person"
+                        android:tint="@color/lightGray"
+                        android:scaleType="centerCrop"
+                        tools:ignore="ContentDescription" />
+                    <TextView
+                        android:id="@+id/bucketlist_creator_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/creator"
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        style="@style/Bucketlist.DateTime"/>
+                </LinearLayout>
             </LinearLayout>
 
             <TextView
@@ -60,12 +73,12 @@
                 android:layout_height="wrap_content"
                 android:singleLine="false"
                 android:textColor="@color/lightGray"
-                android:text="@string/shared_with"
+                android:text="@string/shared_with_me"
                 android:drawableTint="@color/veryLightGray"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:drawablePadding="3dp"
-                android:drawableStart="@drawable/ic_visibility_on"/>
+                android:drawableStart="@drawable/ic_group"/>
         </LinearLayout>
 
         <TextView

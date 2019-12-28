@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:itemCount="4"
-    tools:listitem="@layout/item_bucketlist_movie_not_watched"
+    tools:listitem="@layout/item_bucketlist_movie"
     android:clipToPadding="false"
     android:paddingBottom="@dimen/bottom_recycler_padding"
     android:paddingTop="6dp"/>

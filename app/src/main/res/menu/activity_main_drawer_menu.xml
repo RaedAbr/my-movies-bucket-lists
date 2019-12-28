@@ -34,10 +34,9 @@
 <!--                android:title="@string/menu_send" />-->
 <!--        </menu>-->
 <!--    </item>-->
-    <group android:checkableBehavior="none">
         <item
             android:id="@+id/nav_signout"
-            android:title="signout"/>
-    </group>
+            android:icon="@drawable/ic_sign_out"
+            android:title="@string/sign_out"/>
 
 </menu>

@@ -54,7 +54,7 @@ class BucketlistMoviesAdapter:
         )
         val notWatchedMoviesList: ArrayList<Movie> = ArrayList(
             notWatchedMovies.sortedWith(
-                compareBy<Movie>{ it.addedTimestamp }.thenBy { it.title }
+                compareByDescending<Movie>{ it.addedTimestamp }.thenBy { it.title }
             )
         )
 
@@ -92,6 +92,10 @@ class BucketlistMoviesAdapter:
         if (getItemViewType(position) == ITEM) {
             (holder as MovieViewHolder).bind(getItem(position))
         }
+    }
+
+    fun getItemAt(position: Int): Movie {
+        return getItem(position)
     }
 
     inner class MovieViewHolder(private val movieItemView: View): RecyclerView.ViewHolder(movieItemView) {

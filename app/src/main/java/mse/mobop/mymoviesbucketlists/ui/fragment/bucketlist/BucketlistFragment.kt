@@ -108,7 +108,7 @@ class BucketlistFragment : Fragment() {
                 )
                 findNavController().navigate(direction)
             }
-        })
+        }, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
 
         val itemTouchhelper = ItemTouchHelper(swipeController)
         itemTouchhelper.attachToRecyclerView(recyclerViewOwned)

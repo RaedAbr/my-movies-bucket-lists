@@ -3,6 +3,8 @@ package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_one_bucketlist.*
+import kotlinx.android.synthetic.main.fragment_one_bucketlist.view.*
 import kotlinx.android.synthetic.main.recycler_bucketlist_movies.*
 import kotlinx.android.synthetic.main.recycler_bucketlist_movies.view.*
 import mse.mobop.mymoviesbucketlists.utils.BucketlistAction
@@ -26,6 +29,7 @@ import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.BucketlistMoviesAdapter
 import mse.mobop.mymoviesbucketlists.utils.dateConverter
 import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
+import java.lang.StringBuilder
 
 /**
  * A simple [Fragment] subclass.
@@ -35,6 +39,9 @@ class OneBucketlistFragment : Fragment() {
     private lateinit var bucketlistId: String
     private var titleListener: OnNavigatingToFragmentListener? = null
     private lateinit var bucketlistMoviesAdapter: BucketlistMoviesAdapter
+    private var deleteMode = false
+    private var optionsMenu: Menu? = null
+    private var toggleIsMovieWatchedAction: BucketlistMoviesAdapter.OnItemClickListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +72,11 @@ class OneBucketlistFragment : Fragment() {
             findNavController().navigate(direction)
         }
 
+        val deleteMoviesFab: FloatingActionButton = root.delete_movies_fab
+        deleteMoviesFab.setOnClickListener {
+            toggleDeleteMode(root, addMoviesFab)
+        }
+
         setUpRecyclerMoviesList(root)
 
         bucketlistViewModel = BucketlistViewModel(bucketlistId)
@@ -78,10 +90,10 @@ class OneBucketlistFragment : Fragment() {
                 }
 
                 if (it.createdBy!!.id == FirebaseAuth.getInstance().currentUser!!.uid) {
-                    bucketlist_creator.text = getString(R.string.me)
+                    bucketlist_creator_layout.text = getString(R.string.me)
                     setHasOptionsMenu(true)
                 } else {
-                    bucketlist_creator.text = it.createdBy!!.name
+                    bucketlist_creator_layout.text = it.createdBy!!.name
                 }
 
                 bucketlist_date.text = dateConverter(it.creationTimestamp!!)
@@ -89,23 +101,29 @@ class OneBucketlistFragment : Fragment() {
                 if (it.sharedWith.isEmpty()) {
                     bucketlist_shared_with.text = getString(R.string.bucketlist_not_shared)
                     bucketlist_shared_with.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_visibility_off,
+                        R.drawable.ic_group_off,
                         0, 0, 0
                     )
                 } else {
                     bucketlist_shared_with.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_visibility_on,
+                        R.drawable.ic_group,
                         0, 0, 0
                     )
-                    val sharedWithString = StringBuilder(getString(R.string.shared_with).plus(" "))
+                    var sharedWithString = StringBuilder()
                     it.sharedWith.forEach { user ->
                         run {
-                            if (FirebaseAuth.getInstance().currentUser!!.uid != user.name) {
-                                sharedWithString.append(user.name + ", ")
+                            if (FirebaseAuth.getInstance().currentUser!!.uid == user.id) {
+                                sharedWithString.insert(0, " me")
+                            } else {
+                                sharedWithString.append(", " + user.name)
                             }
-                            bucketlist_shared_with.text = sharedWithString.dropLast(2)
+//                        view.bucketlist_shared_with.text = sharedWithString.dropLast(2)
                         }
                     }
+                    if (it.createdBy!!.id == FirebaseAuth.getInstance().currentUser!!.uid) {
+                        sharedWithString = StringBuilder(sharedWithString.drop(1))
+                    }
+                    bucketlist_shared_with.text = sharedWithString.insert(0, getString(R.string.shared_with))
                 }
                 if (it.movies.isEmpty()) {
                     bucketlist_no_movies.visibility = View.VISIBLE
@@ -121,17 +139,35 @@ class OneBucketlistFragment : Fragment() {
                         "${getString(R.string.watched).toLowerCase()} / " +
                         "${it.movies.count()}"
                 bucketlistMoviesAdapter.setMoviesList(it.movies)
-                bucketlistMoviesAdapter.setOnItemClickListener(
-                    object: BucketlistMoviesAdapter.OnItemClickListener {
-                        override fun itemClickListener(movie: Movie) {
-                            BucketlistFirestore.toggleIsMovieWatched(bucketlistId, movie)
-                        }
-
-                    })
             }
         })
 
         return root
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun toggleDeleteMode(
+        view: View,
+        addMoviesFab: FloatingActionButton
+    ) {
+        deleteMode = !deleteMode
+        val actionBar = (activity!! as AppCompatActivity).supportActionBar!!
+        actionBar.setDisplayHomeAsUpEnabled(!deleteMode)
+        actionBar.setDisplayShowTitleEnabled(!deleteMode)
+        actionBar.dispatchMenuVisibilityChanged(!deleteMode)
+        optionsMenu?.setGroupVisible(0, !deleteMode)
+        addMoviesFab.visibility = if (deleteMode) View.GONE else View.VISIBLE
+        view.movies_delete_hint.visibility = if (deleteMode) View.VISIBLE else View.GONE
+        view.header_layout.visibility = if (!deleteMode) View.VISIBLE else View.GONE
+        if (deleteMode) {
+            bucketlistMoviesAdapter.setOnItemClickListener(object: BucketlistMoviesAdapter.OnItemClickListener {
+                override fun itemClickListener(movie: Movie) {
+                    BucketlistFirestore.deleteBucketlistMovie(bucketlistId, movie)
+                }
+            })
+        } else {
+            bucketlistMoviesAdapter.setOnItemClickListener(toggleIsMovieWatchedAction!!)
+        }
     }
 
     private fun setUpRecyclerMoviesList(root: View) {
@@ -140,10 +176,19 @@ class OneBucketlistFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(root.context)
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = bucketlistMoviesAdapter
+
+        toggleIsMovieWatchedAction = object: BucketlistMoviesAdapter.OnItemClickListener {
+            override fun itemClickListener(movie: Movie) {
+                BucketlistFirestore.toggleIsMovieWatched(bucketlistId, movie)
+            }
+        }
+
+        bucketlistMoviesAdapter.setOnItemClickListener(toggleIsMovieWatchedAction!!)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        activity!!.menuInflater.inflate(R.menu.one_bucketlist_menu, menu)
+        inflater.inflate(R.menu.one_bucketlist_menu, menu)
+        optionsMenu = menu
         super.onCreateOptionsMenu(menu, inflater)
     }
 

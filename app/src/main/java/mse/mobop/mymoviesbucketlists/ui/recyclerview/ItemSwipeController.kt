@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -18,7 +19,9 @@ import kotlin.math.min
 
 
 @SuppressLint("ClickableViewAccessibility")
-class ItemSwipeController(private val buttonsActions: OnSwipedListener): ItemTouchHelper.Callback() {
+class ItemSwipeController(
+    private val buttonsActions: OnSwipedListener,
+    private val directions: Int): ItemTouchHelper.Callback() {
 
     private var swipeBack = false
     private var buttonShowedState = ButtonsState.GONE
@@ -31,7 +34,7 @@ class ItemSwipeController(private val buttonsActions: OnSwipedListener): ItemTou
         viewHolder: RecyclerView.ViewHolder
     ): Int {
         return makeMovementFlags(
-            0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+            0, directions
         )
     }
 
@@ -152,7 +155,7 @@ class ItemSwipeController(private val buttonsActions: OnSwipedListener): ItemTou
         }
     }
 
-    private fun setItemsClickable(
+    fun setItemsClickable(
         recyclerView: RecyclerView,
         isClickable: Boolean
     ) {

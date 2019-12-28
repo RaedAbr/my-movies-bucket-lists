@@ -116,7 +116,11 @@ object BucketlistFirestore {
         }
         bucketlistsCollRef.document(bucketlistId)
             .update("movies", FieldValue.arrayUnion(movie))
+    }
 
+    fun deleteBucketlistMovie(bucketlistId: String, movie: Movie) {
+        bucketlistsCollRef.document(bucketlistId)
+            .update("movies", FieldValue.arrayRemove(movie))
     }
 
     fun stopListener(bucketlistId: String) {
