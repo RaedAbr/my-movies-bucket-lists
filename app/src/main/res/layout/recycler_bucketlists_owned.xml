@@ -10,7 +10,7 @@
         android:id="@+id/recycler_bucketlists_owned"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/item_bucketlist_owned"
+        tools:listitem="@layout/item_bucketlist"
         tools:itemCount="2"/>
 
     <ProgressBar

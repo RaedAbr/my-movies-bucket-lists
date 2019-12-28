@@ -2,11 +2,11 @@
 <resources>
     <color name="colorPrimary">#006685</color>
     <color name="colorPrimaryDark">#003957</color>
-    <color name="colorSelected">#F0972D</color>
     <color name="white">#fff</color>
     <color name="black">#000</color>
     <color name="gray">#858585</color>
     <color name="lightGray">#ACACAC</color>
+    <color name="veryLightGray">#CACACA</color>
     <color name="colorBackground">#ECF4FF</color>
     <color name="colorHeader">#3F637C</color>
     <color name="placeholder_grey">#AAADC4</color>

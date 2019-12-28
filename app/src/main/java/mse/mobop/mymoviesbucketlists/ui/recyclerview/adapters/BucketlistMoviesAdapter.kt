@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -19,70 +21,91 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.dialog_movie_details.view.*
 import kotlinx.android.synthetic.main.dialog_movie_details.view.movie_progress
 import kotlinx.android.synthetic.main.dialog_movie_details.view.movie_title
-import kotlinx.android.synthetic.main.item_bucketlist_movie_not_watched.view.*
+import kotlinx.android.synthetic.main.item_bucketlist_movie.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.model.Movie
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG_BACKDROP
 
 @SuppressLint("DefaultLocale", "InflateParams")
-class BucketlistMoviesAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
+class BucketlistMoviesAdapter:
+    ListAdapter<Movie, RecyclerView.ViewHolder?>(object: DiffUtil.ItemCallback<Movie>() {
+    override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+        return oldItem.id == newItem.id
+    }
 
-    private var movies: List<Movie> = ArrayList()
+    override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+        return oldItem == newItem
+    }
+}) {
+
     private var onItemClickListener: OnItemClickListener? = null
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
         onItemClickListener = listener
     }
 
-    fun setMovies(movies: List<Movie>) {
-        this.movies = movies
-        sortMovies()
-        notifyDataSetChanged()
+    fun setMoviesList(movies: List<Movie>) {
+        val (watchedMovies, notWatchedMovies) = movies.partition { it.isWatched }
+        val watchedMoviesList: ArrayList<Movie> = ArrayList(
+            watchedMovies.sortedWith(
+                compareByDescending<Movie> { it.watchedTimestamp }.thenBy { it.title }
+            )
+        )
+        val notWatchedMoviesList: ArrayList<Movie> = ArrayList(
+            notWatchedMovies.sortedWith(
+                compareBy<Movie>{ it.addedTimestamp }.thenBy { it.title }
+            )
+        )
+
+        if (watchedMoviesList.isNotEmpty()) { // add header item for watched movies
+            notWatchedMoviesList.add(Movie())
+        }
+
+        submitList(notWatchedMoviesList + watchedMoviesList)
     }
 
-    private fun sortMovies() {
-        movies = movies.sortedWith(compareBy<Movie> { it.isWatched}
-            .thenByDescending { it.addedTimestamp })
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        return when(viewType) {
-            WATCHED -> MovieViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            ITEM -> MovieViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_bucketlist_movie_watched, parent, false
+                    R.layout.item_bucketlist_movie, parent, false
                 )
             )
-            else -> MovieViewHolder(
+            else -> HeaderViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_bucketlist_movie_not_watched, parent, false
+                    R.layout.item_bucketlist_movie_header, parent, false
                 )
             )
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as MovieViewHolder).bind(movies[position])
-    }
-
-    override fun getItemCount(): Int {
-        return movies.size
-    }
-
     override fun getItemViewType(position: Int): Int {
-        val movie = movies[position]
-        return when(movie.isWatched) {
-            true -> WATCHED
-            else -> NO_WATCHED
+        val movie = getItem(position)
+        return when(movie.id) {
+            null, 0 -> HEADER
+            else -> ITEM
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (getItemViewType(position) == ITEM) {
+            (holder as MovieViewHolder).bind(getItem(position))
         }
     }
 
     inner class MovieViewHolder(private val movieItemView: View): RecyclerView.ViewHolder(movieItemView) {
         fun bind(movie: Movie) {
+            if (movie.isWatched) {
+                movieItemView.container_layout.alpha = 0.5f
+            } else {
+                movieItemView.container_layout.alpha = 1f
+            }
             movieItemView.movie_title.text = movie.title
             if (movie.addedBy!!.id == FirebaseAuth.getInstance().currentUser!!.uid) {
                 movieItemView.movie_added_by.visibility = View.GONE
             } else {
+                movieItemView.movie_added_by.visibility = View.VISIBLE
                 movieItemView.movie_added_by.text = movie.addedBy!!.name
             }
             Glide
@@ -120,7 +143,7 @@ class BucketlistMoviesAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder?>() 
 
             if (onItemClickListener != null) {
                 movieItemView.setOnClickListener {
-                    onItemClickListener!!.itemClickListener(movie)
+                    onItemClickListener!!.itemClickListener(getItem(adapterPosition))
                 }
             }
 
@@ -182,12 +205,14 @@ class BucketlistMoviesAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder?>() 
         }
     }
 
+    inner class HeaderViewHolder(headerItemView: View): RecyclerView.ViewHolder(headerItemView)
+
     interface OnItemClickListener {
         fun itemClickListener(movie: Movie)
     }
 
     companion object {
-        private const val WATCHED = 0
-        private const val NO_WATCHED = 1
+        private const val ITEM = 0
+        private const val HEADER = 1
     }
 }

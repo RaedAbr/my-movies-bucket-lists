@@ -7,4 +7,11 @@ data class User (
     var name: String = ""
 ) {
     constructor(user: FirebaseUser?) : this(user!!.uid, user.displayName!!)
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null) return false
+        other as User
+        return id == other.id &&
+                name == other.name
+    }
 }

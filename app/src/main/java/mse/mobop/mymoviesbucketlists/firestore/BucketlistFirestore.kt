@@ -3,11 +3,13 @@ package mse.mobop.mymoviesbucketlists.firestore
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import mse.mobop.mymoviesbucketlists.utils.BUCKETLIST_COLLECTION
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
 import mse.mobop.mymoviesbucketlists.model.Movie
+import java.util.*
 import kotlin.collections.ArrayList
 
 object BucketlistFirestore {
@@ -110,6 +112,7 @@ object BucketlistFirestore {
             .update("movies", FieldValue.arrayRemove(movie))
         movie.apply {
             isWatched = !isWatched
+            watchedTimestamp = if (isWatched) Timestamp(Date().time / 1000, 0) else null
         }
         bucketlistsCollRef.document(bucketlistId)
             .update("movies", FieldValue.arrayUnion(movie))

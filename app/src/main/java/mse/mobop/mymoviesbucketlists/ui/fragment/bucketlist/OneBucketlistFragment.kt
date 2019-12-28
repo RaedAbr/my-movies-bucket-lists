@@ -1,11 +1,11 @@
 package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -41,6 +41,7 @@ class OneBucketlistFragment : Fragment() {
         setHasOptionsMenu(false)
     }
 
+    @SuppressLint("SetTextI18n", "DefaultLocale")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -87,7 +88,15 @@ class OneBucketlistFragment : Fragment() {
 
                 if (it.sharedWith.isEmpty()) {
                     bucketlist_shared_with.text = getString(R.string.bucketlist_not_shared)
+                    bucketlist_shared_with.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_visibility_off,
+                        0, 0, 0
+                    )
                 } else {
+                    bucketlist_shared_with.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_visibility_on,
+                        0, 0, 0
+                    )
                     val sharedWithString = StringBuilder(getString(R.string.shared_with).plus(" "))
                     it.sharedWith.forEach { user ->
                         run {
@@ -108,7 +117,10 @@ class OneBucketlistFragment : Fragment() {
                 if (bucketlist_movies_progressbar.visibility == View.VISIBLE) {
                     bucketlist_movies_progressbar.visibility = View.GONE
                 }
-                bucketlistMoviesAdapter.setMovies(it.movies)
+                bucketlist_movies_summary.text = "${it.movies.count { m -> m.isWatched }} " +
+                        "${getString(R.string.watched).toLowerCase()} / " +
+                        "${it.movies.count()}"
+                bucketlistMoviesAdapter.setMoviesList(it.movies)
                 bucketlistMoviesAdapter.setOnItemClickListener(
                     object: BucketlistMoviesAdapter.OnItemClickListener {
                         override fun itemClickListener(movie: Movie) {

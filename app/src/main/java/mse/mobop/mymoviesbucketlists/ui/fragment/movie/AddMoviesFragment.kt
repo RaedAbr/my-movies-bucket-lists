@@ -311,7 +311,7 @@ class AddMoviesFragment: Fragment() {
         selectedMovies = selectedMovies.map {
             val currenUser = FirebaseAuth.getInstance().currentUser
             it.addedBy = User(currenUser!!.uid, currenUser.displayName!!)
-            it.addedTimestamp = Timestamp(Date())
+            it.addedTimestamp = Timestamp(Date().time / 1000, 0)
             it
         } as ArrayList<Movie>
 

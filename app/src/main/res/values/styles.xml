@@ -71,6 +71,6 @@
     </style>
 
     <style name="AddedBy" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:alpha">0.38</item>
+        <item name="android:color">@color/lightGray</item>
     </style>
 </resources>

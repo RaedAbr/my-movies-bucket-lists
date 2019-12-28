@@ -25,4 +25,40 @@ data class Movie(
     var watchedTimestamp: Timestamp? = null,
     @get:Exclude var isSelected: Boolean = false,
     @get:Exclude var isExpanded: Boolean = false
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        other as Movie
+        return popularity == other.popularity &&
+                voteCount == other.voteCount &&
+                video == other.video &&
+                posterPath == other.posterPath &&
+                id == other.id &&
+                adult == other.adult &&
+                backdropPath == other.backdropPath &&
+                originalLanguage == other.originalLanguage &&
+                originalTitle == other.originalTitle &&
+                genreIds == other.genreIds &&
+                title == other.title &&
+                voteAverage == other.voteAverage &&
+                overview == other.overview &&
+                releaseDate == other.releaseDate &&
+                compareUsers(addedBy, other.addedBy) &&
+                compareTimestamps(addedTimestamp, other.addedTimestamp) &&
+                isWatched == other.isWatched &&
+                compareTimestamps(watchedTimestamp, other.watchedTimestamp) &&
+                isSelected == other.isSelected &&
+                isExpanded == other.isExpanded
+    }
+
+    private fun compareTimestamps(t1: Timestamp?, t2: Timestamp?): Boolean {
+        if (t1 == null && t2 == null) return true
+        if (t1 == null || t2 == null) return false
+        return t1.seconds == t2.seconds
+    }
+
+    private fun compareUsers(u1: User?, u2: User?): Boolean {
+        if (u1 == null && u2 == null) return true
+        if (u1 == null || u2 == null) return false
+        return u1 == u2
+    }
+}

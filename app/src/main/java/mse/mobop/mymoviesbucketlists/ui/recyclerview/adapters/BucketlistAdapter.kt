@@ -7,12 +7,12 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.Timestamp
-import kotlinx.android.synthetic.main.item_bucketlist_shared.view.*
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.item_bucketlist.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
 import mse.mobop.mymoviesbucketlists.utils.dateConverter
-import java.util.*
+import java.lang.StringBuilder
 
 
 class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private val type: Type) :
@@ -24,20 +24,12 @@ class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private v
     private var onDataChangedListener: OnDataChangedListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BucketlistHolder {
-        return when(type) {
-            Type.OWNED -> BucketlistHolder(
+        return BucketlistHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_bucketlist_owned, parent, false
+                    R.layout.item_bucketlist, parent, false
                 ),
                 type
             )
-            Type.SHARED -> BucketlistHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_bucketlist_shared, parent, false
-                ),
-                type
-            )
-        }
     }
 
     override fun onBindViewHolder(holder: BucketlistHolder, position: Int, model: Bucketlist) {
@@ -80,8 +72,33 @@ class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private v
             }
             view.bucketlist_movies_count.text = bucketlist.movies.size.toString()
 
+            if (bucketlist.sharedWith.isEmpty()) {
+                view.bucketlist_shared_with.text = view.context.getString(R.string.bucketlist_not_shared)
+                view.bucketlist_shared_with.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.ic_visibility_off,
+                    0, 0, 0
+                )
+            } else {
+                view.bucketlist_shared_with.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.ic_visibility_on,
+                    0, 0, 0
+                )
+                val sharedWithString = StringBuilder(view.context.getString(R.string.shared_with).plus(" "))
+                bucketlist.sharedWith.forEach { user ->
+                    run {
+                        if (FirebaseAuth.getInstance().currentUser!!.uid != user.name) {
+                            sharedWithString.append(user.name + ", ")
+                        }
+                        view.bucketlist_shared_with.text = sharedWithString.dropLast(2)
+                    }
+                }
+            }
+
             if (type == Type.SHARED) {
-                view.bucketlist_creator.text = bucketlist.createdBy!!.name
+                view.bucketlist_creator.text = StringBuilder()
+                    .append(view.context.getString(R.string.by) + " " + bucketlist.createdBy!!.name)
+            } else {
+                view.bucketlist_creator.visibility = View.GONE
             }
 
             if (onItemClicklistener != null) {
