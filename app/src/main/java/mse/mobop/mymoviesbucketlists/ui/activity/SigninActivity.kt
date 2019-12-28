@@ -9,8 +9,10 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -28,6 +30,8 @@ import mse.mobop.mymoviesbucketlists.utils.ARG_SIGN_IN_SUCCESSFULLY
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.utils.RC_GOOGLE_SIGN_IN
 import mse.mobop.mymoviesbucketlists.firestore.UserFirestore
+import mse.mobop.mymoviesbucketlists.utils.SIGN_IN_PREF
+import mse.mobop.mymoviesbucketlists.utils.SING_IN_EMAIL
 import java.util.*
 
 class SigninActivity: AppCompatActivity() {
@@ -51,6 +55,16 @@ class SigninActivity: AppCompatActivity() {
         link_signup.text = ss
         link_signup.movementMethod = LinkMovementMethod.getInstance()
 
+        // Get auto complete emails list from shared preferences
+        val preferences = getSharedPreferences(SIGN_IN_PREF, MODE_PRIVATE)
+        val emailsHistoryList = preferences.getStringSet(SING_IN_EMAIL, setOf<String>())!!
+        val adapter = ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            emailsHistoryList.toList())
+        email_textview.setAdapter(adapter)
+
+
         signin_button.setOnClickListener { view ->
             val email = email_textview.text.toString().trim()
             val password = password_textview.text.toString().trim()
@@ -64,6 +78,15 @@ class SigninActivity: AppCompatActivity() {
             }
 
             toggleProgressBar()
+
+            // Save email in the shared preferences
+            var emailsHistory = preferences.getStringSet(SING_IN_EMAIL, setOf<String>())!!
+            emailsHistory = emailsHistory.plus(email)
+            preferences.edit {
+                putStringSet(SING_IN_EMAIL, emailsHistory)
+                apply()
+            }
+
             FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {

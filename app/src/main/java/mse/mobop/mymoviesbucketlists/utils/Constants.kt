@@ -18,3 +18,7 @@ const val USER_COLLECTION = "users"
 const val BASE_URL_IMG = "https://image.tmdb.org/t/p/w154"
 const val BASE_URL_IMG_POSTER = "https://image.tmdb.org/t/p/w500"
 const val BASE_URL_IMG_BACKDROP = "https://image.tmdb.org/t/p/w780"
+
+// For shared preferences
+const val SIGN_IN_PREF = "mse.mobop.ui.activity.signin"
+const val SING_IN_EMAIL = "mse.mobop.ui.activity.signin.email"

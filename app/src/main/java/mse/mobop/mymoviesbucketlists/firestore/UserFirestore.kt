@@ -1,6 +1,7 @@
 package mse.mobop.mymoviesbucketlists.firestore
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -18,9 +19,22 @@ object UserFirestore {
         val currentUserDocRef = userCollRef.document(currentUser.uid)
         currentUserDocRef.get().addOnSuccessListener { documentSnapshot ->
             if (!documentSnapshot.exists()) {
-                val newUser = User(currentUser.uid, currentUser.displayName!!)
-                currentUserDocRef.set(newUser).addOnSuccessListener {
-                    onComplete()
+                if (currentUser.displayName.isNullOrEmpty()) {
+                    val newUsername = currentUser.email!!.take(currentUser.email!!.indexOf('@'))
+                    val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(newUsername)
+                        .build()
+                    currentUser.updateProfile(profileUpdates).addOnSuccessListener {
+                        val newUser = User(currentUser.uid, currentUser.displayName!!)
+                        currentUserDocRef.set(newUser).addOnSuccessListener {
+                            onComplete()
+                        }
+                    }
+                } else {
+                    val newUser = User(currentUser.uid, currentUser.displayName!!)
+                    currentUserDocRef.set(newUser).addOnSuccessListener {
+                        onComplete()
+                    }
                 }
             }
             else

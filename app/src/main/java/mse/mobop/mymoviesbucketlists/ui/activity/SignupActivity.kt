@@ -49,7 +49,7 @@ class SignupActivity: AppCompatActivity() {
             val confirmPassword = confirm_password_textview.text.toString().trim()
 
             // Alphanumeric string that may include _ and – having a length of 3 to 16 characters
-            val regex = "^[a-z0-9_]{3,16}$".toRegex()
+            val regex = "^[a-z0-9_.]{3,16}$".toRegex()
             if (!regex.matches(username)) {
                 Toast.makeText(this, "Username must be alphanumeric of lenght 3 to 16, starting with a character", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
