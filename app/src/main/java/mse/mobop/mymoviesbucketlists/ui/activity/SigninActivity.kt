@@ -157,11 +157,15 @@ class SigninActivity: AppCompatActivity() {
             google_signin_button.visibility = View.GONE
             signin_button.visibility = View.GONE
             link_signup.visibility = View.GONE
+            email_textview.isEnabled = false
+            password_textview.isEnabled = false
         } else {
             progress_circular.visibility = View.GONE
             google_signin_button.visibility = View.VISIBLE
             signin_button.visibility = View.VISIBLE
             link_signup.visibility = View.VISIBLE
+            email_textview.isEnabled = true
+            password_textview.isEnabled = true
         }
     }
 }

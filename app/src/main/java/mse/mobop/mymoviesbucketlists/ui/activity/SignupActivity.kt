@@ -1,5 +1,6 @@
 package mse.mobop.mymoviesbucketlists.ui.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
@@ -20,6 +21,7 @@ import mse.mobop.mymoviesbucketlists.firestore.UserFirestore
 
 class SignupActivity: AppCompatActivity() {
 
+    @SuppressLint("DefaultLocale")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
@@ -41,7 +43,7 @@ class SignupActivity: AppCompatActivity() {
         link_signin.movementMethod = LinkMovementMethod.getInstance()
 
         signup_button.setOnClickListener {
-            val username = username_textview.text.toString().trim()
+            val username = username_textview.text.toString().trim().toLowerCase()
             val email = email_textview.text.toString().trim()
             val password = password_textview.text.toString().trim()
             val confirmPassword = confirm_password_textview.text.toString().trim()
@@ -49,7 +51,7 @@ class SignupActivity: AppCompatActivity() {
             // Alphanumeric string that may include _ and – having a length of 3 to 16 characters
             val regex = "^[a-z0-9_]{3,16}$".toRegex()
             if (!regex.matches(username)) {
-                Toast.makeText(this, "Username must be alphanumeric of lenght 3 to 16, start with a character", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Username must be alphanumeric of lenght 3 to 16, starting with a character", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -65,6 +67,8 @@ class SignupActivity: AppCompatActivity() {
                 Toast.makeText(this, "Wrong password confirmation!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
+            toggleProgressBar()
 
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
@@ -93,8 +97,29 @@ class SignupActivity: AppCompatActivity() {
                     } else {
                         Log.e("Signup", it.exception!!.message!!)
                         Toast.makeText(this, it.exception!!.message!!, Toast.LENGTH_SHORT).show()
+                        toggleProgressBar()
                     }
                 }
+        }
+    }
+
+    private fun toggleProgressBar() {
+        if (progress_circular.visibility == View.GONE) {
+            progress_circular.visibility = View.VISIBLE
+            signup_button.visibility = View.GONE
+            link_signin.visibility = View.GONE
+            username_textview.isEnabled = false
+            email_textview.isEnabled = false
+            password_textview.isEnabled = false
+            confirm_password_textview.isEnabled = false
+        } else {
+            progress_circular.visibility = View.GONE
+            signup_button.visibility = View.VISIBLE
+            link_signin.visibility = View.VISIBLE
+            username_textview.isEnabled = true
+            email_textview.isEnabled = true
+            password_textview.isEnabled = true
+            confirm_password_textview.isEnabled = true
         }
     }
 
