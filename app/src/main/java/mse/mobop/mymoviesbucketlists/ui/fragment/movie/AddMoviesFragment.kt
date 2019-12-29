@@ -44,7 +44,6 @@ import kotlin.collections.ArrayList
  */
 class AddMoviesFragment: Fragment() {
     private lateinit var bucketlistViewModel: BucketlistViewModel
-    private var selectedMovies: ArrayList<Movie> = ArrayList()
 
     private var titleListener: OnNavigatingToFragmentListener? = null
 
@@ -208,19 +207,19 @@ class AddMoviesFragment: Fragment() {
                 val movie = recyclerAdapter!!.getItem(position)
                 movie.isSelected = !movie.isSelected
                 if (movie.isSelected) {
-                    selectedMovies.add(movie)
+                    recyclerAdapter!!.selectedMovies.add(movie)
                 } else {
-                    selectedMovies.remove(movie)
+                    recyclerAdapter!!.selectedMovies.remove(movie)
                 }
                 recyclerAdapter!!.notifyDataSetChanged()
 
-                if (selectedMovies.isEmpty()) {
+                if (recyclerAdapter!!.selectedMovies.isEmpty()) {
                     optionsMenu?.setGroupVisible(0, false)
                 } else {
                     optionsMenu?.setGroupVisible(0, true)
                 }
 
-                Snackbar.make(root, "${selectedMovies.size} movies selected", Snackbar.LENGTH_SHORT)
+                Snackbar.make(root, "${recyclerAdapter!!.selectedMovies.size} movies selected", Snackbar.LENGTH_SHORT)
                     .show()
             }
 
@@ -305,27 +304,26 @@ class AddMoviesFragment: Fragment() {
 
             override fun onFailure(
                 call: Call<MoviesSearchResult?>?,
-                t: Throwable?
+                t: Throwable
             ) {
-                t!!.printStackTrace()
-                // TODO: handle failure
+                Log.e("no internet", t.message!!)
             }
         })
     }
 
     private fun addMovies(): Boolean {
-        if (selectedMovies.size == 0) {
+        if (recyclerAdapter!!.selectedMovies.size == 0) {
             Toast.makeText(context, "Please select one or more movies!", Toast.LENGTH_SHORT).show()
             return false
         }
-        selectedMovies = selectedMovies.map {
+        recyclerAdapter!!.selectedMovies = recyclerAdapter!!.selectedMovies.map {
             val currenUser = FirebaseAuth.getInstance().currentUser
             it.addedBy = User(currenUser!!.uid, currenUser.displayName!!)
             it.addedTimestamp = Timestamp(Date().time / 1000, 0)
             it
         } as ArrayList<Movie>
 
-        bucketlistViewModel.addMoviesToBucketlist(bucketlistViewModel.bucketlist.value!!, selectedMovies)
+        bucketlistViewModel.addMoviesToBucketlist(bucketlistViewModel.bucketlist.value!!, recyclerAdapter!!.selectedMovies)
 
         findNavController().popBackStack()
         return true

@@ -34,8 +34,13 @@ import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG_POSTER
 class MoviesPaginationAdapter(
     private val context: Context
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
-    private var movieResults: ArrayList<Movie> = ArrayList()
+    companion object {
+        private const val ITEM = 0
+        private const val LOADING = 1
+    }
     private var moviesAlreadyAdded: ArrayList<Movie> = ArrayList()
+    var selectedMovies: ArrayList<Movie> = ArrayList()
+    private var movieResults: ArrayList<Movie> = ArrayList()
     private var isLoadingAdded = false
     private var lastClickedMoviePosition: Int = -1
     private var itemListener: ItemListener? = null
@@ -93,6 +98,12 @@ class MoviesPaginationAdapter(
         moviesAlreadyAdded.forEach { existedMovie ->
             filteredList = filteredList.filter { it.id != existedMovie.id}
         }
+        filteredList = filteredList.map {
+            if (selectedMovies.find { m -> it.id == m.id } != null) {
+                it.isSelected = true
+            }
+            it
+        }
         movieResults.addAll(filteredList)
         notifyDataSetChanged()
     }
@@ -120,7 +131,7 @@ class MoviesPaginationAdapter(
     }
 
     fun setMoviesAlreadyAdded(movies: ArrayList<Movie>) {
-        this.moviesAlreadyAdded = movies
+        moviesAlreadyAdded = movies
     }
     /*
    View Holders
@@ -284,10 +295,5 @@ class MoviesPaginationAdapter(
     interface ItemListener {
         fun onItemLongClick(position: Int)
         fun onPosterLongClick(movieId: Int)
-    }
-
-    companion object {
-        private const val ITEM = 0
-        private const val LOADING = 1
     }
 }

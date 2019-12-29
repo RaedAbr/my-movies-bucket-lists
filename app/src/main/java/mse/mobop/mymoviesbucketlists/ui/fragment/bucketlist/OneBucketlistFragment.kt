@@ -177,7 +177,10 @@ class OneBucketlistFragment : Fragment() {
 
         toggleIsMovieWatchedAction = object: BucketlistMoviesAdapter.OnItemClickListener {
             override fun itemClickListener(movie: Movie) {
+                recyclerView.isVerticalScrollBarEnabled = false
                 BucketlistFirestore.toggleIsMovieWatched(bucketlistId, movie)
+                bucketlistMoviesAdapter.notifyDataSetChanged()
+                recyclerView.isVerticalScrollBarEnabled = true
             }
         }
 

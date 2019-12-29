@@ -142,7 +142,9 @@ class BucketlistMoviesAdapter:
 
             if (onItemClickListener != null) {
                 movieItemView.setOnClickListener {
-                    onItemClickListener!!.itemClickListener(getItem(adapterPosition))
+                    if (adapterPosition > -1) {
+                        onItemClickListener!!.itemClickListener(getItem(adapterPosition))
+                    }
                 }
             }
 
