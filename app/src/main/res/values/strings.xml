@@ -64,4 +64,9 @@
     <string name="sign_out">Sign out</string>
     <string name="click_on_movies_to_delete">Click on movies to delete</string>
     <string name="no_video">No video</string>
+    <string name="latest">Latest</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="search">Search</string>
+    <string name="popular">Popular</string>
 </resources>

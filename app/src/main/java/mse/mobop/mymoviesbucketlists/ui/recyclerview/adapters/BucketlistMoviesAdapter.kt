@@ -28,7 +28,7 @@ import mse.mobop.mymoviesbucketlists.ui.alrertdialog.DisplayMovieTrailerAlertDia
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG_BACKDROP
 
-@SuppressLint("DefaultLocale", "InflateParams")
+@SuppressLint("DefaultLocale", "InflateParams", "SetTextI18n")
 class BucketlistMoviesAdapter:
     ListAdapter<Movie, RecyclerView.ViewHolder?>(object: DiffUtil.ItemCallback<Movie>() {
     override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
@@ -93,10 +93,6 @@ class BucketlistMoviesAdapter:
         if (getItemViewType(position) == ITEM) {
             (holder as MovieViewHolder).bind(getItem(position))
         }
-    }
-
-    fun getItemAt(position: Int): Movie {
-        return getItem(position)
     }
 
     inner class MovieViewHolder(private val movieItemView: View): RecyclerView.ViewHolder(movieItemView) {
@@ -173,8 +169,7 @@ class BucketlistMoviesAdapter:
                     dialogLayout.movie_title.text = movie.title
                     dialogLayout.movie_desc.text = movie.overview
                     if (movie.releaseDate!!.length > 4)
-                        dialogLayout.movie_year.text = (movie.releaseDate.substring(0, 4) // we want the year only
-                                + " | " + movie.originalLanguage!!.toUpperCase())
+                        dialogLayout.movie_year.text = movie.originalLanguage!!.toUpperCase() + " | " + movie.releaseDate
                     else {
                         dialogLayout.movie_year.visibility = View.GONE
                     }

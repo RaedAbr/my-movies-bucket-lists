@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center_vertical"
+    tools:background="@color/colorHeader">
+
+    <ImageView
+        android:id="@+id/tabitem_icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
+        android:tint="@color/white"
+        android:src="@drawable/ic_top_rated"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tabitem_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:text="@string/top_rated" />
+
+</LinearLayout>

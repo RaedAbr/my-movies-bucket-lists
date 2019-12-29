@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
@@ -17,9 +16,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.fragment_add_movies.*
 import kotlinx.android.synthetic.main.fragment_add_movies.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.model.Movie
@@ -52,8 +51,6 @@ class AddMoviesFragment: Fragment() {
     private var recyclerAdapter: MoviesPaginationAdapter? = null
     private var optionsMenu: Menu? = null
 
-//    private var viewPagerAdapter: ViewPagerAdapter? = null
-
     private var query: String = ""
 
     private var recyclerView: RecyclerView? = null
@@ -78,7 +75,7 @@ class AddMoviesFragment: Fragment() {
         }
 
     private var movieService: MovieService? = null
-    private var apiCall = ::callGetTopRatedMovies
+    private var apiCall = ::callGetPopularMoviesApi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,10 +109,7 @@ class AddMoviesFragment: Fragment() {
             }
         })
 
-//        val viewPager: ViewPager = root.viewpager
-//        setupViewPager(viewPager)
-//        val tabLayout: TabLayout = root.tabs
-//        tabLayout.setupWithViewPager(viewPager)
+        setUpTabView(root)
 
         movieService = MovieApi.client!!.create(MovieService::class.java)
 
@@ -128,12 +122,56 @@ class AddMoviesFragment: Fragment() {
         return root
     }
 
-//    private fun setupViewPager(viewPager: ViewPager) {
-//        viewPagerAdapter = ViewPagerAdapter(childFragmentManager)
-//        viewPagerAdapter!!.addFragment(BucketlistFragment(), "Fragment1")
-//        viewPagerAdapter!!.addFragment(BucketlistFragment(), "Fragment2")
-//        viewPager.adapter = viewPagerAdapter
-//    }
+    private fun setUpTabView(root: View) {
+        val tabLyout = root.tab_layout
+        tabLyout.addOnTabSelectedListener(object: TabLayout.BaseOnTabSelectedListener<TabLayout.Tab> {
+            private val POPULAR = 0
+            private val UPCOMING = 1
+            private val TOP_RATED = 2
+            private val SEARCH = 3
+
+            override fun onTabReselected(p0: TabLayout.Tab?) {}
+            override fun onTabUnselected(p0: TabLayout.Tab?) {
+                if (p0!!.position == SEARCH) {
+                    hideKeyboardFrom(context!!, root.movie_search)
+                }
+            }
+
+            override fun onTabSelected(p0: TabLayout.Tab?) {
+                when (p0!!.position) {
+                    POPULAR -> {
+                        if (root.movie_search.visibility == View.VISIBLE) {
+                            root.movie_search.visibility = View.GONE
+                        }
+                        apiCall = ::callGetPopularMoviesApi
+                    }
+                    UPCOMING -> {
+                        if (root.movie_search.visibility == View.VISIBLE) {
+                            root.movie_search.visibility = View.GONE
+                        }
+                        apiCall = ::callGetUpcomingMoviesApi
+                    }
+                    TOP_RATED -> {
+                        if (root.movie_search.visibility == View.VISIBLE) {
+                            root.movie_search.visibility = View.GONE
+                        }
+                        apiCall = ::callGetTopRatedMoviesApi
+                    }
+                    SEARCH -> {
+                        root.movie_search.visibility = View.VISIBLE
+                        apiCall = ::callSearchMoviesApi
+                        resetRecyclerView()
+                        if (query.isEmpty()) {
+                            return
+                        }
+                    }
+                }
+                resetRecyclerView()
+                loadFirstPage()
+            }
+
+        })
+    }
 
     private fun setUpSearchView(root: View?) {
         val searchView: SearchView = root!!.movie_search
@@ -146,14 +184,9 @@ class AddMoviesFragment: Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 this@AddMoviesFragment.query = query ?: ""
                 if (query != null && query.isNotEmpty()) {
-                    hideKeyboardFrom(context!!, searchView)
+                    hideKeyboardFrom(context!!, root.movie_search)
                     resetRecyclerView()
                     apiCall = ::callSearchMoviesApi
-
-                    if (movie_header.visibility == View.VISIBLE) {
-                        movie_header.visibility = View.GONE
-                    }
-
                     loadFirstPage()
                 }
                 return true
@@ -191,7 +224,7 @@ class AddMoviesFragment: Fragment() {
                     .show()
             }
 
-            override fun onItemClick(movieId: Int) {
+            override fun onPosterLongClick(movieId: Int) {
                 DisplayMovieTrailerAlertDialog(context!!, movieId, R.layout.dialog_movie_trailer)
                     .create()
             }
@@ -246,7 +279,7 @@ class AddMoviesFragment: Fragment() {
             }
 
             override fun onFailure(call: Call<MoviesSearchResult?>?, t: Throwable) {
-                t.printStackTrace()
+                Log.e("no internet", t.message!!)
             }
         })
     }
@@ -298,25 +331,34 @@ class AddMoviesFragment: Fragment() {
         return true
     }
 
-    /**
-     * Performs a Retrofit call to the top rated movies API.
-     * Same API call for Pagination.
-     * As [.currentPage] will be incremented automatically
-     * by @[moviesPaginationScrollListener] to load next page.
-     */
-    private fun callSearchMoviesApi(): Call<MoviesSearchResult?>? {
-        return movieService!!.searchForMovies(query, currentPage)
-    }
-    private fun callGetTopRatedMovies(): Call<MoviesSearchResult?>? {
-        return movieService!!.getTopRatedMovies(currentPage)
-    }
-
     private fun resetRecyclerView() {
         recyclerAdapter!!.clear()
         isLoading = false
         isLastPage = false
         currentPage = PAGE_START
         totalPageCount = TOTAL_PAGES
+    }
+
+    /**
+     * Performs a Retrofit call to the top rated movies API.
+     * Same API call for Pagination.
+     * As [.currentPage] will be incremented automatically
+     * by @[moviesPaginationScrollListener] to load next page.
+     */
+    private fun callGetPopularMoviesApi(): Call<MoviesSearchResult?>? {
+        return movieService!!.getPopularMovies(currentPage)
+    }
+
+    private fun callGetTopRatedMoviesApi(): Call<MoviesSearchResult?>? {
+        return movieService!!.getTopRatedMovies(currentPage)
+    }
+
+    private fun callGetUpcomingMoviesApi(): Call<MoviesSearchResult?>? {
+        return movieService!!.getUpcomingMovies(currentPage)
+    }
+
+    private fun callSearchMoviesApi(): Call<MoviesSearchResult?>? {
+        return movieService!!.searchForMovies(query, currentPage)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

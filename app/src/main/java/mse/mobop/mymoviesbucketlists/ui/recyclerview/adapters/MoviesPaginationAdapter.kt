@@ -26,12 +26,11 @@ import kotlinx.android.synthetic.main.dialog_movie_poster.view.*
 import kotlinx.android.synthetic.main.item_list_movie.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.model.Movie
-import mse.mobop.mymoviesbucketlists.ui.alrertdialog.DisplayMovieTrailerAlertDialog
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG_POSTER
 
 
-@SuppressLint("DefaultLocale", "InflateParams")
+@SuppressLint("DefaultLocale", "InflateParams", "SetTextI18n")
 class MoviesPaginationAdapter(
     private val context: Context
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
@@ -140,9 +139,7 @@ class MoviesPaginationAdapter(
 
         fun bind(movie: Movie) {
             mMovieTitle.text = movie.title
-            if (movie.releaseDate!!.length > 4)
-                mYear.text = (movie.releaseDate.substring(0, 4) // we want the year only
-                        + " | " + movie.originalLanguage!!.toUpperCase())
+            mYear.text = movie.originalLanguage!!.toUpperCase() + " | " + movie.releaseDate
             mMovieDesc.text = movie.overview!!
 
             movieItemView.movie_selected_checkbox.isChecked = movie.isSelected
@@ -177,7 +174,7 @@ class MoviesPaginationAdapter(
                         isFirstResource: Boolean
                     ): Boolean { // image ready, hide progress now
                         mProgress.visibility = View.GONE
-                        mPosterImg.setOnLongClickListener(showDialogPoster(movie))
+                        mPosterImg.setOnClickListener(showDialogPoster(movie))
                         Log.e("onResourceReady", model.toString())
                         return false // return false if you want Glide to handle everything else.
                     }
@@ -189,7 +186,7 @@ class MoviesPaginationAdapter(
                     ): Boolean {
                         mProgress.visibility = View.GONE
                         mNoPoster.visibility = View.VISIBLE
-                        mPosterImg.setOnLongClickListener(null)
+                        mPosterImg.setOnClickListener(null)
                         Log.e("onLoadFailed", model.toString())
                         Log.e("onLoadFailed", "id: ${movie.id}\ttitle: ${movie.title}")
                         return false
@@ -217,14 +214,16 @@ class MoviesPaginationAdapter(
                     true
                 }
 
-                mPosterImg.setOnClickListener {
-                    itemListener!!.onItemClick(movie.id!!)
+                // Show trailer Dialog
+                mPosterImg.setOnLongClickListener {
+                    itemListener!!.onPosterLongClick(movie.id!!)
+                    true
                 }
             }
         }
 
-        private fun showDialogPoster(movie: Movie): View.OnLongClickListener? {
-            return View.OnLongClickListener {
+        private fun showDialogPoster(movie: Movie): View.OnClickListener? {
+            return View.OnClickListener {
                 val builder = AlertDialog.Builder(context/*, R.style.TransparentDialog*/)
                 val inflater: LayoutInflater = (context as AppCompatActivity).layoutInflater
                 val dialogLayout: View = inflater.inflate(R.layout.dialog_movie_poster, null)
@@ -275,7 +274,6 @@ class MoviesPaginationAdapter(
                     dialog.dismiss()
                 }
                 dialog.show()
-                false
             }
         }
     }
@@ -285,7 +283,7 @@ class MoviesPaginationAdapter(
 
     interface ItemListener {
         fun onItemLongClick(position: Int)
-        fun onItemClick(movieId: Int)
+        fun onPosterLongClick(movieId: Int)
     }
 
     companion object {

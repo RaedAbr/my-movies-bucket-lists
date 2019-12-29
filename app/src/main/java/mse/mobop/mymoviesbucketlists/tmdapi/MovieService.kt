@@ -22,6 +22,22 @@ interface MovieService {
         @Query("language") language: String? = "en_US"
     ): Call<MoviesSearchResult?>?
 
+    @GET("movie/popular")
+    fun getPopularMovies(
+        @Query("page") pageIndex: Int,
+        @Query("api_key") apiKey: String = BuildConfig.THE_MOVIE_DATABASE_API_KEY,
+        @Query("include_adult") includeAdpult: Boolean = false,
+        @Query("language") language: String? = "en_US"
+    ): Call<MoviesSearchResult?>?
+
+    @GET("movie/upcoming")
+    fun getUpcomingMovies(
+        @Query("page") pageIndex: Int,
+        @Query("api_key") apiKey: String = BuildConfig.THE_MOVIE_DATABASE_API_KEY,
+        @Query("include_adult") includeAdpult: Boolean = false,
+        @Query("language") language: String? = "en_US"
+    ): Call<MoviesSearchResult?>?
+
     @GET("movie/top_rated")
     fun getTopRatedMovies(
         @Query("page") pageIndex: Int,
