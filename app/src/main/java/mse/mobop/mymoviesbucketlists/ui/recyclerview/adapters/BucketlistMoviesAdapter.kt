@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.dialog_movie_details.view.movie_title
 import kotlinx.android.synthetic.main.item_bucketlist_movie.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.model.Movie
+import mse.mobop.mymoviesbucketlists.ui.alrertdialog.DisplayMovieTrailerAlertDialog
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG_BACKDROP
 
@@ -152,12 +153,21 @@ class BucketlistMoviesAdapter:
             }
 
             movieItemView.setOnLongClickListener {
-                val builder = AlertDialog.Builder(movieItemView.context/*, R.style.TransparentDialog*/)
-                val inflater: LayoutInflater = (movieItemView.context as AppCompatActivity).layoutInflater
-                val dialogLayout: View = inflater.inflate(R.layout.dialog_movie_details, null)
+                val dialog = DisplayMovieTrailerAlertDialog(
+                    movieItemView.context,
+                    movie.id!!,
+                    R.layout.dialog_movie_details,
+                    false
+                )
+                dialog.create()
+                val dialogLayout = dialog.view
 
-                val dialog = builder.create()
-                dialog.setView(dialogLayout)
+//                val builder = AlertDialog.Builder(movieItemView.context/*, R.style.TransparentDialog*/)
+//                val inflater: LayoutInflater = (movieItemView.context as AppCompatActivity).layoutInflater
+//                val dialogLayout: View = inflater.inflate(R.layout.dialog_movie_details, null)
+//
+//                val dialog = builder.create()
+//                dialog.setView(dialogLayout)
 
                 dialog.setOnShowListener {
                     dialogLayout.movie_title.text = movie.title
@@ -202,7 +212,7 @@ class BucketlistMoviesAdapter:
                         .fitCenter()
                         .into(dialogLayout.movie_backdrop)
                 }
-                dialog.show()
+//                dialog.show()
 
                 true
             }

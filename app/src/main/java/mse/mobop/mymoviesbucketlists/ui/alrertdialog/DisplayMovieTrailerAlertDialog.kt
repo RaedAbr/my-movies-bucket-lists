@@ -25,7 +25,8 @@ import retrofit2.Response
 class DisplayMovieTrailerAlertDialog(
     context: Context,
     private val movieId: Int,
-    private val layoutId: Int
+    layoutId: Int,
+    private val autoPlayFirstVideo: Boolean = true
 ): AlertDialog(context){
 
     private var movieService = MovieApi.client!!.create(MovieService::class.java)
@@ -34,8 +35,9 @@ class DisplayMovieTrailerAlertDialog(
     private lateinit var videos: List<Video>
     private var videoIndex = 0
 
+    val view: View = LayoutInflater.from(context).inflate(layoutId, null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        val view: View = LayoutInflater.from(context).inflate(layoutId, null)
         setView(view)
 
         youtubePlayerView = view.youtube_player_view
@@ -57,7 +59,7 @@ class DisplayMovieTrailerAlertDialog(
                             override fun onReady(youTubePlayer: YouTubePlayer) {
                                 videoPlayer = youTubePlayer
                                 setupNextPreviousVideoButtons(view)
-                                loadVideo(view)
+                                loadVideo(view, autoPlayFirstVideo)
                             }
 
                             override fun onStateChange(
@@ -105,14 +107,18 @@ class DisplayMovieTrailerAlertDialog(
         }
     }
 
-    private fun loadVideo(view: View) {
+    private fun loadVideo(view: View, autoPlay: Boolean = true) {
         if (videos.size > 1) {
-            view.video_type.text = "Video " + (videoIndex + 1) + " - " + videos[videoIndex].type
+            view.video_type.text = "Video " + (videoIndex + 1) + " / " + videos.size +
+                    " - " + videos[videoIndex].type
         } else {
             view.video_type.text = videos[videoIndex].type
         }
         view.video_title.text = videos[videoIndex].name
-        videoPlayer.loadVideo(videos[videoIndex].key!!, 0f)
-        videoPlayer.play()
+        if (autoPlay) {
+            videoPlayer.loadVideo(videos[videoIndex].key!!, 0f)
+        } else {
+            videoPlayer.cueVideo(videos[videoIndex].key!!, 0f)
+        }
     }
 }
