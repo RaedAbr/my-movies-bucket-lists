@@ -26,18 +26,22 @@ import kotlinx.android.synthetic.main.dialog_movie_poster.view.*
 import kotlinx.android.synthetic.main.item_list_movie.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.model.Movie
+import mse.mobop.mymoviesbucketlists.ui.alrertdialog.DisplayMovieTrailerAlertDialog
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG_POSTER
 
 
-class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
+@SuppressLint("DefaultLocale", "InflateParams")
+class MoviesPaginationAdapter(
+    private val context: Context
+) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private var movieResults: ArrayList<Movie> = ArrayList()
     private var moviesAlreadyAdded: ArrayList<Movie> = ArrayList()
     private var isLoadingAdded = false
     private var lastClickedMoviePosition: Int = -1
-    private var onItemLongClickListener: OnItemLongClickListener? = null
-    fun setOnItemLongClickListener(onItemLongClickListener: OnItemLongClickListener) {
-        this.onItemLongClickListener = onItemLongClickListener
+    private var itemListener: ItemListener? = null
+    fun setOnItemLongClickListener(itemListener: ItemListener) {
+        this.itemListener = itemListener
     }
 
     override fun onCreateViewHolder(
@@ -134,7 +138,6 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
         internal val mProgress: ProgressBar = movieItemView.movie_progress
         internal val mNoPoster: TextView = movieItemView.movie_no_poster
 
-        @SuppressLint("DefaultLocale")
         fun bind(movie: Movie) {
             mMovieTitle.text = movie.title
             if (movie.releaseDate!!.length > 4)
@@ -174,11 +177,7 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
                         isFirstResource: Boolean
                     ): Boolean { // image ready, hide progress now
                         mProgress.visibility = View.GONE
-                        mPosterImg.setOnLongClickListener {
-                            Log.e("moviePosterSetOnLongClickListener", movie.toString())
-                            showDialogPoster(movie)
-                            false
-                        }
+                        mPosterImg.setOnLongClickListener(showDialogPoster(movie))
                         Log.e("onResourceReady", model.toString())
                         return false // return false if you want Glide to handle everything else.
                     }
@@ -212,75 +211,81 @@ class MoviesPaginationAdapter(private val context: Context) : RecyclerView.Adapt
                 notifyDataSetChanged()
             }
 
-            if (onItemLongClickListener != null) {
+            if (itemListener != null) {
                 movieItemView.movie_linear_layout.setOnLongClickListener {
-                    onItemLongClickListener!!.onItemLongClick(adapterPosition)
+                    itemListener!!.onItemLongClick(adapterPosition)
                     true
+                }
+
+                mPosterImg.setOnClickListener {
+                    itemListener!!.onItemClick(movie.id!!)
                 }
             }
         }
 
-        @SuppressLint("InflateParams")
-        fun showDialogPoster(movie: Movie) {
-            val builder = AlertDialog.Builder(context/*, R.style.TransparentDialog*/)
-            val inflater: LayoutInflater = (context as AppCompatActivity).layoutInflater
-            val dialogLayout: View = inflater.inflate(R.layout.dialog_movie_poster, null)
+        private fun showDialogPoster(movie: Movie): View.OnLongClickListener? {
+            return View.OnLongClickListener {
+                val builder = AlertDialog.Builder(context/*, R.style.TransparentDialog*/)
+                val inflater: LayoutInflater = (context as AppCompatActivity).layoutInflater
+                val dialogLayout: View = inflater.inflate(R.layout.dialog_movie_poster, null)
 
-            val dialog = builder.create()
-            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.setView(dialogLayout)
+                val dialog = builder.create()
+                dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                dialog.setView(dialogLayout)
 
-            dialog.setOnShowListener {
-                Log.e("wahoo", "wahoo")
-                Glide
-                    .with(context)
-                    .load(BASE_URL_IMG_POSTER + movie.posterPath)
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onResourceReady(
-                            resource: Drawable?,
-                            model: Any?,
-                            target: com.bumptech.glide.request.target.Target<Drawable>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                        ): Boolean { // image ready, hide progress now
-//                            mProgress.visibility = View.GONE
-                            dialogLayout.poster_progress.visibility = View.GONE
-                            Log.e("onResourceReadyyyy", model.toString())
-                            Log.e("onResourceReadyyyy", "id: ${movie.id}\ttitle: ${movie.title}\t path: ${movie.posterPath}")
-//                            dialog.window!!.setLayout(resource!!.intrinsicWidth, resource!!.intrinsicHeight)
-                            return false // return false if you want Glide to handle everything else.
-                        }
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: com.bumptech.glide.request.target.Target<Drawable>?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-//                            mProgress.visibility = View.GONE
-//                            mNoPoster.visibility = View.VISIBLE
-                            Log.e("onLoadFailedddd", model.toString())
-                            Log.e("onLoadFailedddd", "id: ${movie.id}\ttitle: ${movie.title}")
-                            return false
-                        }
-                    })
-                    .diskCacheStrategy(DiskCacheStrategy.ALL) // cache both original & resized image
-                    .fitCenter()
-                    .transition(withCrossFade())
-                    .into(dialogLayout.movie_poster_image)
+                dialog.setOnShowListener {
+                    Log.e("wahoo", "wahoo")
+                    Glide
+                        .with(context)
+                        .load(BASE_URL_IMG_POSTER + movie.posterPath)
+                        .listener(object : RequestListener<Drawable> {
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any?,
+                                target: com.bumptech.glide.request.target.Target<Drawable>?,
+                                dataSource: DataSource?,
+                                isFirstResource: Boolean
+                            ): Boolean { // image ready, hide progress now
+                                dialogLayout.poster_progress.visibility = View.GONE
+                                Log.e("onResourceReadyyyy", model.toString())
+                                Log.e(
+                                    "onResourceReadyyyy",
+                                    "id: ${movie.id}\ttitle: ${movie.title}\t path: ${movie.posterPath}"
+                                )
+                                return false // return false if you want Glide to handle everything else.
+                            }
+
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: com.bumptech.glide.request.target.Target<Drawable>?,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                Log.e("onLoadFailedddd", model.toString())
+                                Log.e("onLoadFailedddd", "id: ${movie.id}\ttitle: ${movie.title}")
+                                return false
+                            }
+                        })
+                        .diskCacheStrategy(DiskCacheStrategy.ALL) // cache both original & resized image
+                        .fitCenter()
+                        .transition(withCrossFade())
+                        .into(dialogLayout.movie_poster_image)
+                }
+                dialogLayout.setOnClickListener {
+                    dialog.dismiss()
+                }
+                dialog.show()
+                false
             }
-            dialogLayout.setOnClickListener {
-                dialog.dismiss()
-            }
-            dialog.show()
-
         }
     }
 
     private inner class LoadingVH(itemView: View?) :
         RecyclerView.ViewHolder(itemView!!)
 
-    interface OnItemLongClickListener {
+    interface ItemListener {
         fun onItemLongClick(position: Int)
+        fun onItemClick(movieId: Int)
     }
 
     companion object {

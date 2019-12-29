@@ -1,4 +1,4 @@
-package mse.mobop.mymoviesbucketlists.ui
+package mse.mobop.mymoviesbucketlists.ui.alrertdialog
 
 import android.app.AlertDialog
 import android.content.Context

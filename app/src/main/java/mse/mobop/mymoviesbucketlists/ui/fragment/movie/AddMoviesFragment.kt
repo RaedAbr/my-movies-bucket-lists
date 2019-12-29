@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
@@ -26,10 +27,12 @@ import mse.mobop.mymoviesbucketlists.model.MoviesSearchResult
 import mse.mobop.mymoviesbucketlists.model.User
 import mse.mobop.mymoviesbucketlists.tmdapi.MovieApi
 import mse.mobop.mymoviesbucketlists.tmdapi.MovieService
+import mse.mobop.mymoviesbucketlists.ui.alrertdialog.DisplayMovieTrailerAlertDialog
 import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
 import mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist.BucketlistViewModel
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.MoviesPaginationScrollListener
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.MoviesPaginationAdapter
+import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -114,6 +117,8 @@ class AddMoviesFragment: Fragment() {
 //        val tabLayout: TabLayout = root.tabs
 //        tabLayout.setupWithViewPager(viewPager)
 
+        movieService = MovieApi.client!!.create(MovieService::class.java)
+
         progressBar = root.main_progress
 
         setUpSearchView(root)
@@ -141,6 +146,7 @@ class AddMoviesFragment: Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 this@AddMoviesFragment.query = query ?: ""
                 if (query != null && query.isNotEmpty()) {
+                    hideKeyboardFrom(context!!, searchView)
                     resetRecyclerView()
                     apiCall = ::callSearchMoviesApi
 
@@ -163,7 +169,7 @@ class AddMoviesFragment: Fragment() {
         recyclerView = root.main_recycler
 
         recyclerAdapter = MoviesPaginationAdapter(activity!!)
-        recyclerAdapter!!.setOnItemLongClickListener(object: MoviesPaginationAdapter.OnItemLongClickListener{
+        recyclerAdapter!!.setOnItemLongClickListener(object: MoviesPaginationAdapter.ItemListener{
             override fun onItemLongClick(position: Int) {
                 Log.e("onItemLongClick", "$position")
                 val movie = recyclerAdapter!!.getItem(position)
@@ -185,6 +191,10 @@ class AddMoviesFragment: Fragment() {
                     .show()
             }
 
+            override fun onItemClick(movieId: Int) {
+                DisplayMovieTrailerAlertDialog(context!!, movieId, R.layout.dialog_movie_trailer)
+                    .create()
+            }
         })
 
         val linearLayoutManager = LinearLayoutManager(activity!!, LinearLayoutManager.VERTICAL, false)
@@ -203,8 +213,7 @@ class AddMoviesFragment: Fragment() {
 
         recyclerView!!.addOnScrollListener(moviesPaginationScrollListener)
 
-        //init service and load data
-        movieService = MovieApi.client!!.create(MovieService::class.java)
+        //load data
         loadFirstPage()
     }
 
@@ -236,12 +245,8 @@ class AddMoviesFragment: Fragment() {
                 }
             }
 
-            override fun onFailure(
-                call: Call<MoviesSearchResult?>?,
-                t: Throwable
-            ) {
+            override fun onFailure(call: Call<MoviesSearchResult?>?, t: Throwable) {
                 t.printStackTrace()
-                // TODO: handle failure
             }
         })
     }
@@ -273,6 +278,24 @@ class AddMoviesFragment: Fragment() {
                 // TODO: handle failure
             }
         })
+    }
+
+    private fun addMovies(): Boolean {
+        if (selectedMovies.size == 0) {
+            Toast.makeText(context, "Please select one or more movies!", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        selectedMovies = selectedMovies.map {
+            val currenUser = FirebaseAuth.getInstance().currentUser
+            it.addedBy = User(currenUser!!.uid, currenUser.displayName!!)
+            it.addedTimestamp = Timestamp(Date().time / 1000, 0)
+            it
+        } as ArrayList<Movie>
+
+        bucketlistViewModel.addMoviesToBucketlist(bucketlistViewModel.bucketlist.value!!, selectedMovies)
+
+        findNavController().popBackStack()
+        return true
     }
 
     /**
@@ -310,24 +333,6 @@ class AddMoviesFragment: Fragment() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    private fun addMovies(): Boolean {
-        if (selectedMovies.size == 0) {
-            Toast.makeText(context, "Please select one or more movies!", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        selectedMovies = selectedMovies.map {
-            val currenUser = FirebaseAuth.getInstance().currentUser
-            it.addedBy = User(currenUser!!.uid, currenUser.displayName!!)
-            it.addedTimestamp = Timestamp(Date().time / 1000, 0)
-            it
-        } as ArrayList<Movie>
-
-        bucketlistViewModel.addMoviesToBucketlist(bucketlistViewModel.bucketlist.value!!, selectedMovies)
-
-        findNavController().popBackStack()
-        return true
     }
 
     override fun onAttach(context: Context) {

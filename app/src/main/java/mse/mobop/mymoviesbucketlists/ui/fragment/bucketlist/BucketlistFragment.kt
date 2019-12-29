@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.recycler_bucketlists_shared.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.firestore.BucketlistFirestore
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
-import mse.mobop.mymoviesbucketlists.ui.DeleteBucketlistAlertDialog
+import mse.mobop.mymoviesbucketlists.ui.alrertdialog.DeleteBucketlistAlertDialog
 import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.ItemSwipeController
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.BucketlistAdapter
@@ -91,7 +91,8 @@ class BucketlistFragment : Fragment() {
 
         val swipeController = ItemSwipeController(object : ItemSwipeController.OnSwipedListener {
             override fun onDeleteButtonClick(position: Int) {
-                DeleteBucketlistAlertDialog(this@BucketlistFragment.context!!,
+                DeleteBucketlistAlertDialog(
+                    this@BucketlistFragment.context!!,
                     DialogInterface.OnClickListener { _, _ ->
                         recyclerAdapterOwned.deleteItem(view, position)
                     })

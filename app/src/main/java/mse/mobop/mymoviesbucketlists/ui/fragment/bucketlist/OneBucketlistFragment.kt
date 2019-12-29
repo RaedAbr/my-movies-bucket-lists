@@ -3,8 +3,6 @@ package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -24,7 +22,7 @@ import mse.mobop.mymoviesbucketlists.utils.BucketlistAction
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.firestore.BucketlistFirestore
 import mse.mobop.mymoviesbucketlists.model.Movie
-import mse.mobop.mymoviesbucketlists.ui.DeleteBucketlistAlertDialog
+import mse.mobop.mymoviesbucketlists.ui.alrertdialog.DeleteBucketlistAlertDialog
 import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.BucketlistMoviesAdapter
 import mse.mobop.mymoviesbucketlists.utils.dateConverter
@@ -205,7 +203,8 @@ class OneBucketlistFragment : Fragment() {
                 true
             }
             R.id.action_delete -> {
-                DeleteBucketlistAlertDialog(this@OneBucketlistFragment.context!!,
+                DeleteBucketlistAlertDialog(
+                    this@OneBucketlistFragment.context!!,
                     DialogInterface.OnClickListener { _, _ ->
                         bucketlistViewModel.bucketlist.removeObservers(viewLifecycleOwner)
                         bucketlistViewModel.delete(bucketlistId)
