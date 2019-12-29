@@ -1,5 +1,6 @@
 package mse.mobop.mymoviesbucketlists.tmdapi
 
+import mse.mobop.mymoviesbucketlists.utils.BASE_URL_API
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -25,7 +26,7 @@ object MovieApi {
                 retrofit = Retrofit.Builder()
                     .client(buildClient()!!)
                     .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl("https://api.themoviedb.org/3/")
+                    .baseUrl(BASE_URL_API)
                     .build()
             }
             return retrofit

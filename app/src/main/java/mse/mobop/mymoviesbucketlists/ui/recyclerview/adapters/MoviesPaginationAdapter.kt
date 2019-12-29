@@ -86,7 +86,6 @@ class MoviesPaginationAdapter(
 
     /*
    Helpers
-   _________________________________________________________________________________________________
     */
     fun add(mc: Movie) {
         movieResults.add(mc)
@@ -135,7 +134,6 @@ class MoviesPaginationAdapter(
     }
     /*
    View Holders
-   _________________________________________________________________________________________________
     */
     /**
      * Main list's content ViewHolder
@@ -155,10 +153,8 @@ class MoviesPaginationAdapter(
 
             movieItemView.movie_selected_checkbox.isChecked = movie.isSelected
             if (movie.isSelected) {
-//                itemView.background = itemView.context.getDrawable(R.drawable.background_movie_selected)
                 movieItemView.setBackgroundResource(R.drawable.background_movie_selected)
             } else {
-//                itemView.background = null
                 movieItemView.setBackgroundResource(R.color.white)
             }
             if (movie.isExpanded) {
@@ -235,7 +231,7 @@ class MoviesPaginationAdapter(
 
         private fun showDialogPoster(movie: Movie): View.OnClickListener? {
             return View.OnClickListener {
-                val builder = AlertDialog.Builder(context/*, R.style.TransparentDialog*/)
+                val builder = AlertDialog.Builder(context)
                 val inflater: LayoutInflater = (context as AppCompatActivity).layoutInflater
                 val dialogLayout: View = inflater.inflate(R.layout.dialog_movie_poster, null)
 
@@ -244,7 +240,6 @@ class MoviesPaginationAdapter(
                 dialog.setView(dialogLayout)
 
                 dialog.setOnShowListener {
-                    Log.e("wahoo", "wahoo")
                     Glide
                         .with(context)
                         .load(BASE_URL_IMG_POSTER + movie.posterPath)
@@ -257,11 +252,6 @@ class MoviesPaginationAdapter(
                                 isFirstResource: Boolean
                             ): Boolean { // image ready, hide progress now
                                 dialogLayout.poster_progress.visibility = View.GONE
-                                Log.e("onResourceReadyyyy", model.toString())
-                                Log.e(
-                                    "onResourceReadyyyy",
-                                    "id: ${movie.id}\ttitle: ${movie.title}\t path: ${movie.posterPath}"
-                                )
                                 return false // return false if you want Glide to handle everything else.
                             }
 

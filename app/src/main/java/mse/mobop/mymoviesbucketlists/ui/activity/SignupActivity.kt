@@ -35,7 +35,7 @@ class SignupActivity: AppCompatActivity() {
                 finish()
             }
         }
-        val displayedText = "Sign in"
+        val displayedText = getString(R.string.sign_in)
         val startIndex = text.indexOf(displayedText)
         val endIndex = text.indexOf(displayedText) + displayedText.length
         ss.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -51,7 +51,7 @@ class SignupActivity: AppCompatActivity() {
             // Alphanumeric string that may include _ and – having a length of 3 to 16 characters
             val regex = "^[a-z0-9_.]{3,16}$".toRegex()
             if (!regex.matches(username)) {
-                Toast.makeText(this, "Username must be alphanumeric of lenght 3 to 16, starting with a character", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.username_constaints), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -64,7 +64,7 @@ class SignupActivity: AppCompatActivity() {
             }
 
             if (!TextUtils.equals(password, confirmPassword)) {
-                Toast.makeText(this, "Wrong password confirmation!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.wrong_password_confirmation), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -73,7 +73,7 @@ class SignupActivity: AppCompatActivity() {
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        Toast.makeText(this, "Signed up successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.signed_up_successfully), Toast.LENGTH_SHORT).show()
                         val profileUpdates = UserProfileChangeRequest.Builder()
                             .setDisplayName(username)
                             .build()

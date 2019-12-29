@@ -25,7 +25,6 @@
             android:textAlignment="center"
             android:textAppearance="@style/NavHeaderTitle" />
 
-        <!--  Email Label -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -66,7 +65,6 @@
                 android:importantForAutofill="no" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--  Password Label -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

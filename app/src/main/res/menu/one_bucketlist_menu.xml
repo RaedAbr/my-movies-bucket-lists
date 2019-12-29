@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/action_delete"
         android:icon="@drawable/ic_delete"
@@ -11,4 +12,11 @@
         android:icon="@drawable/ic_edit"
         android:title="@string/edit"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_finish"
+        android:icon="@drawable/ic_close"
+        android:title="@string/finish"
+        app:showAsAction="ifRoom"
+        android:visible="false"
+        tools:visible="true"/>
 </menu>

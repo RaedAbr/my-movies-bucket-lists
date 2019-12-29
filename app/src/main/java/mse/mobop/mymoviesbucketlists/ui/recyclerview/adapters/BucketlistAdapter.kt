@@ -45,7 +45,7 @@ class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private v
 
     fun deleteItem(view: View, position: Int) {
         snapshots.getSnapshot(position).reference.delete()
-        Toast.makeText(view.context, "Bucket list deleted", Toast.LENGTH_SHORT).show()
+        Toast.makeText(view.context, view.context.getString(R.string.bucketlist_deleted), Toast.LENGTH_SHORT).show()
     }
 
     fun setOnItemClickListener(onItemClickListener: OnItemClickListener) {
@@ -87,11 +87,10 @@ class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private v
                 bucketlist.sharedWith.forEach { user ->
                     run {
                         if (FirebaseAuth.getInstance().currentUser!!.uid == user.id) {
-                            sharedWithString.insert(0, " me")
+                            sharedWithString.insert(0, " " + view.context.getString(R.string.me))
                         } else {
                             sharedWithString.append(", " + user.name)
                         }
-//                        view.bucketlist_shared_with.text = sharedWithString.dropLast(2)
                     }
                 }
                 if (bucketlist.createdBy!!.id == FirebaseAuth.getInstance().currentUser!!.uid) {

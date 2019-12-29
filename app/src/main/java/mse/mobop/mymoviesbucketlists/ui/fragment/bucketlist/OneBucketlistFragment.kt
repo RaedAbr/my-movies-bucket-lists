@@ -29,24 +29,23 @@ import mse.mobop.mymoviesbucketlists.utils.dateConverter
 import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
 import java.lang.StringBuilder
 
-/**
- * A simple [Fragment] subclass.
- */
+@SuppressLint("SetTextI18n", "DefaultLocale", "RestrictedApi")
 class OneBucketlistFragment : Fragment() {
     private lateinit var bucketlistViewModel: BucketlistViewModel
     private lateinit var bucketlistId: String
     private var titleListener: OnNavigatingToFragmentListener? = null
     private lateinit var bucketlistMoviesAdapter: BucketlistMoviesAdapter
-    private var deleteMode = false
+    private var isInDeleteMode = false
     private var optionsMenu: Menu? = null
     private var toggleIsMovieWatchedAction: BucketlistMoviesAdapter.OnItemClickListener? = null
+    private lateinit var addMoviesFab: FloatingActionButton
+    private lateinit var deleteMoviesFab: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(false)
     }
 
-    @SuppressLint("SetTextI18n", "DefaultLocale")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,7 +60,7 @@ class OneBucketlistFragment : Fragment() {
         val bandle = OneBucketlistFragmentArgs.fromBundle(arguments!!)
         bucketlistId = bandle.bucketlistId
 
-        val addMoviesFab: FloatingActionButton = root.findViewById(R.id.add_movies_fab)
+        addMoviesFab = root.findViewById(R.id.add_movies_fab)
         addMoviesFab.setOnClickListener {
             val direction =
                 OneBucketlistFragmentDirections.actionOneBucketlistFragmentToAddMoviesFragment(
@@ -70,9 +69,9 @@ class OneBucketlistFragment : Fragment() {
             findNavController().navigate(direction)
         }
 
-        val deleteMoviesFab: FloatingActionButton = root.delete_movies_fab
+        deleteMoviesFab = root.delete_movies_fab
         deleteMoviesFab.setOnClickListener {
-            toggleDeleteMode(root, addMoviesFab)
+            enterDeleteMode(root)
         }
 
         setUpRecyclerMoviesList(root)
@@ -80,7 +79,7 @@ class OneBucketlistFragment : Fragment() {
         bucketlistViewModel = BucketlistViewModel(bucketlistId)
         bucketlistViewModel.bucketlist.observe(viewLifecycleOwner, Observer {
             if (it == null) { // this means that the data has been deleted by another user
-                Toast.makeText(context, "Bucket list has been deleted by the owner!", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, getString(R.string.bucketlist_deleted_by_owner), Toast.LENGTH_LONG).show()
                 activity!!.onBackPressed()
             } else {
                 if (titleListener != null) {
@@ -111,11 +110,10 @@ class OneBucketlistFragment : Fragment() {
                     it.sharedWith.forEach { user ->
                         run {
                             if (FirebaseAuth.getInstance().currentUser!!.uid == user.id) {
-                                sharedWithString.insert(0, " me")
+                                sharedWithString.insert(0, " " + getString(R.string.me))
                             } else {
                                 sharedWithString.append(", " + user.name)
                             }
-//                        view.bucketlist_shared_with.text = sharedWithString.dropLast(2)
                         }
                     }
                     if (it.createdBy!!.id == FirebaseAuth.getInstance().currentUser!!.uid) {
@@ -143,21 +141,29 @@ class OneBucketlistFragment : Fragment() {
         return root
     }
 
-    @SuppressLint("RestrictedApi")
-    private fun toggleDeleteMode(
-        view: View,
-        addMoviesFab: FloatingActionButton
-    ) {
-        deleteMode = !deleteMode
+    private fun enterDeleteMode(view: View) {
+        isInDeleteMode = true
+        updateControlView(view)
+    }
+
+    private fun exitDeleteMode(view: View) {
+        isInDeleteMode = false
+        updateControlView(view)
+    }
+
+    private fun updateControlView(view: View) {
+        deleteMoviesFab.visibility = if (isInDeleteMode) View.GONE else View.VISIBLE
         val actionBar = (activity!! as AppCompatActivity).supportActionBar!!
-        actionBar.setDisplayHomeAsUpEnabled(!deleteMode)
-        actionBar.setDisplayShowTitleEnabled(!deleteMode)
-        actionBar.dispatchMenuVisibilityChanged(!deleteMode)
-        optionsMenu?.setGroupVisible(0, !deleteMode)
-        addMoviesFab.visibility = if (deleteMode) View.GONE else View.VISIBLE
-        view.movies_delete_hint.visibility = if (deleteMode) View.VISIBLE else View.GONE
-        view.header_layout.visibility = if (!deleteMode) View.VISIBLE else View.GONE
-        if (deleteMode) {
+        actionBar.setDisplayHomeAsUpEnabled(!isInDeleteMode)
+        actionBar.setDisplayShowTitleEnabled(!isInDeleteMode)
+        actionBar.dispatchMenuVisibilityChanged(!isInDeleteMode)
+        optionsMenu?.findItem(R.id.action_delete)?.isVisible = !isInDeleteMode
+        optionsMenu?.findItem(R.id.action_edit)?.isVisible = !isInDeleteMode
+        optionsMenu?.findItem(R.id.action_finish)?.isVisible = isInDeleteMode
+        addMoviesFab.visibility = if (isInDeleteMode) View.GONE else View.VISIBLE
+        view.movies_delete_hint.visibility = if (isInDeleteMode) View.VISIBLE else View.GONE
+        view.header_layout.visibility = if (!isInDeleteMode) View.VISIBLE else View.GONE
+        if (isInDeleteMode) {
             bucketlistMoviesAdapter.setOnItemClickListener(object: BucketlistMoviesAdapter.OnItemClickListener {
                 override fun itemClickListener(movie: Movie) {
                     BucketlistFirestore.deleteBucketlistMovie(bucketlistId, movie)
@@ -215,6 +221,10 @@ class OneBucketlistFragment : Fragment() {
                     })
                     .create()
                     .show()
+                true
+            }
+            R.id.action_finish -> {
+                exitDeleteMode(view!!)
                 true
             }
             else -> super.onOptionsItemSelected(item)

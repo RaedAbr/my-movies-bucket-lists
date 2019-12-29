@@ -14,4 +14,10 @@ data class User (
         return id == other.id &&
                 name == other.name
     }
+
+    override fun hashCode(): Int {
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + name.hashCode()
+        return result
+    }
 }

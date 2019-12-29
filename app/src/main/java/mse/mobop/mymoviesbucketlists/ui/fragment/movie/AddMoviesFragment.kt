@@ -38,11 +38,12 @@ import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
-
-/**
- * A simple [Fragment] subclass.
- */
 class AddMoviesFragment: Fragment() {
+    companion object {
+        private const val PAGE_START = 1
+        private const val TOTAL_PAGES = 1
+    }
+
     private lateinit var bucketlistViewModel: BucketlistViewModel
 
     private var titleListener: OnNavigatingToFragmentListener? = null
@@ -99,7 +100,7 @@ class AddMoviesFragment: Fragment() {
         bucketlistViewModel = BucketlistViewModel(bucketlistId)
         bucketlistViewModel.bucketlist.observe(viewLifecycleOwner, Observer {
             if (it == null) { // this means that the data has been deleted by another user
-                Toast.makeText(context, "Bucket list has been deleted by the owner!", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, getString(R.string.bucketlist_deleted_by_owner), Toast.LENGTH_LONG).show()
                 activity!!.onBackPressed()
             } else {
                 if (recyclerAdapter != null) {
@@ -219,7 +220,8 @@ class AddMoviesFragment: Fragment() {
                     optionsMenu?.setGroupVisible(0, true)
                 }
 
-                Snackbar.make(root, "${recyclerAdapter!!.selectedMovies.size} movies selected", Snackbar.LENGTH_SHORT)
+                Snackbar.make(root, "${recyclerAdapter!!.selectedMovies.size} " +
+                    getString(R.string.movies_selected), Snackbar.LENGTH_SHORT)
                     .show()
             }
 
@@ -250,7 +252,7 @@ class AddMoviesFragment: Fragment() {
     }
 
     private fun loadFirstPage() {
-        Log.e(TAG, "loadFirstPage: ")
+        Log.e("AddMoviesFragment", "loadFirstPage: ")
         currentPage = PAGE_START
         Log.e("loadFirstPage", "currentPage: $currentPage\ttotalPageCount: $totalPageCount\tisLastPage: $isLastPage")
 
@@ -279,12 +281,13 @@ class AddMoviesFragment: Fragment() {
 
             override fun onFailure(call: Call<MoviesSearchResult?>?, t: Throwable) {
                 Log.e("no internet", t.message!!)
+                Toast.makeText(context, t.message!!, Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     private fun loadNextPage() {
-        Log.e(TAG, "loadNextPage: $currentPage")
+        Log.e("AddMoviesFragment", "loadNextPage: $currentPage")
         Log.e("loadFirstPage", "currentPage: $currentPage\ttotalPageCount: $totalPageCount\tisLastPage: $isLastPage")
 
         apiCall()!!.enqueue(object : Callback<MoviesSearchResult?> {
@@ -307,13 +310,14 @@ class AddMoviesFragment: Fragment() {
                 t: Throwable
             ) {
                 Log.e("no internet", t.message!!)
+                Toast.makeText(context, t.message!!, Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     private fun addMovies(): Boolean {
         if (recyclerAdapter!!.selectedMovies.size == 0) {
-            Toast.makeText(context, "Please select one or more movies!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.select_one_or_mode_movies), Toast.LENGTH_SHORT).show()
             return false
         }
         recyclerAdapter!!.selectedMovies = recyclerAdapter!!.selectedMovies.map {
@@ -337,12 +341,6 @@ class AddMoviesFragment: Fragment() {
         totalPageCount = TOTAL_PAGES
     }
 
-    /**
-     * Performs a Retrofit call to the top rated movies API.
-     * Same API call for Pagination.
-     * As [.currentPage] will be incremented automatically
-     * by @[moviesPaginationScrollListener] to load next page.
-     */
     private fun callGetPopularMoviesApi(): Call<MoviesSearchResult?>? {
         return movieService!!.getPopularMovies(currentPage)
     }
@@ -389,11 +387,5 @@ class AddMoviesFragment: Fragment() {
     override fun onDetach() {
         super.onDetach()
         titleListener = null
-    }
-
-    companion object {
-        private const val PAGE_START = 1
-        private const val TOTAL_PAGES = 1
-        private const val TAG = "AddMoviesFragment"
     }
 }

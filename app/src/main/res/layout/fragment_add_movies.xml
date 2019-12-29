@@ -42,12 +42,6 @@
                 android:layout="@layout/tab_item_search"/>
         </com.google.android.material.tabs.TabLayout>
 
-        <!--        <androidx.viewpager.widget.ViewPager-->
-        <!--            android:id="@+id/viewpager"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="0dp"-->
-        <!--            android:layout_weight="1" />-->
-
         <androidx.appcompat.widget.SearchView
             android:id="@+id/movie_search"
             android:layout_width="match_parent"

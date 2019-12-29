@@ -23,7 +23,7 @@
     <string name="edit">Edit</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="signin">Sign in</string>
+    <string name="sign_in">Sign in</string>
     <string name="no_account_yet_create_one">No account yet? Create one</string>
     <string name="signup">Sign up</string>
     <string name="confitm_password">Confitm password</string>
@@ -57,7 +57,7 @@
     <string name="no_bucket_lists_shared_with_you">No bucket lists shared with you</string>
     <string name="no_movies_in_this_bucket_list">No movies in this bucket list</string>
     <string name="delete">DELETE</string>
-    <string name="cancel">CANCEL</string>
+    <string name="cancel">@android:string/cancel</string>
     <string name="remove_bucketlist_dialog_title">Remove bucket list?</string>
     <string name="remove_bucketlist_dialog_message">By deleting this bucket list, it will be no longer available to users you share with.</string>
     <string name="watched">Watched</string>
@@ -69,4 +69,18 @@
     <string name="top_rated">Top Rated</string>
     <string name="search">Search</string>
     <string name="popular">Popular</string>
+    <string name="welcome">Welcome</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="google_sign_in_failed">Google sign in failed</string>
+    <string name="username_constaints">Username must be alphanumeric of lenght 3 to 16, starting with a character</string>
+    <string name="wrong_password_confirmation">Wrong password confirmation</string>
+    <string name="signed_up_successfully">Signed up successfully</string>
+    <string name="bucketlist_name_cannor_be_empty">Bucket list name can not be empty</string>
+    <string name="bucketlist_updated">Bucket list updated</string>
+    <string name="new_movie_saved">New movies bucket list saved</string>
+    <string name="bucketlist_deleted_by_owner">Bucket list has been deleted by its owner</string>
+    <string name="movies_selected">movies selected</string>
+    <string name="select_one_or_mode_movies">Please select one or more movies</string>
+    <string name="bucketlist_deleted">Bucket list deleted</string>
+    <string name="finish">Finish</string>
 </resources>

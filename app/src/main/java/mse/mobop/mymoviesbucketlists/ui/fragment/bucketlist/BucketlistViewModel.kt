@@ -9,12 +9,6 @@ import mse.mobop.mymoviesbucketlists.model.Movie
 class BucketlistViewModel(id: String? = null) {
 
     var bucketlist: LiveData<Bucketlist> = BucketlistFirestore.getById(id)
-//    val allBucketlist: LiveData<List<Bucketlist>>
-//        get() = bucketlistRepository.allBucketlist
-//
-//    fun loadBucketlist(id: String) {
-//        bucketlist = BucketlistFirestore.getById(id)
-//    }
 
     fun insert(bucketlist: Bucketlist) = BucketlistFirestore.createBucketlist(bucketlist)
     fun update(bucketlist: Bucketlist) = BucketlistFirestore.updateBucketlist(bucketlist)

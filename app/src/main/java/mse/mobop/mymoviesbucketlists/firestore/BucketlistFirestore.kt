@@ -26,22 +26,6 @@ object BucketlistFirestore {
             .addOnFailureListener { e -> Log.e("bucketlist", "Error adding document", e) }
     }
 
-//    fun getAllBucketlists(): LiveData<List<Bucketlist>> {
-//        val allBucketlists = mutableListOf<Bucketlist>()
-//        bucketlistsCollRef.whereEqualTo("createdBy.id", FirebaseAuth.getInstance().currentUser!!.uid)
-//            .addSnapshotListener { documents, e ->
-//                if (e != null) {
-//                    Log.w("Bucketlist", "Listen failed.", e)
-//                    return@addSnapshotListener
-//                }
-//                Log.e("bucketlist", "DocumentSnapshot written with ID: ${documents!!.count()}")
-//                documents.forEach {
-//                    allBucketlists.add(it.toObject(Bucketlist::class.java))
-//                }
-//            }
-//        return MutableLiveData(allBucketlists)
-//    }
-
     fun getOwnedBucketlistsQuery(): Query {
         return bucketlistsCollRef
             .whereEqualTo("createdBy.id", FirebaseAuth.getInstance().currentUser!!.uid)
@@ -56,11 +40,8 @@ object BucketlistFirestore {
 
     fun getById(id: String?): LiveData<Bucketlist> {
         val bucketlist = MutableLiveData<Bucketlist>()
-//        doAsync {
         if (id != null) {
             val registration = bucketlistsCollRef.document(id)
-//                .get().result?.toObject(Bucketlist::class.java)
-
                 .addSnapshotListener { snapshot, e ->
                     if (e != null) {
                         Log.e("getById", "Listen failed.", e)
@@ -77,7 +58,6 @@ object BucketlistFirestore {
                     }
                 }
             snapshotListenersMap.putIfAbsent(id, registration)
-//        }
         }
         return bucketlist
     }

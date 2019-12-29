@@ -10,9 +10,6 @@ import retrofit2.http.Query
 
 
 interface MovieService {
-    /**
-     * Call search for movies with page number in query
-     */
     @GET("search/movie")
     fun searchForMovies(
         @Query("query") query: String?,

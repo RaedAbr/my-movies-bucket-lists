@@ -61,4 +61,28 @@ data class Movie(
         if (u1 == null || u2 == null) return false
         return u1 == u2
     }
+
+    override fun hashCode(): Int {
+        var result = popularity?.hashCode() ?: 0
+        result = 31 * result + (voteCount ?: 0)
+        result = 31 * result + (video?.hashCode() ?: 0)
+        result = 31 * result + (posterPath?.hashCode() ?: 0)
+        result = 31 * result + (id ?: 0)
+        result = 31 * result + (adult?.hashCode() ?: 0)
+        result = 31 * result + (backdropPath?.hashCode() ?: 0)
+        result = 31 * result + (originalLanguage?.hashCode() ?: 0)
+        result = 31 * result + (originalTitle?.hashCode() ?: 0)
+        result = 31 * result + (genreIds?.hashCode() ?: 0)
+        result = 31 * result + (title?.hashCode() ?: 0)
+        result = 31 * result + (voteAverage?.hashCode() ?: 0)
+        result = 31 * result + (overview?.hashCode() ?: 0)
+        result = 31 * result + (releaseDate?.hashCode() ?: 0)
+        result = 31 * result + (addedBy?.hashCode() ?: 0)
+        result = 31 * result + (addedTimestamp?.hashCode() ?: 0)
+        result = 31 * result + isWatched.hashCode()
+        result = 31 * result + (watchedTimestamp?.hashCode() ?: 0)
+        result = 31 * result + isSelected.hashCode()
+        result = 31 * result + isExpanded.hashCode()
+        return result
+    }
 }

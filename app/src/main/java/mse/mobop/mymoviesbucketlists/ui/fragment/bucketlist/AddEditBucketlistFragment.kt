@@ -160,7 +160,7 @@ class AddEditBucketlistFragment : Fragment() {
         val bucketlistName = bucketlist_name.text.toString()
 
         if (bucketlistName.trim().isEmpty()){
-            Toast.makeText(context, "Bucket list name can not be empty!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.bucketlist_name_cannor_be_empty), Toast.LENGTH_SHORT).show()
             return false
         }
         val updatedBucketlist: Bucketlist = bucketlistViewModel.bucketlist.value!!
@@ -171,7 +171,7 @@ class AddEditBucketlistFragment : Fragment() {
         updatedBucketlist.sharedWith = selectedUsers
         updatedBucketlist.sharedWithIds = sharedWithIds
         bucketlistViewModel.update(updatedBucketlist)
-        Toast.makeText(context, "Bucket list updated", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, getString(R.string.bucketlist_updated), Toast.LENGTH_SHORT).show()
         return true
     }
 
@@ -180,7 +180,7 @@ class AddEditBucketlistFragment : Fragment() {
         val currentUser = FirebaseAuth.getInstance().currentUser
 
         if (listName.trim().isEmpty()){
-            Toast.makeText(context, "Bucket list name can not be empty!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.bucketlist_name_cannor_be_empty), Toast.LENGTH_SHORT).show()
             return false
         }
 
@@ -190,7 +190,7 @@ class AddEditBucketlistFragment : Fragment() {
         bucketlistViewModel.insert(
             Bucketlist(name = listName, createdBy = User(currentUser), sharedWith = selectedUsers, sharedWithIds = sharedWithIds)
         )
-        Toast.makeText(context, "New movies bucket list saved", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, getString(R.string.new_movie_saved), Toast.LENGTH_SHORT).show()
         return true
     }
 

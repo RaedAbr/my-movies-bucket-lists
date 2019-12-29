@@ -48,7 +48,7 @@ class SigninActivity: AppCompatActivity() {
                 finish()
             }
         }
-        val displayedText = "Create one"
+        val displayedText = getString(R.string.create_one)
         val startIndex = text.indexOf(displayedText)
         val endIndex = text.indexOf(displayedText) + displayedText.length
         ss.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -126,9 +126,10 @@ class SigninActivity: AppCompatActivity() {
                 toggleProgressBar()
                 when (e.statusCode) {
                     CommonStatusCodes.NETWORK_ERROR ->
-                        Toast.makeText(this, "No internet connection!", Toast.LENGTH_LONG).show()
-                    else ->
-                        Log.e("GoogleSignInResult", "Google sign in failed, error code: " + e.statusCode)
+                        Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_LONG).show()
+                    else -> {
+                        Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }
@@ -154,7 +155,7 @@ class SigninActivity: AppCompatActivity() {
                                 goToMainActivity()
                             } else {
                                 toggleProgressBar()
-                                Toast.makeText(this, "Google sign in failed", Toast.LENGTH_LONG)
+                                Toast.makeText(this, getString(R.string.google_sign_in_failed), Toast.LENGTH_LONG)
                                     .show()
                             }
                         }

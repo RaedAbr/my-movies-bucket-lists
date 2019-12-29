@@ -155,7 +155,7 @@ class ItemSwipeController(
         }
     }
 
-    fun setItemsClickable(
+    private fun setItemsClickable(
         recyclerView: RecyclerView,
         isClickable: Boolean
     ) {
@@ -180,7 +180,6 @@ class ItemSwipeController(
             itemView.bottom
         )
         p.color = context.getColor(R.color.colorPrimaryDark)
-//        c.drawRoundRect(rightButton.toRectF(), corners, corners, p)
         c.drawCircle(
             rightButton.exactCenterX(),
             rightButton.exactCenterY(),
@@ -193,7 +192,6 @@ class ItemSwipeController(
             itemView.left + buttonWidthWithoutPadding,
             itemView.bottom
         )
-//        c.drawRoundRect(leftButton.toRectF(), corners, corners, p)
         c.drawCircle(
             leftButton.exactCenterX(),
             leftButton.exactCenterY(),
