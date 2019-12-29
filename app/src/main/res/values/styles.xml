@@ -73,4 +73,10 @@
     <style name="AddedBy" parent="TextAppearance.AppCompat.Caption">
         <item name="android:color">@color/lightGray</item>
     </style>
+
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
 </resources>

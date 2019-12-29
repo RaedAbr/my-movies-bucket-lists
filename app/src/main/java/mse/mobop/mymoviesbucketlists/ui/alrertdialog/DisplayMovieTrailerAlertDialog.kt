@@ -26,8 +26,9 @@ class DisplayMovieTrailerAlertDialog(
     context: Context,
     private val movieId: Int,
     layoutId: Int,
-    private val autoPlayFirstVideo: Boolean = true
-): AlertDialog(context){
+    private val autoPlayFirstVideo: Boolean = true,
+    themeId: Int = R.style.DialogTheme
+): AlertDialog(context, themeId){
 
     private var movieService = MovieApi.client!!.create(MovieService::class.java)
     private lateinit var youtubePlayerView: YouTubePlayerView
