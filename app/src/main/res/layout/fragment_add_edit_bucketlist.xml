@@ -8,13 +8,6 @@
     style="@style/Fragment"
     tools:context=".ui.fragment.bucketlist.AddEditBucketlistFragment">
 
-    <TextView
-        android:id="@+id/fragment_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/new_list"
-        style="@style/FragmentTitle"/>
-
     <EditText
         android:id="@+id/bucketlist_name"
         android:layout_width="match_parent"
@@ -25,11 +18,20 @@
     </EditText>
 
     <androidx.appcompat.widget.SearchView
+        android:id="@+id/search_users"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:queryHint="Share with"
+        app:queryHint="@string/share_with"
         app:iconifiedByDefault="false"
+        android:paddingStart="-12dp"
+        android:paddingEnd="0dp"
         app:searchIcon="@null"/>
+
+    <ListView
+        android:id="@+id/search_users_listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/item_user" />
 
 
 
