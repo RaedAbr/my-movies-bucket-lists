@@ -37,10 +37,11 @@ class OneBucketlistFragment : BaseFragment() {
     private var toggleIsMovieWatchedAction: BucketlistMoviesAdapter.OnItemClickListener? = null
     private lateinit var addMoviesFab: FloatingActionButton
     private lateinit var deleteMoviesFab: FloatingActionButton
+    private var noMovies: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(false)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -83,9 +84,10 @@ class OneBucketlistFragment : BaseFragment() {
 
                 if (it.createdBy!!.id == FirebaseAuth.getInstance().currentUser!!.uid) {
                     bucketlist_creator_layout.text = getString(R.string.me)
-                    setHasOptionsMenu(true)
                 } else {
                     bucketlist_creator_layout.text = it.createdBy!!.name
+                    optionsMenu?.removeItem(R.id.action_edit)
+                    optionsMenu?.removeItem(R.id.action_delete)
                 }
 
                 bucketlist_date.text = dateConverter(it.creationTimestamp!!)
@@ -117,9 +119,15 @@ class OneBucketlistFragment : BaseFragment() {
                     bucketlist_shared_with.text = sharedWithString.insert(0, getString(R.string.shared_with))
                 }
                 if (it.movies.isEmpty()) {
+                    noMovies = true
+                    deleteMoviesFab.visibility = View.GONE
                     bucketlist_no_movies.visibility = View.VISIBLE
                     recycler_bucketlist_movies.visibility = View.GONE
                 } else {
+                    noMovies = false
+                    if (!isInDeleteMode) {
+                        deleteMoviesFab.visibility = View.VISIBLE
+                    }
                     bucketlist_no_movies.visibility = View.GONE
                     recycler_bucketlist_movies.visibility = View.VISIBLE
                 }
@@ -147,7 +155,6 @@ class OneBucketlistFragment : BaseFragment() {
     }
 
     private fun updateControlView(view: View) {
-        deleteMoviesFab.visibility = if (isInDeleteMode) View.GONE else View.VISIBLE
         val actionBar = (activity!! as AppCompatActivity).supportActionBar!!
         actionBar.setDisplayHomeAsUpEnabled(!isInDeleteMode)
         actionBar.setDisplayShowTitleEnabled(!isInDeleteMode)
@@ -156,6 +163,9 @@ class OneBucketlistFragment : BaseFragment() {
         optionsMenu?.findItem(R.id.action_edit)?.isVisible = !isInDeleteMode
         optionsMenu?.findItem(R.id.action_finish)?.isVisible = isInDeleteMode
         addMoviesFab.visibility = if (isInDeleteMode) View.GONE else View.VISIBLE
+        if (!noMovies) {
+            deleteMoviesFab.visibility = if (isInDeleteMode) View.GONE else View.VISIBLE
+        }
         view.movies_delete_hint.visibility = if (isInDeleteMode) View.VISIBLE else View.GONE
         view.header_layout.visibility = if (!isInDeleteMode) View.VISIBLE else View.GONE
         if (isInDeleteMode) {
