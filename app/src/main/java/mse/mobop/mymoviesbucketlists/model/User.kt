@@ -1,23 +1,23 @@
 package mse.mobop.mymoviesbucketlists.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import java.io.Serializable
+import com.google.firebase.auth.FirebaseUser
 
-@Entity
 data class User (
-    @PrimaryKey
-    var username: String,
-    var password: String
+    var id: String? = null,
+    var name: String = ""
 ) {
+    constructor(user: FirebaseUser?) : this(user!!.uid, user.displayName!!)
+
     override fun equals(other: Any?): Boolean {
-        val o = other as User
-        return this.username == o.username && this.password == o.password
+        if (other == null) return false
+        other as User
+        return id == other.id &&
+                name == other.name
     }
 
     override fun hashCode(): Int {
-        var result = username.hashCode()
-        result = 31 * result + password.hashCode()
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + name.hashCode()
         return result
     }
 }

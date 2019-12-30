@@ -35,7 +35,7 @@
     </style>
     <style name="FragmentTitle">
         <item name="android:textSize">40sp</item>
-        <item name="android:layout_marginBottom">40dp</item>
+        <item name="android:layout_marginBottom">20dp</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
     </style>
     <style name="ActivityTitle" parent="FragmentTitle">
@@ -50,19 +50,33 @@
         <item name="android:background">@color/white</item>
     </style>
     <style name="Bucketlist.Name" parent="TextAppearance.AppCompat.Light.SearchResult.Title" />
-    <style name="Bucketlist.CreatedBy" parent="TextAppearance.AppCompat.Light.SearchResult.Subtitle" />
-    <style name="Bucketlist.DateTime" parent="TextAppearance.AppCompat.Caption" />
-
-    <style name="Toolbar" parent="@style/AppTheme.AppBarOverlay">
-        <item name="android:fontFamily">@font/anton</item>
+    <style name="Bucketlist.CreatedBy" parent="TextAppearance.AppCompat.Light.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/lightGray</item>
     </style>
+    <style name="Bucketlist.DateTime" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">@color/lightGray</item>
+    </style>
+
+    <style name="Toolbar" parent="@style/AppTheme.AppBarOverlay"/>
 
     <style name="NavHeaderTitle" parent="@style/TextAppearance.AppCompat.Body1">
         <item name="android:fontFamily">@font/anton</item>
     </style>
 
-
     <style name="BucketlistAddEdit">AddEditBucketlist</style>
 
+    <style name="TransparentDialog" parent="android:Theme.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 
+    <style name="AddedBy" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:color">@color/lightGray</item>
+    </style>
+
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
 </resources>

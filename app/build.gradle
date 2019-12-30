@@ -1,3 +1,8 @@
+def apikeyPropertiesFile = rootProject.file("apikey.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
+
 apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
@@ -20,6 +25,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "THE_MOVIE_DATABASE_API_KEY", apikeyProperties['THE_MOVIE_DATABASE_API_KEY'])
     }
     buildTypes {
         release {
@@ -60,4 +66,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.2.0'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'com.shobhitpuri.custombuttons:google-signin:1.1.0'
+    implementation 'com.google.firebase:firebase-firestore:21.3.1'
+    implementation 'com.firebaseui:firebase-ui-firestore:6.1.0'
+    implementation "com.squareup.retrofit2:retrofit:2.7.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.7.0"
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.0.1'
+    implementation 'at.blogc:expandabletextview:1.0.5'
+    implementation 'com.github.bosphere.android-fadingedgelayout:fadingedgelayout:1.0.0'
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
 }
