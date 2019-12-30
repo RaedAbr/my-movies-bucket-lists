@@ -6,7 +6,6 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_add_edit_bucketlist.*
@@ -16,15 +15,14 @@ import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.SearchUserAdapter
 import mse.mobop.mymoviesbucketlists.firestore.UserFirestore
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
 import mse.mobop.mymoviesbucketlists.model.User
-import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
+import mse.mobop.mymoviesbucketlists.ui.fragment.BaseFragment
 import mse.mobop.mymoviesbucketlists.utils.BucketlistAction
 import kotlin.collections.ArrayList
 
 
-class AddEditBucketlistFragment : Fragment() {
+class AddEditBucketlistFragment : BaseFragment() {
     private lateinit var action: BucketlistAction
     private lateinit var bucketlistViewModel: BucketlistViewModel
-    private var titleListener: OnNavigatingToFragmentListener? = null
     private var usersList = ArrayList<SearchUserAdapter.UserForSearch>()
     private lateinit var simpleAdapterSearch: SearchUserAdapter
 
@@ -51,9 +49,7 @@ class AddEditBucketlistFragment : Fragment() {
         val bucketlistId = bandle.bucketlistId
         action = bandle.action
 
-        if (titleListener != null) {
-            titleListener!!.onNavigatingToFragment(getString(fragmentTitle))
-        }
+        this.fragmentTitle = getString(fragmentTitle)
 
         bucketlistViewModel = BucketlistViewModel(bucketlistId)
         if (action == BucketlistAction.EDIT) {
@@ -197,21 +193,5 @@ class AddEditBucketlistFragment : Fragment() {
     override fun onPause() {
         bucketlistViewModel.stopSnapshotListener()
         super.onPause()
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try {
-            titleListener = context as OnNavigatingToFragmentListener
-        } catch (e: ClassCastException) {
-            throw ClassCastException(
-                "$context must implement OnNavigatingToFragmentListener"
-            )
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        titleListener = null
     }
 }

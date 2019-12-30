@@ -18,11 +18,9 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import mse.mobop.mymoviesbucketlists.utils.ARG_SIGN_IN_SUCCESSFULLY
 import mse.mobop.mymoviesbucketlists.R
-import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
 import org.jetbrains.anko.contentView
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-OnNavigatingToFragmentListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
@@ -92,9 +90,5 @@ OnNavigatingToFragmentListener {
                 menuItem.onNavDestinationSelected(navController)
             }
         }
-    }
-
-    override fun onNavigatingToFragment(title: String?) {
-        supportActionBar!!.title = title
     }
 }

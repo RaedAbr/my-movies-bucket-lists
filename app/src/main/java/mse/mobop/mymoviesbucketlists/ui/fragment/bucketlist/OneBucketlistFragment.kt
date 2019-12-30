@@ -1,12 +1,10 @@
 package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -23,17 +21,16 @@ import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.firestore.BucketlistFirestore
 import mse.mobop.mymoviesbucketlists.model.Movie
 import mse.mobop.mymoviesbucketlists.ui.alrertdialog.DeleteBucketlistAlertDialog
-import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
+import mse.mobop.mymoviesbucketlists.ui.fragment.BaseFragment
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.BucketlistMoviesAdapter
 import mse.mobop.mymoviesbucketlists.utils.dateConverter
 import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
 import java.lang.StringBuilder
 
 @SuppressLint("SetTextI18n", "DefaultLocale", "RestrictedApi")
-class OneBucketlistFragment : Fragment() {
+class OneBucketlistFragment : BaseFragment() {
     private lateinit var bucketlistViewModel: BucketlistViewModel
     private lateinit var bucketlistId: String
-    private var titleListener: OnNavigatingToFragmentListener? = null
     private lateinit var bucketlistMoviesAdapter: BucketlistMoviesAdapter
     private var isInDeleteMode = false
     private var optionsMenu: Menu? = null
@@ -82,9 +79,7 @@ class OneBucketlistFragment : Fragment() {
                 Toast.makeText(context, getString(R.string.bucketlist_deleted_by_owner), Toast.LENGTH_LONG).show()
                 activity!!.onBackPressed()
             } else {
-                if (titleListener != null) {
-                    titleListener!!.onNavigatingToFragment(it.name)
-                }
+                fragmentTitle = it.name
 
                 if (it.createdBy!!.id == FirebaseAuth.getInstance().currentUser!!.uid) {
                     bucketlist_creator_layout.text = getString(R.string.me)
@@ -240,21 +235,5 @@ class OneBucketlistFragment : Fragment() {
     override fun onPause() {
         bucketlistViewModel.stopSnapshotListener()
         super.onPause()
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try {
-            titleListener = context as OnNavigatingToFragmentListener
-        } catch (e: ClassCastException) {
-            throw ClassCastException(
-                "$context must implement OnNavigatingToFragmentListener"
-            )
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        titleListener = null
     }
 }
