@@ -88,13 +88,28 @@
             android:padding="12dp"
             android:text="@string/signup"/>
 
-        <TextView android:id="@+id/link_signin"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:id="@+id/link_signin_layout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="@string/already_have_an_account_sign_in"
-            android:gravity="center"
-            android:textSize="16sp"/>
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/already_have_an_account_sign_in"
+                android:textSize="16sp"
+                android:layout_marginEnd="4dp"/>
+
+            <TextView android:id="@+id/link_signin"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_in"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/progress_circular"

@@ -40,19 +40,16 @@ class SigninActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signin)
 
-        val text = link_signup.text
-        val ss = SpannableString(text)
+        val signUpText = link_signup.text
+        val spannable = SpannableString(signUpText)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 startActivity(Intent(this@SigninActivity, SignupActivity::class.java))
                 finish()
             }
         }
-        val displayedText = getString(R.string.create_one)
-        val startIndex = text.indexOf(displayedText)
-        val endIndex = text.indexOf(displayedText) + displayedText.length
-        ss.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        link_signup.text = ss
+        spannable.setSpan(clickableSpan, 0, signUpText.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        link_signup.text = spannable
         link_signup.movementMethod = LinkMovementMethod.getInstance()
 
         // Get auto complete emails list from shared preferences
@@ -180,14 +177,14 @@ class SigninActivity: AppCompatActivity() {
             progress_circular.visibility = View.VISIBLE
             google_signin_button.visibility = View.GONE
             signin_button.visibility = View.GONE
-            link_signup.visibility = View.GONE
+            link_signup_layout.visibility = View.GONE
             email_textview.isEnabled = false
             password_textview.isEnabled = false
         } else {
             progress_circular.visibility = View.GONE
             google_signin_button.visibility = View.VISIBLE
             signin_button.visibility = View.VISIBLE
-            link_signup.visibility = View.VISIBLE
+            link_signup_layout.visibility = View.VISIBLE
             email_textview.isEnabled = true
             password_textview.isEnabled = true
         }

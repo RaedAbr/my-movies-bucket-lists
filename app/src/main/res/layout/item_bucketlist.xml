@@ -43,11 +43,11 @@
                     android:drawablePadding="3dp"
                     android:drawableStart="@drawable/ic_time"/>
                 <LinearLayout
+                    android:id="@+id/bucketlist_creator_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center">
                     <ImageView
-                        android:id="@+id/bucketlist_creator_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:src="@drawable/ic_person"

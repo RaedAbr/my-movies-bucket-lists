@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Canvas
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -230,11 +232,6 @@ class BucketlistFragment : Fragment() {
         // hide the keyboard if opened (after finishing editing for example)
         hideKeyboardFrom(activity!!, view!!)
         super.onResume()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        activity!!.menuInflater.inflate(R.menu.main_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onAttach(context: Context) {

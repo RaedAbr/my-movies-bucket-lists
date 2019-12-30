@@ -141,7 +141,7 @@ class AddEditBucketlistFragment : Fragment() {
             R.id.action_save -> {
                 val ret: Boolean = when(action) {
                     BucketlistAction.ADD -> {
-                        saveNewBucketlist()
+                        addNewBucketlist()
                     }
                     else -> {
                         updateBucketlist()
@@ -175,7 +175,7 @@ class AddEditBucketlistFragment : Fragment() {
         return true
     }
 
-    private fun saveNewBucketlist(): Boolean {
+    private fun addNewBucketlist(): Boolean {
         val listName = bucketlist_name.text.toString()
         val currentUser = FirebaseAuth.getInstance().currentUser
 
@@ -190,7 +190,7 @@ class AddEditBucketlistFragment : Fragment() {
         bucketlistViewModel.insert(
             Bucketlist(name = listName, createdBy = User(currentUser), sharedWith = selectedUsers, sharedWithIds = sharedWithIds)
         )
-        Toast.makeText(context, getString(R.string.new_movie_saved), Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, getString(R.string.new_movie_added), Toast.LENGTH_SHORT).show()
         return true
     }
 

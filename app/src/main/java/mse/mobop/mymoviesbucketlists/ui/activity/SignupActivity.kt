@@ -26,8 +26,8 @@ class SignupActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
-        val text = link_signin.text
-        val ss = SpannableString(text)
+        val signInText = link_signin.text
+        val spannable = SpannableString(signInText)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 startActivity(Intent(this@SignupActivity, SigninActivity::class.java))
@@ -35,11 +35,8 @@ class SignupActivity: AppCompatActivity() {
                 finish()
             }
         }
-        val displayedText = getString(R.string.sign_in)
-        val startIndex = text.indexOf(displayedText)
-        val endIndex = text.indexOf(displayedText) + displayedText.length
-        ss.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        link_signin.text = ss
+        spannable.setSpan(clickableSpan, 0, signInText.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        link_signin.text = spannable
         link_signin.movementMethod = LinkMovementMethod.getInstance()
 
         signup_button.setOnClickListener {
@@ -107,7 +104,7 @@ class SignupActivity: AppCompatActivity() {
         if (progress_circular.visibility == View.GONE) {
             progress_circular.visibility = View.VISIBLE
             signup_button.visibility = View.GONE
-            link_signin.visibility = View.GONE
+            link_signin_layout.visibility = View.GONE
             username_textview.isEnabled = false
             email_textview.isEnabled = false
             password_textview.isEnabled = false
@@ -115,7 +112,7 @@ class SignupActivity: AppCompatActivity() {
         } else {
             progress_circular.visibility = View.GONE
             signup_button.visibility = View.VISIBLE
-            link_signin.visibility = View.VISIBLE
+            link_signin_layout.visibility = View.VISIBLE
             username_textview.isEnabled = true
             email_textview.isEnabled = true
             password_textview.isEnabled = true
