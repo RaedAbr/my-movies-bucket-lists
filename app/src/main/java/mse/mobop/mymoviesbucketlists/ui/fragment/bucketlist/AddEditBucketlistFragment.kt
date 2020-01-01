@@ -29,11 +29,6 @@ class AddEditBucketlistFragment : BaseFragment() {
     private lateinit var usersListAdapter: SearchUserAdapter
     private val searchUsersResult = ArrayList<User>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,8 +36,7 @@ class AddEditBucketlistFragment : BaseFragment() {
         // set the top left toolbar icon
         (activity!! as AppCompatActivity).supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_close)
 
-        // Inflate the layout for this fragment
-        val root = inflater.inflate(R.layout.fragment_add_edit_bucketlist, container, false)
+        setHasOptionsMenu(true)
 
         // get bandle args from parent fragment
         val bandle = AddEditBucketlistFragmentArgs.fromBundle(arguments!!)
@@ -51,6 +45,9 @@ class AddEditBucketlistFragment : BaseFragment() {
         action = bandle.action
 
         this.fragmentTitle = getString(fragmentTitle)
+
+        // Inflate the layout for this fragment
+        val root = inflater.inflate(R.layout.fragment_add_edit_bucketlist, container, false)
 
         bucketlistViewModel = BucketlistViewModel(bucketlistId)
         if (action == BucketlistAction.EDIT) {

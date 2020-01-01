@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add_movies">Ajouter des films</string>
-    <string name="added_by">Ajouté par</string>
     <string name="already_have_an_account_sign_in">Vous avez déjà un compte ?</string>
     <string name="bucketlist_deleted">Bucket list supprimée</string>
     <string name="bucketlist_deleted_by_owner">la bucket list a été supprimée par son propriétaire</string>
@@ -49,7 +48,6 @@
     <string name="sign_out">Se déconnecter</string>
     <string name="signed_up_successfully">Enregistré avec succès</string>
     <string name="signup">S\'enregistrer</string>
-    <string name="snackbar_text">Bucket list supprimée</string>
     <string name="type_movie_title">Saisir le titre du film</string>
     <string name="username">Nom d\'utilisateur</string>
     <string name="username_constaints">Le nom d\'utilisateur doit être alphanumérique de longueur 3 à 16, commençant par un caractère</string>

@@ -149,10 +149,11 @@ class BucketlistFragment : BaseFragment() {
     }
 
     private inner class OnBucketlistItemClickListener: BucketlistAdapter.OnItemClickListener {
-        override fun onItemClick(bucketlistId: String) {
+        override fun onItemClick(bucketlistId: String, bucketlistOwner: String) {
             val direction =
                 BucketlistFragmentDirections.actionBucketlistsFragmentToOneBucketlistFragment(
-                    bucketlistId = bucketlistId
+                    bucketlistId = bucketlistId,
+                    owner = bucketlistOwner
                 )
             findNavController().navigate(direction)
         }

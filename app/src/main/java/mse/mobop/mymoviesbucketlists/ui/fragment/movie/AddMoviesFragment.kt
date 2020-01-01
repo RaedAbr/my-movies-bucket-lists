@@ -7,7 +7,6 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -73,11 +72,6 @@ class AddMoviesFragment: BaseFragment() {
     private var movieService: MovieService? = null
     private var apiCall = ::callGetPopularMoviesApi
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -85,12 +79,15 @@ class AddMoviesFragment: BaseFragment() {
         // set the top left toolbar icon
         (activity as AppCompatActivity).supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
 
-        val root = inflater.inflate(R.layout.fragment_add_movies, container, false)
+        setHasOptionsMenu(true)
 
         fragmentTitle = getString(R.string.add_movies)
 
         val bandle = AddMoviesFragmentArgs.fromBundle(arguments!!)
         val bucketlistId = bandle.bucketlistId
+
+        val root = inflater.inflate(R.layout.fragment_add_movies, container, false)
+
         bucketlistViewModel = BucketlistViewModel(bucketlistId)
         bucketlistViewModel.bucketlist.observe(viewLifecycleOwner, Observer {
             if (it == null) { // this means that the data has been deleted by another user
