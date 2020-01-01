@@ -4,13 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.nav_header_main.view.*
 import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.utils.ARG_SIGN_IN_SUCCESSFULLY
 import mse.mobop.mymoviesbucketlists.utils.ARG_THEME_CHANGED
-import org.jetbrains.anko.contentView
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -33,8 +32,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         val fromSignin = intent.getStringExtra(ARG_SIGN_IN_SUCCESSFULLY)
         if (fromSignin != null) {
-            Snackbar.make(contentView!!,
-                getString(R.string.welcome) + " " + user!!.displayName, Snackbar.LENGTH_SHORT)
+            Toast.makeText(this,
+                getString(R.string.welcome) + " " + user!!.displayName, Toast.LENGTH_SHORT)
                 .show()
             intent.removeExtra(ARG_SIGN_IN_SUCCESSFULLY)
         }
