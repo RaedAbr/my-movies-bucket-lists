@@ -5,9 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:layout_marginBottom="@dimen/activity_margin_half"
-    style="@style/BucketlistCard">
+    style="@style/Card">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_layout"
@@ -19,7 +18,7 @@
             android:id="@+id/poster_card_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/placeholder_grey"
+            app:cardBackgroundColor="?attr/colorPosterBackground"
             app:cardCornerRadius="3dp"
             app:cardPreventCornerOverlap="false"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -30,7 +29,8 @@
                 android:id="@+id/movie_progress"
                 android:layout_width="@dimen/activity_margin"
                 android:layout_height="@dimen/activity_margin"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/colorPrimaryDefault"/>
 
             <TextView
                 android:id="@+id/movie_no_poster"
@@ -50,7 +50,7 @@
 
         <TextView
             android:id="@+id/movie_title"
-            style="@style/TextAppearance.AppCompat.Subhead"
+            style="@style/Card.SubTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
-            android:drawableTint="@color/lightGray"
+            android:drawableTint="?attr/colorLightGray"
             android:drawableStart="@drawable/ic_person"
             android:text="@string/username"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +29,8 @@ import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.model.Movie
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG_POSTER
+import mse.mobop.mymoviesbucketlists.utils.getAttributeColor
+import mse.mobop.mymoviesbucketlists.utils.getAttributeDrawable
 
 
 @SuppressLint("DefaultLocale", "InflateParams", "SetTextI18n")
@@ -153,9 +156,9 @@ class MoviesPaginationAdapter(
 
             movieItemView.movie_selected_checkbox.isChecked = movie.isSelected
             if (movie.isSelected) {
-                movieItemView.setBackgroundResource(R.drawable.background_movie_selected)
+                movieItemView.background = context.getDrawable(R.drawable.background_movie_selected)
             } else {
-                movieItemView.setBackgroundResource(R.color.white)
+                movieItemView.background = getAttributeDrawable(context, R.attr.colorCardBackground)
             }
             if (movie.isExpanded) {
                 mMovieDesc.ellipsize = null

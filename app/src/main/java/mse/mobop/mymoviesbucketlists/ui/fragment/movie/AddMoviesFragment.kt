@@ -29,6 +29,7 @@ import mse.mobop.mymoviesbucketlists.ui.fragment.BaseFragment
 import mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist.BucketlistViewModel
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.MoviesPaginationScrollListener
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.MoviesPaginationAdapter
+import mse.mobop.mymoviesbucketlists.utils.getAttributeColor
 import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
 import retrofit2.Call
 import retrofit2.Callback
@@ -170,8 +171,8 @@ class AddMoviesFragment: BaseFragment() {
         val searchView: SearchView = root!!.movie_search
 
         val queryTextView: SearchView.SearchAutoComplete = searchView.findViewById(R.id.search_src_text)
-        queryTextView.setTextColor(ContextCompat.getColor(searchView.context, R.color.white))
-        queryTextView.setHintTextColor(ContextCompat.getColor(searchView.context, R.color.lightGray))
+        queryTextView.setTextColor(getAttributeColor(searchView.context, R.attr.colorWhite))
+        queryTextView.setHintTextColor(getAttributeColor(searchView.context, R.attr.colorLightGray))
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {

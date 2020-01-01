@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE
 import androidx.recyclerview.widget.RecyclerView
 import mse.mobop.mymoviesbucketlists.R
+import mse.mobop.mymoviesbucketlists.utils.getAttributeColor
 import kotlin.math.max
 import kotlin.math.min
 
@@ -179,7 +180,7 @@ class ItemSwipeController(
             itemView.right,
             itemView.bottom
         )
-        p.color = context.getColor(R.color.colorPrimaryDark)
+        p.color = getAttributeColor(context, R.attr.colorPrimaryDark)
         c.drawCircle(
             rightButton.exactCenterX(),
             rightButton.exactCenterY(),

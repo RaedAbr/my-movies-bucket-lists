@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="@color/colorBackground">
+        android:background="?attr/colorAppBackground">
 
         <ImageView
             android:id="@+id/previous_video"
@@ -23,7 +23,7 @@
             android:layout_height="50dp"
             android:src="@drawable/ic_keyboard_arrow_left"
             tools:ignore="ContentDescription"
-            android:tint="@color/colorPrimaryDark"/>
+            android:tint="@color/colorPrimaryDefault"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -37,13 +37,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="Video type"
+                android:textColor="?attr/colorLightGray"
                 android:textAlignment="center"/>
 
             <TextView
                 android:id="@+id/video_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="?attr/colorTitle"
                 tools:text="Video title"
                 android:textAlignment="center"/>
         </LinearLayout>
@@ -54,7 +55,7 @@
             android:layout_height="50dp"
             android:src="@drawable/ic_keyboard_arrow_right"
             tools:ignore="ContentDescription"
-            android:tint="@color/colorPrimaryDark"/>
+            android:tint="@color/colorPrimaryDefault"/>
 
     </LinearLayout>
 

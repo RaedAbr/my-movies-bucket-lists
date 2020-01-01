@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#006685</color>
-    <color name="colorPrimaryDark">#003957</color>
-    <color name="white">#fff</color>
-    <color name="black">#000</color>
-    <color name="gray">#858585</color>
-    <color name="lightGray">#ACACAC</color>
-    <color name="veryLightGray">#CACACA</color>
-    <color name="colorBackground">#ECF4FF</color>
+<!--    Default theme-->
+    <color name="colorPrimaryDefault">#006685</color>
+    <color name="colorPrimaryDefaultDark">#003957</color>
+    <color name="colorAppBackground">#ECF4FF</color>
+    <color name="colorTitle">#121212</color>
+    <color name="colorWhite">#fff</color>
+    <color name="colorCardBackground">#fff</color>
+    <color name="colorLightGray">#ACACAC</color>
+    <color name="colorVeryLightGray">#CACACA</color>
     <color name="colorHeader">#3F637C</color>
-    <color name="placeholder_grey">#AAADC4</color>
-    <color name="darkRed">#A00000</color>
+    <color name="colorPosterBackground">#AAADC4</color>
+
+<!--    Dark theme-->
+    <color name="colorPrimaryDark">#003957</color>
+    <color name="colorAppBackgroundDark">#121212</color>
+    <color name="colorTitleDark">#fff</color>
+    <color name="colorCardBackgroundDark">#2B2B2B</color>
+    <color name="colorHeaderDark">#2B4D69</color>
 </resources>

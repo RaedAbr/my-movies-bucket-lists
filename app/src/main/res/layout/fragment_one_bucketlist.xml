@@ -19,7 +19,7 @@
             android:orientation="vertical"
             android:elevation="4dp"
             android:padding="10dp"
-            android:background="@color/colorHeader"
+            android:background="?attr/colorHeader"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -42,7 +42,7 @@
                         android:paddingEnd="3dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_person"
-                        android:tint="@color/white"
+                        android:tint="?attr/colorWhite"
                         tools:ignore="ContentDescription" />
 
                     <TextView
@@ -51,7 +51,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
                         android:text="@string/created_by"
-                        android:textColor="@color/white" />
+                        android:textColor="?attr/colorWhite" />
 
                     <TextView
                         android:id="@+id/bucketlist_creator_layout"
@@ -61,7 +61,7 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="@string/creator"
-                        android:textColor="@color/white" />
+                        android:textColor="?attr/colorWhite" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -70,16 +70,16 @@
 
                     <TextView
                         android:id="@+id/bucketlist_date"
-                        style="@style/Bucketlist.DateTime"
+                        style="@style/Card.DateTime"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:drawableStart="@drawable/ic_time"
                         android:drawablePadding="3dp"
-                        android:drawableTint="@color/veryLightGray"
+                        android:drawableTint="?attr/colorVeryLightGray"
                         android:text="@string/_23_11_2019"
-                        android:textColor="@color/veryLightGray" />
+                        android:textColor="?attr/colorVeryLightGray" />
 
                     <TextView
                         android:id="@+id/bucketlist_movies_summary"
@@ -91,15 +91,15 @@
 
                 <TextView
                     android:id="@+id/bucketlist_shared_with"
-                    style="@style/Bucketlist.DateTime"
+                    style="@style/Card.DateTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableStart="@drawable/ic_group"
                     android:drawablePadding="3dp"
-                    android:drawableTint="@color/veryLightGray"
+                    android:drawableTint="?attr/colorVeryLightGray"
                     android:singleLine="false"
                     android:text="@string/shared_with_me"
-                    android:textColor="@color/veryLightGray" />
+                    android:textColor="?attr/colorVeryLightGray" />
             </LinearLayout>
 
 
@@ -111,7 +111,7 @@
                 android:gravity="center"
                 android:text="@string/click_on_movies_to_delete"
                 android:padding="@dimen/fab_margin"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorWhite"
                 android:elevation="6dp"
                 android:visibility="gone"
                 tools:visibility="visible"/>
@@ -141,13 +141,15 @@
                 android:text="@string/no_movies_in_this_bucket_list"
                 android:layout_margin="8dp"
                 android:visibility="gone"
-                tools:visibility="visible"/>
+                tools:visibility="visible"
+                android:textColor="?attr/colorLightGray"/>
 
             <ProgressBar
                 android:id="@+id/bucketlist_movies_progressbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/colorPrimaryDefault"/>
 
         </FrameLayout>
 
@@ -159,7 +161,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_add" />
+        app:srcCompat="@drawable/ic_add"
+        app:backgroundTint="@color/colorPrimaryDefault"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/delete_movies_fab"
@@ -167,5 +170,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_minus" />
+        app:srcCompat="@drawable/ic_minus"
+        app:backgroundTint="@color/colorPrimaryDefault" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

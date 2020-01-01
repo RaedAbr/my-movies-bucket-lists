@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/colorBackground">
+        android:background="?attr/colorAppBackground">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -38,7 +38,8 @@
                     android:id="@+id/movie_progress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/colorPrimaryDefault"/>
 
                 <TextView
                     android:id="@+id/no_backdrop"
@@ -46,13 +47,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:visibility="gone"
+                    tools:visibility="visible"
                     android:text="@string/no_backdrop_available"
                     android:layout_centerInParent="true"/>
             </com.bosphere.fadingedgelayout.FadingEdgeLayout>
 
             <TextView
                 android:id="@+id/movie_title"
-                style="@style/TextAppearance.AppCompat.Subhead"
+                style="@style/Card.SubTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
@@ -78,6 +80,7 @@
         <TextView
             android:id="@+id/movie_desc"
             style="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="?attr/colorLightGray"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:justificationMode="inter_word"

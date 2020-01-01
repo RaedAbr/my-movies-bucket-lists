@@ -6,14 +6,14 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:gravity="center_vertical"
-    tools:background="@color/colorHeader">
+    tools:background="?attr/colorHeader">
 
     <ImageView
         android:id="@+id/tabitem_icon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitCenter"
-        android:tint="@color/white"
+        android:tint="?attr/colorWhite"
         android:src="@drawable/ic_search"
         tools:ignore="ContentDescription" />
 
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textAllCaps="true"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorWhite"
         android:textStyle="bold"
         android:textSize="12sp"
         android:text="@string/search" />

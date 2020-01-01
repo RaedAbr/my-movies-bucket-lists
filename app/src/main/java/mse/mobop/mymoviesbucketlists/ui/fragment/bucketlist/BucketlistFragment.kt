@@ -3,9 +3,7 @@ package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 import android.content.DialogInterface
 import android.graphics.Canvas
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -31,18 +29,13 @@ import mse.mobop.mymoviesbucketlists.utils.BucketlistAction
 import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
 
 
-class BucketlistFragment : /*Fragment()*/ BaseFragment() {
+class BucketlistFragment : BaseFragment() {
 
     private lateinit var recyclerViewOwned: RecyclerView
     private lateinit var recyclerViewShared: RecyclerView
 
     private lateinit var recyclerAdapterOwned: BucketlistAdapter
     private lateinit var recyclerAdapterShared: BucketlistAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,6 +44,8 @@ class BucketlistFragment : /*Fragment()*/ BaseFragment() {
     ): View? {
         // set the top left toolbar icon
         (activity!! as AppCompatActivity).supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_open_nav_menu)
+
+        setHasOptionsMenu(true)
 
         val root = inflater.inflate(R.layout.fragment_bucketlists, container, false)
 
@@ -227,4 +222,18 @@ class BucketlistFragment : /*Fragment()*/ BaseFragment() {
         hideKeyboardFrom(activity!!, view!!)
         super.onResume()
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_settings) {
+            findNavController().navigate(R.id.action_BucketlistFragment_to_settingsFragment)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 }
