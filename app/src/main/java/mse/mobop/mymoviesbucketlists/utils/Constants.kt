@@ -1,7 +1,10 @@
 package mse.mobop.mymoviesbucketlists.utils
 
-// Bundle arguments between fragments
+import com.google.firebase.auth.FirebaseAuth
+
+// Intents extra arguments
 const val ARG_SIGN_IN_SUCCESSFULLY = "mse.mobop.ui.activity.signin"
+const val ARG_THEME_CHANGED = "mse.mobop.ui.fragment"
 
 // Activities reauest codes
 const val RC_GOOGLE_SIGN_IN: Int = 1
@@ -23,3 +26,6 @@ const val BASE_URL_IMG_BACKDROP = "https://image.tmdb.org/t/p/w780"
 // For shared preferences
 const val SIGN_IN_PREF = "mse.mobop.ui.activity.signin"
 const val SING_IN_EMAIL = "mse.mobop.ui.activity.signin.email"
+const val THEME_PREF = "app.theme"
+val CURRENT_THEME
+    get() = "app.theme.current." + FirebaseAuth.getInstance().currentUser!!.uid

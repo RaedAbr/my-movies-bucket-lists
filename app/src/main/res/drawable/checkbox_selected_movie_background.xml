@@ -9,7 +9,7 @@
             <size
                 android:width="14dp"
                 android:height="14dp" />
-            <solid android:color="@color/colorPrimaryDark" />
+            <solid android:color="?attr/colorMovieSelected" />
         </shape>
     </item>
     <item
@@ -17,7 +17,7 @@
         android:left="1dp"
         android:right="1dp"
         android:top="1dp"
-        android:drawable="@drawable/ic_check"
+        android:drawable="@drawable/ic_check_movie"
         android:width="14dp"
         android:height="14dp"/>
 </layer-list>

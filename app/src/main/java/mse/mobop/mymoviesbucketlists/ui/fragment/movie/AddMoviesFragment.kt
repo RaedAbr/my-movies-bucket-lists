@@ -1,6 +1,5 @@
 package mse.mobop.mymoviesbucketlists.ui.fragment.movie
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -9,7 +8,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -27,26 +25,24 @@ import mse.mobop.mymoviesbucketlists.model.User
 import mse.mobop.mymoviesbucketlists.tmdapi.MovieApi
 import mse.mobop.mymoviesbucketlists.tmdapi.MovieService
 import mse.mobop.mymoviesbucketlists.ui.alrertdialog.DisplayMovieTrailerAlertDialog
-import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
+import mse.mobop.mymoviesbucketlists.ui.fragment.BaseFragment
 import mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist.BucketlistViewModel
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.MoviesPaginationScrollListener
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.MoviesPaginationAdapter
+import mse.mobop.mymoviesbucketlists.utils.getAttributeColor
 import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
-import kotlin.collections.ArrayList
 
-class AddMoviesFragment: Fragment() {
+class AddMoviesFragment: BaseFragment() {
     companion object {
         private const val PAGE_START = 1
         private const val TOTAL_PAGES = 1
     }
 
     private lateinit var bucketlistViewModel: BucketlistViewModel
-
-    private var titleListener: OnNavigatingToFragmentListener? = null
 
     private var recyclerAdapter: MoviesPaginationAdapter? = null
     private var optionsMenu: Menu? = null
@@ -91,9 +87,7 @@ class AddMoviesFragment: Fragment() {
 
         val root = inflater.inflate(R.layout.fragment_add_movies, container, false)
 
-        if (titleListener != null) {
-            titleListener!!.onNavigatingToFragment(getString(R.string.add_movies))
-        }
+        fragmentTitle = getString(R.string.add_movies)
 
         val bandle = AddMoviesFragmentArgs.fromBundle(arguments!!)
         val bucketlistId = bandle.bucketlistId
@@ -177,8 +171,8 @@ class AddMoviesFragment: Fragment() {
         val searchView: SearchView = root!!.movie_search
 
         val queryTextView: SearchView.SearchAutoComplete = searchView.findViewById(R.id.search_src_text)
-        queryTextView.setTextColor(ContextCompat.getColor(searchView.context, R.color.white))
-        queryTextView.setHintTextColor(ContextCompat.getColor(searchView.context, R.color.lightGray))
+        queryTextView.setTextColor(getAttributeColor(searchView.context, R.attr.colorWhite))
+        queryTextView.setHintTextColor(getAttributeColor(searchView.context, R.attr.colorLightGray))
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -371,21 +365,5 @@ class AddMoviesFragment: Fragment() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try {
-            titleListener = context as OnNavigatingToFragmentListener
-        } catch (e: ClassCastException) {
-            throw ClassCastException(
-                "$context must implement OnNavigatingToFragmentListener"
-            )
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        titleListener = null
     }
 }

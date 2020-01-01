@@ -21,7 +21,7 @@
                 android:layout_height="25dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:background="@color/colorHeader"
+                android:background="?attr/colorHeader"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp">
                 <TextView
@@ -29,7 +29,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/created_by_me"
-                    android:textColor="@color/white"/>
+                    android:textColor="?attr/colorWhite"/>
                 <TextView
                     android:id="@+id/owned_header_nbr"
                     android:layout_width="wrap_content"
@@ -37,14 +37,14 @@
                     android:visibility="gone"
                     tools:visibility="visible"
                     android:text="@string/_2"
-                    android:textColor="@color/colorPrimaryDark"/>
+                    android:textColor="?attr/colorPrimaryDark"/>
                 <TextView
                     android:id="@+id/owned_header_arrow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:text="@string/down_arrow"
-                    android:textColor="@color/colorPrimaryDark"/>
+                    android:textColor="?attr/colorPrimaryDark"/>
             </LinearLayout>
 
             <include layout="@layout/recycler_bucketlists_owned"
@@ -58,7 +58,7 @@
                 android:layout_height="25dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:background="@color/colorHeader"
+                android:background="?attr/colorHeader"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:layout_marginTop="1dp">
@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/shared_with_me"
-                    android:textColor="@color/white"/>
+                    android:textColor="?attr/colorWhite"/>
                 <TextView
                     android:id="@+id/shared_header_nbr"
                     android:layout_width="wrap_content"
@@ -75,14 +75,14 @@
                     android:visibility="gone"
                     tools:visibility="visible"
                     android:text="@string/_2"
-                    android:textColor="@color/colorPrimaryDark"/>
+                    android:textColor="?attr/colorPrimaryDark"/>
                 <TextView
                     android:id="@+id/shared_header_arrow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:text="@string/down_arrow"
-                    android:textColor="@color/colorPrimaryDark"/>
+                    android:textColor="?attr/colorPrimaryDark"/>
             </LinearLayout>
 
             <include layout="@layout/recycler_bucketlists_shared"
@@ -98,6 +98,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@color/colorPrimaryDefault"
         app:srcCompat="@drawable/ic_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

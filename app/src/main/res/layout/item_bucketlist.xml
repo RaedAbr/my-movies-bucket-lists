@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/BucketlistCard">
+    style="@style/Card">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/list_name"
-                style="@style/Bucketlist.Name"
+                style="@style/Card.Title"
                 android:ellipsize="end"
                 android:maxLines="1"/>
 
@@ -37,9 +37,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/_23_11_2019"
-                    style="@style/Bucketlist.DateTime"
+                    style="@style/Card.DateTime"
                     android:layout_marginEnd="5dp"
-                    android:drawableTint="@color/lightGray"
+                    android:drawableTint="?attr/colorLightGray"
                     android:drawablePadding="3dp"
                     android:drawableStart="@drawable/ic_time"/>
                 <LinearLayout
@@ -51,7 +51,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:src="@drawable/ic_person"
-                        android:tint="@color/lightGray"
+                        android:tint="?attr/colorLightGray"
                         android:scaleType="centerCrop"
                         tools:ignore="ContentDescription" />
                     <TextView
@@ -62,19 +62,19 @@
                         android:textStyle="bold"
                         android:maxLines="1"
                         android:ellipsize="end"
-                        style="@style/Bucketlist.DateTime"/>
+                        style="@style/Card.DateTime"/>
                 </LinearLayout>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/bucketlist_shared_with"
-                style="@style/Bucketlist.DateTime"
+                style="@style/Card.DateTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="false"
-                android:textColor="@color/lightGray"
+                android:textColor="?attr/colorLightGray"
                 android:text="@string/shared_with_me"
-                android:drawableTint="@color/veryLightGray"
+                android:drawableTint="?attr/colorVeryLightGray"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:drawablePadding="3dp"
@@ -87,7 +87,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             tools:text="8"
-            android:drawableTint="@color/veryLightGray"
+            android:drawableTint="?attr/colorVeryLightGray"
             android:drawablePadding="3dp"
             android:drawableEnd="@drawable/ic_movie"
             style="@style/Bucketlist.CreatedBy"/>

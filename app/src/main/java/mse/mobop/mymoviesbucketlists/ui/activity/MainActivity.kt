@@ -4,25 +4,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import com.google.android.material.navigation.NavigationView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
 import androidx.navigation.ui.onNavDestinationSelected
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
-import mse.mobop.mymoviesbucketlists.utils.ARG_SIGN_IN_SUCCESSFULLY
 import mse.mobop.mymoviesbucketlists.R
-import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
+import mse.mobop.mymoviesbucketlists.utils.ARG_SIGN_IN_SUCCESSFULLY
+import mse.mobop.mymoviesbucketlists.utils.ARG_THEME_CHANGED
 import org.jetbrains.anko.contentView
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-OnNavigatingToFragmentListener {
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
@@ -30,6 +28,7 @@ OnNavigatingToFragmentListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
 
         val fromSignin = intent.getStringExtra(ARG_SIGN_IN_SUCCESSFULLY)
@@ -37,6 +36,7 @@ OnNavigatingToFragmentListener {
             Snackbar.make(contentView!!,
                 getString(R.string.welcome) + " " + user!!.displayName, Snackbar.LENGTH_SHORT)
                 .show()
+            intent.removeExtra(ARG_SIGN_IN_SUCCESSFULLY)
         }
 
         setSupportActionBar(toolbar)
@@ -52,6 +52,13 @@ OnNavigatingToFragmentListener {
         nav_view.setNavigationItemSelectedListener(this)
         nav_view.getHeaderView(0).username_textview.text = user!!.displayName
         navController = findNavController(R.id.nav_host_fragment)
+
+        // Check if the start activity action comes from the SettingsFragment
+        val fromSettings = intent.getStringExtra(ARG_THEME_CHANGED)
+        if (fromSettings != null) {
+            navController.navigate(R.id.action_BucketlistFragment_to_settingsFragment)
+            intent.removeExtra(ARG_THEME_CHANGED)
+        }
     }
 
     override fun onStart() {
@@ -92,9 +99,5 @@ OnNavigatingToFragmentListener {
                 menuItem.onNavDestinationSelected(navController)
             }
         }
-    }
-
-    override fun onNavigatingToFragment(title: String?) {
-        supportActionBar!!.title = title
     }
 }

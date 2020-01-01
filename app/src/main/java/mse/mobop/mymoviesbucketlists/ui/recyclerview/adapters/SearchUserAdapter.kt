@@ -5,15 +5,40 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import com.google.firebase.firestore.Exclude
 import kotlinx.android.synthetic.main.item_user.view.*
+import mse.mobop.mymoviesbucketlists.model.User
 
-class SearchUserAdapter(context: Context,
-                        private val viewRes: Int,
-                        private val usersList: ArrayList<UserForSearch>):
-    ArrayAdapter<SearchUserAdapter.UserForSearch>(context, viewRes, usersList){
+
+open class SearchUserAdapter(
+    context: Context,
+    private val viewRes: Int,
+    private val usersList: ArrayList<User>
+): ArrayAdapter<User>(context, viewRes, usersList){
 
     private var listener: OnCheckedChangeListener? = null
+
+    fun addAllUsers(list: ArrayList<User>) {
+        usersList.addAll(list)
+        notifyDataSetChanged()
+    }
+
+    fun addUser(user: User) {
+        usersList.add(0, user)
+        notifyDataSetChanged()
+    }
+
+    fun countWhere(function: (User) -> Boolean): Int {
+        return usersList.count { function(it) }
+    }
+
+    fun items(): ArrayList<User> {
+        return usersList
+    }
+
+    fun removeUser(user: User) {
+        usersList.removeIf { it.id == user.id }
+        notifyDataSetChanged()
+    }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var view = convertView
@@ -24,12 +49,10 @@ class SearchUserAdapter(context: Context,
         val user = usersList[position]
 
         view!!.username_textview.text = user.name
+        view.is_user_selected.isChecked = true
 
-        view.is_user_selected.setOnCheckedChangeListener(null)
-        view.is_user_selected.isChecked = user.isSelected
-
-        view.is_user_selected.setOnCheckedChangeListener { _, isChecked ->
-            listener!!.onCheckedChange(user, isChecked)
+        view.is_user_selected.setOnCheckedChangeListener { _, _ ->
+            listener?.onCheckedChange(user)
         }
 
         return view
@@ -40,13 +63,7 @@ class SearchUserAdapter(context: Context,
     }
 
     interface OnCheckedChangeListener {
-        fun onCheckedChange(user: UserForSearch, isChecked: Boolean)
+        fun onCheckedChange(user: User)
     }
-
-    data class UserForSearch(
-        var id: String? = null,
-        var name: String = "",
-        @Exclude var isSelected: Boolean = false
-    )
 
 }

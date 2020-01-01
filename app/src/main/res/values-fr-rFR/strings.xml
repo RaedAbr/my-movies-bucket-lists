@@ -59,4 +59,7 @@
     <string name="you_have_no_bucket_list">Vous n\'avez pas de bucket list</string>
     <string name="share_with">Partager avec…</string>
     <string name="sign_in_with_google">Se connecter avec Google</string>
+    <string name="settings">Paramètres</string>
+    <string name="enable_dark_theme">Activer le thème sombre</string>
+    <string name="app_theme">Thème de l\'application</string>
 </resources>

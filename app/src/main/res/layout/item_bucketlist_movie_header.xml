@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="25dp"
     android:gravity="center_vertical"
-    android:background="@color/colorHeader"
+    android:background="?attr/colorHeader"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
     android:text="@string/watched"
-    android:textColor="@color/white"/>
+    android:textColor="?attr/colorWhite"/>

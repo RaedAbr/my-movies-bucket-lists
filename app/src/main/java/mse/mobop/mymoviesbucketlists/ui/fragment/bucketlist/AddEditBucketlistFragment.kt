@@ -2,33 +2,32 @@ package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_add_edit_bucketlist.*
 import kotlinx.android.synthetic.main.fragment_add_edit_bucketlist.view.*
 import mse.mobop.mymoviesbucketlists.*
-import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.SearchUserAdapter
 import mse.mobop.mymoviesbucketlists.firestore.UserFirestore
 import mse.mobop.mymoviesbucketlists.model.Bucketlist
 import mse.mobop.mymoviesbucketlists.model.User
-import mse.mobop.mymoviesbucketlists.ui.fragment.OnNavigatingToFragmentListener
+import mse.mobop.mymoviesbucketlists.ui.fragment.BaseFragment
+import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.SearchUserAdapter
 import mse.mobop.mymoviesbucketlists.utils.BucketlistAction
 import kotlin.collections.ArrayList
 
 
-class AddEditBucketlistFragment : Fragment() {
+class AddEditBucketlistFragment : BaseFragment() {
     private lateinit var action: BucketlistAction
     private lateinit var bucketlistViewModel: BucketlistViewModel
-    private var titleListener: OnNavigatingToFragmentListener? = null
-    private var usersList = ArrayList<SearchUserAdapter.UserForSearch>()
-    private lateinit var simpleAdapterSearch: SearchUserAdapter
-
-    private var selectedUsersList: ArrayList<SearchUserAdapter.UserForSearch> = ArrayList()
+    private lateinit var usersListAdapter: SearchUserAdapter
+    private val searchUsersResult = ArrayList<User>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,40 +50,25 @@ class AddEditBucketlistFragment : Fragment() {
         val bucketlistId = bandle.bucketlistId
         action = bandle.action
 
-        if (titleListener != null) {
-            titleListener!!.onNavigatingToFragment(getString(fragmentTitle))
-        }
+        this.fragmentTitle = getString(fragmentTitle)
 
         bucketlistViewModel = BucketlistViewModel(bucketlistId)
         if (action == BucketlistAction.EDIT) {
             bucketlistViewModel.bucketlist.observe(viewLifecycleOwner, Observer {
                 bucketlist_name.setText(it.name)
-                it.sharedWith.forEach {user ->
-                    selectedUsersList.add(SearchUserAdapter.UserForSearch(
-                        user.id,
-                        user.name,
-                        true
-                    ))
-                }
+                usersListAdapter.addAllUsers(it.sharedWith as ArrayList<User>)
             })
         }
 
-        // List view of list of users to share with
-        simpleAdapterSearch = SearchUserAdapter(context!!, R.layout.item_user, usersList)
-        simpleAdapterSearch.setOnCheckedChangeListener(object: SearchUserAdapter.OnCheckedChangeListener {
-            override fun onCheckedChange(user: SearchUserAdapter.UserForSearch, isChecked: Boolean) {
-                when {
-                    isChecked -> {
-                        user.isSelected = true
-                        selectedUsersList.add(user)
-                    }
-                    else -> {
-                        selectedUsersList.remove(user)
-                    }
-                }
+        usersListAdapter = SearchUserAdapter(context!!, R.layout.item_user, ArrayList())
+
+        usersListAdapter.setOnCheckedChangeListener(object: SearchUserAdapter.OnCheckedChangeListener {
+            override fun onCheckedChange(user: User) {
+                usersListAdapter.removeUser(user)
             }
         })
-        root.search_users_listview.adapter = simpleAdapterSearch
+
+        root.users_listview.adapter = usersListAdapter
 
         // Search view for users
         setUpSearchView(root)
@@ -97,38 +81,46 @@ class AddEditBucketlistFragment : Fragment() {
     }
 
     private fun setUpSearchView(view: View) {
-        view.search_users.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                updateUsersList(query!!)
-                return false
-            }
+        val searchAutoComplete = view.search_users
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                updateUsersList(newText!!)
-                return false
+        val searchTextViewAdapter = ArrayAdapter<String>(
+            context!!,
+            android.R.layout.simple_list_item_1,
+            ArrayList()
+        )
+
+        searchAutoComplete.threshold = 1
+        searchAutoComplete.setAdapter(searchTextViewAdapter)
+
+        searchAutoComplete.setOnItemClickListener { _, _, position, _ ->
+            searchAutoComplete.setText("")
+            val user = searchUsersResult[position]
+            usersListAdapter.addUser(user)
+        }
+
+
+        searchAutoComplete.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(newText: CharSequence, start: Int, before: Int, count: Int) {
+                if (newText.isNotEmpty()) {
+                    UserFirestore.searchUserQuery(newText.toString())!!
+                        .get().addOnSuccessListener {
+                            val searchList = it.toObjects(User::class.java)
+                                .filter { user ->
+                                    user.id != FirebaseAuth.getInstance().currentUser!!.uid &&
+                                            usersListAdapter.countWhere { u: User -> user.id == u.id } == 0
+                                }
+
+                            searchUsersResult.clear()
+                            searchUsersResult.addAll(searchList)
+                            searchTextViewAdapter.clear()
+                            searchTextViewAdapter.addAll(searchList.map { u -> u.name })
+                        }
+                }
             }
         })
-    }
-
-    private fun updateUsersList(txt: String) {
-        val query = UserFirestore.searchUserQuery(txt)
-        usersList.clear()
-        if (query == null) {
-            simpleAdapterSearch.notifyDataSetChanged()
-            return
-        } else {
-            query.get().addOnSuccessListener {
-                it.toObjects(SearchUserAdapter.UserForSearch::class.java).forEach { user ->
-                    if (user.id != FirebaseAuth.getInstance().currentUser!!.uid) {
-                        if (selectedUsersList.find { u -> u.id.equals(user.id) } != null) {
-                            user.isSelected = true
-                        }
-                        usersList.add(user)
-                    }
-                }
-                simpleAdapterSearch.notifyDataSetChanged()
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -164,11 +156,11 @@ class AddEditBucketlistFragment : Fragment() {
             return false
         }
         val updatedBucketlist: Bucketlist = bucketlistViewModel.bucketlist.value!!
-        val selectedUsers = selectedUsersList.map { User(it.id, it.name) } as ArrayList
-        val sharedWithIds = selectedUsersList.map { it.id!! } as ArrayList<String>
+        val usersList = usersListAdapter.items()
+        val sharedWithIds = usersList.map { it.id!! } as ArrayList<String>
 
         updatedBucketlist.name = bucketlistName
-        updatedBucketlist.sharedWith = selectedUsers
+        updatedBucketlist.sharedWith = usersList
         updatedBucketlist.sharedWithIds = sharedWithIds
         bucketlistViewModel.update(updatedBucketlist)
         Toast.makeText(context, getString(R.string.bucketlist_updated), Toast.LENGTH_SHORT).show()
@@ -184,11 +176,11 @@ class AddEditBucketlistFragment : Fragment() {
             return false
         }
 
-        val selectedUsers = selectedUsersList.map { User(it.id, it.name) }
-        val sharedWithIds = selectedUsersList.map { it.id!! } as ArrayList<String>
+        val usersList = usersListAdapter.items()
+        val sharedWithIds = usersList.map { it.id!! } as ArrayList<String>
 
         bucketlistViewModel.insert(
-            Bucketlist(name = listName, createdBy = User(currentUser), sharedWith = selectedUsers, sharedWithIds = sharedWithIds)
+            Bucketlist(name = listName, createdBy = User(currentUser), sharedWith = usersList, sharedWithIds = sharedWithIds)
         )
         Toast.makeText(context, getString(R.string.new_movie_added), Toast.LENGTH_SHORT).show()
         return true
@@ -197,21 +189,5 @@ class AddEditBucketlistFragment : Fragment() {
     override fun onPause() {
         bucketlistViewModel.stopSnapshotListener()
         super.onPause()
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try {
-            titleListener = context as OnNavigatingToFragmentListener
-        } catch (e: ClassCastException) {
-            throw ClassCastException(
-                "$context must implement OnNavigatingToFragmentListener"
-            )
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        titleListener = null
     }
 }

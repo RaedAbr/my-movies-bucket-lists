@@ -17,7 +17,8 @@
         android:id="@+id/recycler_bucketlists_shared_progressbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/colorPrimaryDefault"/>
 
     <TextView
         android:id="@+id/recycler_shared_no_items"
@@ -27,5 +28,6 @@
         android:layout_gravity="center_vertical"
         android:layout_margin="8dp"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible"
+        android:textColor="?attr/colorLightGray"/>
 </FrameLayout>

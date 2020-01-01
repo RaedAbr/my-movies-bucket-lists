@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="colorAppBackground" format="reference"/>
+    <attr name="colorTitle" format="reference"/>
+    <attr name="colorSubTitle" format="reference"/>
+    <attr name="colorCardBackground" format="reference"/>
+    <attr name="colorWhite" format="reference"/>
+    <attr name="colorLightGray" format="reference"/>
+    <attr name="colorVeryLightGray" format="reference"/>
+    <attr name="colorHeader" format="reference"/>
+    <attr name="colorPosterBackground" format="reference"/>
+    <attr name="colorMovieSelected" format="reference"/>
+    <attr name="colorSelectedMovieCheckbox" format="reference"/>
+</resources>
