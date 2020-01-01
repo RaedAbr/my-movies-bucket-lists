@@ -37,10 +37,8 @@
         for the success of your app. Nowadays, user engagement is considered one of the most
         important metrics for the success of your app. Nowadays, user engagement is considered one
         of the mostimportant metrics for the success of your app</string>
-    <string name="added_by">Added by</string>
     <string name="no_backdrop_available">No backdrop available</string>
     <string name="movie_title">Movie title</string>
-    <string name="snackbar_text">Bucket list deleted</string>
     <string name="you_have_no_bucket_list">You have no bucket list</string>
     <string name="no_bucket_lists_shared_with_you">No bucket lists shared with you</string>
     <string name="no_movies_in_this_bucket_list">No movies in this bucket list</string>

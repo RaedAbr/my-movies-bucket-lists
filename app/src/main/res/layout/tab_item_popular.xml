@@ -9,7 +9,6 @@
     tools:background="?attr/colorHeader">
 
     <ImageView
-        android:id="@+id/tabitem_icon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitCenter"
@@ -18,7 +17,6 @@
         tools:ignore="ContentDescription" />
 
     <TextView
-        android:id="@+id/tabitem_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
