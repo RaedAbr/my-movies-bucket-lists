@@ -57,7 +57,7 @@ class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private v
     }
 
     interface OnItemClickListener {
-        fun onItemClick(bucketlistId: String)
+        fun onItemClick(bucketlistId: String, bucketlistOwner: String)
     }
 
     interface OnDataChangedListener {
@@ -109,7 +109,10 @@ class BucketlistAdapter(options: FirestoreRecyclerOptions<Bucketlist>, private v
             if (onItemClicklistener != null) {
                 view.setOnClickListener {
                     if (adapterPosition != RecyclerView.NO_POSITION) {
-                        onItemClicklistener!!.onItemClick(snapshots[adapterPosition].id!!)
+                        onItemClicklistener!!.onItemClick(
+                            snapshots[adapterPosition].id!!,
+                            snapshots[adapterPosition].createdBy!!.id!!
+                        )
                     }
                 }
             }

@@ -1,6 +1,5 @@
 package mse.mobop.mymoviesbucketlists.ui.fragment
 
-import android.content.Intent.getIntent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,11 +18,6 @@ class SettingsFragment: PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        activity?.setTheme(androidx.appcompat.R.style.Theme_AppCompat_DayNight_NoActionBar)
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(

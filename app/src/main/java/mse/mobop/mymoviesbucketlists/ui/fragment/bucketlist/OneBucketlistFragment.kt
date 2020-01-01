@@ -31,6 +31,7 @@ import java.lang.StringBuilder
 class OneBucketlistFragment : BaseFragment() {
     private lateinit var bucketlistViewModel: BucketlistViewModel
     private lateinit var bucketlistId: String
+    private lateinit var bucketlistOwnerId: String
     private lateinit var bucketlistMoviesAdapter: BucketlistMoviesAdapter
     private var isInDeleteMode = false
     private var optionsMenu: Menu? = null
@@ -39,11 +40,6 @@ class OneBucketlistFragment : BaseFragment() {
     private lateinit var deleteMoviesFab: FloatingActionButton
     private var noMovies: Boolean = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,12 +47,15 @@ class OneBucketlistFragment : BaseFragment() {
         // set the top left toolbar icon
         (activity!! as AppCompatActivity).supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
 
-        // Inflate the layout for this fragment
-        val root = inflater.inflate(R.layout.fragment_one_bucketlist, container, false)
+        setHasOptionsMenu(true)
 
         // get bandle args from parent fragment
         val bandle = OneBucketlistFragmentArgs.fromBundle(arguments!!)
         bucketlistId = bandle.bucketlistId
+        bucketlistOwnerId = bandle.owner
+
+        // Inflate the layout for this fragment
+        val root = inflater.inflate(R.layout.fragment_one_bucketlist, container, false)
 
         addMoviesFab = root.findViewById(R.id.add_movies_fab)
         addMoviesFab.setOnClickListener {
@@ -86,8 +85,6 @@ class OneBucketlistFragment : BaseFragment() {
                     bucketlist_creator_layout.text = getString(R.string.me)
                 } else {
                     bucketlist_creator_layout.text = it.createdBy!!.name
-                    optionsMenu?.removeItem(R.id.action_edit)
-                    optionsMenu?.removeItem(R.id.action_delete)
                 }
 
                 bucketlist_date.text = dateConverter(it.creationTimestamp!!)
@@ -200,6 +197,12 @@ class OneBucketlistFragment : BaseFragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.one_bucketlist_menu, menu)
+
+        if (FirebaseAuth.getInstance().currentUser!!.uid != bucketlistOwnerId) {
+            menu.removeItem(R.id.action_edit)
+            menu.removeItem(R.id.action_delete)
+        }
+
         optionsMenu = menu
         super.onCreateOptionsMenu(menu, inflater)
     }
