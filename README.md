@@ -1,4 +1,5 @@
-# My Movies Bucketlists
+# My Movies Bucket lists
+
 Android application for sharing movies to watch lists
 
 ## Usage
