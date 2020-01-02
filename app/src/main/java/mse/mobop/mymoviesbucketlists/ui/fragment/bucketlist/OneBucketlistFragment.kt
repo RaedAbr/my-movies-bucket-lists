@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.recycler_bucketlist_movies.view.*
 import mse.mobop.mymoviesbucketlists.utils.BucketlistAction
 
 import mse.mobop.mymoviesbucketlists.R
-import mse.mobop.mymoviesbucketlists.firestore.BucketlistFirestore
 import mse.mobop.mymoviesbucketlists.model.Movie
 import mse.mobop.mymoviesbucketlists.ui.alrertdialog.DeleteBucketlistAlertDialog
 import mse.mobop.mymoviesbucketlists.ui.fragment.BaseFragment
@@ -30,7 +29,6 @@ import java.lang.StringBuilder
 @SuppressLint("SetTextI18n", "DefaultLocale", "RestrictedApi")
 class OneBucketlistFragment : BaseFragment() {
     private lateinit var bucketlistViewModel: BucketlistViewModel
-    private lateinit var bucketlistId: String
     private lateinit var bucketlistOwnerId: String
     private lateinit var bucketlistMoviesAdapter: BucketlistMoviesAdapter
     private var isInDeleteMode = false
@@ -51,7 +49,7 @@ class OneBucketlistFragment : BaseFragment() {
 
         // get bandle args from parent fragment
         val bandle = OneBucketlistFragmentArgs.fromBundle(arguments!!)
-        bucketlistId = bandle.bucketlistId
+        val bucketlistId = bandle.bucketlistId
         bucketlistOwnerId = bandle.owner
 
         // Inflate the layout for this fragment
@@ -168,7 +166,7 @@ class OneBucketlistFragment : BaseFragment() {
         if (isInDeleteMode) {
             bucketlistMoviesAdapter.setOnItemClickListener(object: BucketlistMoviesAdapter.OnItemClickListener {
                 override fun itemClickListener(movie: Movie) {
-                    BucketlistFirestore.deleteBucketlistMovie(bucketlistId, movie)
+                    bucketlistViewModel.deleteMovie(movie)
                 }
             })
         } else {
@@ -186,7 +184,7 @@ class OneBucketlistFragment : BaseFragment() {
         toggleIsMovieWatchedAction = object: BucketlistMoviesAdapter.OnItemClickListener {
             override fun itemClickListener(movie: Movie) {
                 recyclerView.isVerticalScrollBarEnabled = false
-                BucketlistFirestore.toggleIsMovieWatched(bucketlistId, movie)
+                bucketlistViewModel.toggleIsMovieWatched(movie)
                 bucketlistMoviesAdapter.notifyDataSetChanged()
                 recyclerView.isVerticalScrollBarEnabled = true
             }
@@ -213,7 +211,7 @@ class OneBucketlistFragment : BaseFragment() {
                 val direction = OneBucketlistFragmentDirections
                     .actionOneBucketlistFragmentToAddEditBucketlistFragment(
                         fragmentTitle = R.string.edit_bucket_list,
-                        bucketlistId = bucketlistId,
+                        bucketlistId = bucketlistViewModel.bucketlist.value!!.id,
                         action = BucketlistAction.EDIT
                     )
                 findNavController().navigate(direction)
@@ -224,7 +222,7 @@ class OneBucketlistFragment : BaseFragment() {
                     this@OneBucketlistFragment.context!!,
                     DialogInterface.OnClickListener { _, _ ->
                         bucketlistViewModel.bucketlist.removeObservers(viewLifecycleOwner)
-                        bucketlistViewModel.delete(bucketlistId)
+                        bucketlistViewModel.delete()
                         activity!!.onBackPressed()
                     })
                     .create()
