@@ -13,9 +13,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -29,22 +30,30 @@ import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.model.Movie
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG_POSTER
-import mse.mobop.mymoviesbucketlists.utils.getAttributeColor
 import mse.mobop.mymoviesbucketlists.utils.getAttributeDrawable
 
 
 @SuppressLint("DefaultLocale", "InflateParams", "SetTextI18n")
 class MoviesPaginationAdapter(
     private val context: Context
-) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
+) : ListAdapter<Movie, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+
     companion object {
         private const val ITEM = 0
         private const val LOADING = 1
+
+        private val DIFF_CALLBACK = object: DiffUtil.ItemCallback<Movie>() {
+            override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+                return oldItem == newItem
+            }
+
+        }
     }
-    private var moviesAlreadyAdded: ArrayList<Movie> = ArrayList()
-    var selectedMovies: ArrayList<Movie> = ArrayList()
-    private var movieResults: ArrayList<Movie> = ArrayList()
-    private var isLoadingAdded = false
+
     private var lastClickedMoviePosition: Int = -1
     private var itemListener: ItemListener? = null
     fun setOnItemLongClickListener(itemListener: ItemListener) {
@@ -66,7 +75,7 @@ class MoviesPaginationAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val movie: Movie = movieResults[position]
+        val movie: Movie = getItem(position)
         when (getItemViewType(position)) {
             ITEM -> {
                 val movieVH = holder as MovieVH
@@ -76,68 +85,13 @@ class MoviesPaginationAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return movieResults.size
-    }
-
     override fun getItemViewType(position: Int): Int {
-        return if (position == movieResults.size - 1 && isLoadingAdded)
+        return if (getItem(position).isLoadingItem)
             LOADING
         else
             ITEM
     }
 
-    /*
-   Helpers
-    */
-    fun add(mc: Movie) {
-        movieResults.add(mc)
-        notifyDataSetChanged()
-    }
-
-    fun addAll(mcList: List<Movie>) {
-        var filteredList = mcList
-        moviesAlreadyAdded.forEach { existedMovie ->
-            filteredList = filteredList.filter { it.id != existedMovie.id}
-        }
-        filteredList = filteredList.map {
-            if (selectedMovies.find { m -> it.id == m.id } != null) {
-                it.isSelected = true
-            }
-            it
-        }
-        movieResults.addAll(filteredList)
-        notifyDataSetChanged()
-    }
-
-    fun clear() {
-        isLoadingAdded = false
-        movieResults.clear()
-        notifyDataSetChanged()
-    }
-
-    fun addLoadingFooter() {
-        isLoadingAdded = true
-        add(Movie())
-    }
-
-    fun removeLoadingFooter() {
-        isLoadingAdded = false
-        val position = movieResults.size - 1
-        movieResults.removeAt(position)
-        notifyDataSetChanged()
-    }
-
-    fun getItem(position: Int): Movie {
-        return movieResults[position]
-    }
-
-    fun setMoviesAlreadyAdded(movies: ArrayList<Movie>) {
-        moviesAlreadyAdded = movies
-    }
-    /*
-   View Holders
-    */
     /**
      * Main list's content ViewHolder
      */
@@ -210,10 +164,10 @@ class MoviesPaginationAdapter(
             movieItemView.movie_linear_layout.setOnClickListener {
                 if (lastClickedMoviePosition != -1 &&
                     lastClickedMoviePosition != adapterPosition &&
-                    movieResults[lastClickedMoviePosition].isExpanded) {
-                    movieResults[lastClickedMoviePosition].isExpanded = false
+                    getItem(lastClickedMoviePosition).isExpanded) {
+                    getItem(lastClickedMoviePosition).isExpanded = false
                 }
-                movieResults[adapterPosition].isExpanded = !movieResults[adapterPosition].isExpanded
+                getItem(adapterPosition).isExpanded = !getItem(adapterPosition).isExpanded
                 lastClickedMoviePosition = adapterPosition
                 notifyDataSetChanged()
             }
