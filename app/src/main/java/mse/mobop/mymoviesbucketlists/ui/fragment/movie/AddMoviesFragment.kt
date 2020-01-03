@@ -21,11 +21,11 @@ import mse.mobop.mymoviesbucketlists.R
 import mse.mobop.mymoviesbucketlists.model.Movie
 import mse.mobop.mymoviesbucketlists.model.MoviesSearchResult
 import mse.mobop.mymoviesbucketlists.model.User
-import mse.mobop.mymoviesbucketlists.tmdapi.MovieApi
-import mse.mobop.mymoviesbucketlists.tmdapi.MovieService
 import mse.mobop.mymoviesbucketlists.ui.alrertdialog.DisplayMovieTrailerAlertDialog
 import mse.mobop.mymoviesbucketlists.ui.fragment.BaseFragment
 import mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist.BucketlistViewModel
+import mse.mobop.mymoviesbucketlists.ui.fragment.movie.MovieViewModel.Companion.PAGE_START
+import mse.mobop.mymoviesbucketlists.ui.fragment.movie.MovieViewModel.Companion.SEARCH
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.MoviesPaginationScrollListener
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.MoviesPaginationAdapter
 import mse.mobop.mymoviesbucketlists.utils.getAttributeColor
@@ -34,19 +34,18 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import kotlin.collections.ArrayList
 
 class AddMoviesFragment: BaseFragment() {
     companion object {
-        private const val PAGE_START = 1
         private const val TOTAL_PAGES = 1
     }
 
     private lateinit var bucketlistViewModel: BucketlistViewModel
+    private lateinit var movieViewModel: MovieViewModel
 
     private var recyclerAdapter: MoviesPaginationAdapter? = null
     private var optionsMenu: Menu? = null
-
-    private var query: String = ""
 
     private var recyclerView: RecyclerView? = null
     private lateinit var moviesPaginationScrollListener: MoviesPaginationScrollListener
@@ -62,15 +61,11 @@ class AddMoviesFragment: BaseFragment() {
             moviesPaginationScrollListener.isLastPage = value
             field = value
         }
-    private var currentPage = PAGE_START
     private var totalPageCount = TOTAL_PAGES
         set(value) {
             moviesPaginationScrollListener.totalPageCount = value
             field = value
         }
-
-    private var movieService: MovieService? = null
-    private var apiCall = ::callGetPopularMoviesApi
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -94,15 +89,17 @@ class AddMoviesFragment: BaseFragment() {
                 Toast.makeText(context, getString(R.string.bucketlist_deleted_by_owner), Toast.LENGTH_LONG).show()
                 activity!!.onBackPressed()
             } else {
-                if (recyclerAdapter != null) {
-                    recyclerAdapter!!.setMoviesAlreadyAdded(it.movies as ArrayList<Movie>)
-                }
+                    movieViewModel.moviesAlreadyAdded = it.movies as ArrayList<Movie>
             }
         })
 
-        setUpTabView(root)
+        movieViewModel = MovieViewModel()
+        movieViewModel.movies.observe(viewLifecycleOwner, Observer {
+            recyclerAdapter!!.submitList(it)
+            recyclerAdapter!!.notifyDataSetChanged()
+        })
 
-        movieService = MovieApi.client!!.create(MovieService::class.java)
+        setUpTabView(root)
 
         progressBar = root.main_progress
 
@@ -116,10 +113,6 @@ class AddMoviesFragment: BaseFragment() {
     private fun setUpTabView(root: View) {
         val tabLyout = root.tab_layout
         tabLyout.addOnTabSelectedListener(object: TabLayout.BaseOnTabSelectedListener<TabLayout.Tab> {
-            private val POPULAR = 0
-            private val UPCOMING = 1
-            private val TOP_RATED = 2
-            private val SEARCH = 3
 
             override fun onTabReselected(p0: TabLayout.Tab?) {}
             override fun onTabUnselected(p0: TabLayout.Tab?) {
@@ -130,31 +123,19 @@ class AddMoviesFragment: BaseFragment() {
 
             override fun onTabSelected(p0: TabLayout.Tab?) {
                 when (p0!!.position) {
-                    POPULAR -> {
-                        if (root.movie_search.visibility == View.VISIBLE) {
-                            root.movie_search.visibility = View.GONE
-                        }
-                        apiCall = ::callGetPopularMoviesApi
-                    }
-                    UPCOMING -> {
-                        if (root.movie_search.visibility == View.VISIBLE) {
-                            root.movie_search.visibility = View.GONE
-                        }
-                        apiCall = ::callGetUpcomingMoviesApi
-                    }
-                    TOP_RATED -> {
-                        if (root.movie_search.visibility == View.VISIBLE) {
-                            root.movie_search.visibility = View.GONE
-                        }
-                        apiCall = ::callGetTopRatedMoviesApi
-                    }
                     SEARCH -> {
                         root.movie_search.visibility = View.VISIBLE
-                        apiCall = ::callSearchMoviesApi
+                        movieViewModel.setApiCall(SEARCH)
                         resetRecyclerView()
-                        if (query.isEmpty()) {
+                        if (movieViewModel.query.isEmpty()) {
                             return
                         }
+                    }
+                    else -> {
+                        if (root.movie_search.visibility == View.VISIBLE) {
+                            root.movie_search.visibility = View.GONE
+                        }
+                        movieViewModel.setApiCall(p0.position)
                     }
                 }
                 resetRecyclerView()
@@ -173,11 +154,11 @@ class AddMoviesFragment: BaseFragment() {
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
-                this@AddMoviesFragment.query = query ?: ""
+                this@AddMoviesFragment.movieViewModel.query = query ?: ""
                 if (query != null && query.isNotEmpty()) {
                     hideKeyboardFrom(context!!, root.movie_search)
                     resetRecyclerView()
-                    apiCall = ::callSearchMoviesApi
+                    movieViewModel.setApiCall(SEARCH)
                     loadFirstPage()
                 }
                 return true
@@ -196,22 +177,14 @@ class AddMoviesFragment: BaseFragment() {
         recyclerAdapter!!.setOnItemLongClickListener(object: MoviesPaginationAdapter.ItemListener{
             override fun onItemLongClick(position: Int) {
                 Log.e("onItemLongClick", "$position")
-                val movie = recyclerAdapter!!.getItem(position)
-                movie.isSelected = !movie.isSelected
-                if (movie.isSelected) {
-                    recyclerAdapter!!.selectedMovies.add(movie)
-                } else {
-                    recyclerAdapter!!.selectedMovies.remove(movie)
-                }
-                recyclerAdapter!!.notifyDataSetChanged()
-
-                if (recyclerAdapter!!.selectedMovies.isEmpty()) {
+                movieViewModel.movieSelected(position)
+                if (movieViewModel.selectedMovies.isEmpty()) {
                     optionsMenu?.setGroupVisible(0, false)
                 } else {
                     optionsMenu?.setGroupVisible(0, true)
                 }
 
-                Snackbar.make(root, "${recyclerAdapter!!.selectedMovies.size} " +
+                Snackbar.make(root, "${movieViewModel.selectedMovies.size} " +
                     getString(R.string.movies_selected), Snackbar.LENGTH_SHORT)
                     .show()
             }
@@ -230,7 +203,7 @@ class AddMoviesFragment: BaseFragment() {
         moviesPaginationScrollListener = object: MoviesPaginationScrollListener(linearLayoutManager) {
             override fun loadMoreItems() {
                 this@AddMoviesFragment.isLoading = true
-                currentPage += 1
+                this@AddMoviesFragment.movieViewModel.currentPage += 1
 
                 loadNextPage()
             }
@@ -244,10 +217,10 @@ class AddMoviesFragment: BaseFragment() {
 
     private fun loadFirstPage() {
         Log.e("AddMoviesFragment", "loadFirstPage: ")
-        currentPage = PAGE_START
-        Log.e("loadFirstPage", "currentPage: $currentPage\ttotalPageCount: $totalPageCount\tisLastPage: $isLastPage")
+        movieViewModel.currentPage = PAGE_START
+        Log.e("loadFirstPage", "currentPage: ${movieViewModel.currentPage}\ttotalPageCount: $totalPageCount\tisLastPage: $isLastPage")
 
-        apiCall()!!.enqueue(object : Callback<MoviesSearchResult?> {
+        movieViewModel.apiCall()!!.enqueue(object : Callback<MoviesSearchResult?> {
             override fun onResponse(
                 call: Call<MoviesSearchResult?>?,
                 response: Response<MoviesSearchResult?>?
@@ -255,16 +228,16 @@ class AddMoviesFragment: BaseFragment() {
                 // Send it to recycler adapter
                 // Update currentPage and totalPages
                 val moviesSearchResult: MoviesSearchResult = response!!.body()!!
-                currentPage = moviesSearchResult.page!!
+                movieViewModel.currentPage = moviesSearchResult.page!!
                 totalPageCount = moviesSearchResult.totalPages!!
 
-                val results: List<Movie> = moviesSearchResult.results!!
+                val results: ArrayList<Movie> = moviesSearchResult.results!! as ArrayList<Movie>
                 progressBar!!.visibility = View.GONE
 
-                recyclerAdapter!!.addAll(results)
-                if (currentPage < totalPageCount) {
-                    currentPage += 1
-                    recyclerAdapter!!.addLoadingFooter()
+                movieViewModel.addAll(results)
+                if (movieViewModel.currentPage < totalPageCount) {
+                    movieViewModel.currentPage += 1
+                    movieViewModel.addLoadingFooter()
                 } else {
                     isLastPage = true
                 }
@@ -278,22 +251,22 @@ class AddMoviesFragment: BaseFragment() {
     }
 
     private fun loadNextPage() {
-        Log.e("AddMoviesFragment", "loadNextPage: $currentPage")
-        Log.e("loadFirstPage", "currentPage: $currentPage\ttotalPageCount: $totalPageCount\tisLastPage: $isLastPage")
+        Log.e("AddMoviesFragment", "loadNextPage: ${movieViewModel.currentPage}")
+        Log.e("loadFirstPage", "currentPage: ${movieViewModel.currentPage}\ttotalPageCount: $totalPageCount\tisLastPage: $isLastPage")
 
-        apiCall()!!.enqueue(object : Callback<MoviesSearchResult?> {
+        movieViewModel.apiCall()!!.enqueue(object : Callback<MoviesSearchResult?> {
             override fun onResponse(
                 call: Call<MoviesSearchResult?>?,
                 response: Response<MoviesSearchResult?>?
             ) {
-                recyclerAdapter!!.removeLoadingFooter()
+                movieViewModel.removeLoadingFooter()
                 isLoading = false
                 val moviesSearchResult: MoviesSearchResult = response!!.body()!!
-                val results: List<Movie>? = moviesSearchResult.results!!
-                Log.e("currentPage", currentPage.toString())
+                val results = moviesSearchResult.results!! as ArrayList
+                Log.e("currentPage", movieViewModel.currentPage.toString())
                 Log.e("totalPageCount", totalPageCount.toString())
-                recyclerAdapter!!.addAll(results!!)
-                if (currentPage < totalPageCount) recyclerAdapter!!.addLoadingFooter() else isLastPage = true
+                movieViewModel.addAll(results)
+                if (movieViewModel.currentPage < totalPageCount) movieViewModel.addLoadingFooter() else isLastPage = true
             }
 
             override fun onFailure(
@@ -307,45 +280,29 @@ class AddMoviesFragment: BaseFragment() {
     }
 
     private fun addMovies(): Boolean {
-        if (recyclerAdapter!!.selectedMovies.size == 0) {
+        if (movieViewModel.selectedMovies.size == 0) {
             Toast.makeText(context, getString(R.string.select_one_or_mode_movies), Toast.LENGTH_SHORT).show()
             return false
         }
-        recyclerAdapter!!.selectedMovies = recyclerAdapter!!.selectedMovies.map {
+        movieViewModel.selectedMovies = movieViewModel.selectedMovies.map {
             val currenUser = FirebaseAuth.getInstance().currentUser
             it.addedBy = User(currenUser!!.uid, currenUser.displayName!!)
             it.addedTimestamp = Timestamp(Date().time / 1000, 0)
             it
         } as ArrayList<Movie>
 
-        bucketlistViewModel.addMoviesToBucketlist(bucketlistViewModel.bucketlist.value!!, recyclerAdapter!!.selectedMovies)
+        bucketlistViewModel.addMoviesToBucketlist(movieViewModel.selectedMovies)
 
         findNavController().popBackStack()
         return true
     }
 
     private fun resetRecyclerView() {
-        recyclerAdapter!!.clear()
+        movieViewModel.clear()
         isLoading = false
         isLastPage = false
-        currentPage = PAGE_START
+        movieViewModel.currentPage = PAGE_START
         totalPageCount = TOTAL_PAGES
-    }
-
-    private fun callGetPopularMoviesApi(): Call<MoviesSearchResult?>? {
-        return movieService!!.getPopularMovies(currentPage)
-    }
-
-    private fun callGetTopRatedMoviesApi(): Call<MoviesSearchResult?>? {
-        return movieService!!.getTopRatedMovies(currentPage)
-    }
-
-    private fun callGetUpcomingMoviesApi(): Call<MoviesSearchResult?>? {
-        return movieService!!.getUpcomingMovies(currentPage)
-    }
-
-    private fun callSearchMoviesApi(): Call<MoviesSearchResult?>? {
-        return movieService!!.searchForMovies(query, currentPage)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

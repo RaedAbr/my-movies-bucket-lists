@@ -76,5 +76,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <TextView
+            android:id="@+id/movie_added_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_23_11_2019"
+            style="@style/Card.DateTime"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:drawableTint="?attr/colorLightGray"
+            android:drawablePadding="3dp"
+            android:drawableStart="@drawable/ic_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

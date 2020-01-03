@@ -24,7 +24,8 @@ data class Movie(
     var isWatched: Boolean = false,
     var watchedTimestamp: Timestamp? = null,
     @get:Exclude var isSelected: Boolean = false,
-    @get:Exclude var isExpanded: Boolean = false
+    @get:Exclude var isExpanded: Boolean = false,
+    @get:Exclude var isLoadingItem: Boolean = false
 ) {
     override fun equals(other: Any?): Boolean {
         other as Movie

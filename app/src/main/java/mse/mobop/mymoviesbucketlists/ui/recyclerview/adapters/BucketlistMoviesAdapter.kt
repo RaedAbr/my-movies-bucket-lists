@@ -25,6 +25,7 @@ import mse.mobop.mymoviesbucketlists.model.Movie
 import mse.mobop.mymoviesbucketlists.ui.alrertdialog.DisplayMovieTrailerAlertDialog
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG
 import mse.mobop.mymoviesbucketlists.utils.BASE_URL_IMG_BACKDROP
+import mse.mobop.mymoviesbucketlists.utils.dateConverter
 
 @SuppressLint("DefaultLocale", "InflateParams", "SetTextI18n")
 class BucketlistMoviesAdapter:
@@ -101,6 +102,7 @@ class BucketlistMoviesAdapter:
                 movieItemView.container_layout.alpha = 1f
             }
             movieItemView.movie_title.text = movie.title
+            movieItemView.movie_added_time.text = dateConverter(movie.addedTimestamp!!)
             if (movie.addedBy!!.id == FirebaseAuth.getInstance().currentUser!!.uid) {
                 movieItemView.movie_added_by.visibility = View.GONE
             } else {
