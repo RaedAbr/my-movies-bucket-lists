@@ -414,7 +414,23 @@ Glide
     .into(movie_poster) // Container => ImageView
 ```
 
-Le simple clic sur un film bascule l'état du film (non vue / déjà vu). Le clic sur le bouton "-" en bas à gauche va changer la vu en mode suppression : cela change l'action du clic sur un film à une action de suppression à la place le l'action de basculement (figure 17). Le clic long sur un élément permet d'ouvrir un `AlertDialog` personnalisé affichant le poster, la description et les différentes bandes-annonces et vidéos liées au film (figure 18).
+Le simple clic sur un film bascule l'état du film (non vue / déjà vu). Le clic sur le bouton "-" en bas à gauche va changer la vu en mode suppression : cela change l'action du clic sur un film à une action de suppression à la place le l'action de basculement (figure 17). Le clic long sur un élément permet d'ouvrir un `AlertDialog` personnalisé affichant le poster, la description et les différentes bandes-annonces et vidéos liées au film (figure 18). Pour afficher le poster avec un dégradé transparent, nous avons utilisé la librairie **Android-FadingEdgeLayout** (v1.0.0) :
+
+```xml
+<com.bosphere.fadingedgelayout.FadingEdgeLayout
+	android:id="@+id/fading_edge_layout"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	app:fel_edge="bottom"
+	app:fel_size_bottom="80dp">
+    <ImageView
+        android:id="@+id/movie_backdrop"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:minHeight="150dp"
+		android:scaleType="centerCrop"/>
+</com.bosphere.fadingedgelayout.FadingEdgeLayout>
+```
 
 Les différentes informations liées à un film (depuis The Movie Database) sont déjà enregistrées dans la base de données Cloud Firestore au moment de l'ajout d'un film dans une bucket list (explication dans la partie suivante). Mais pour les vidéos liées au film, il faut lancer une nouvelle requête`GET` vers l'API The Movie Database `movie/{movie_id}/videos`. La réponse de cette requête est une liste de vidéos YouTube identifiées par un `key`. Pour afficher les vidéos YouTube, nous avons utiliser la librairie ***android-youtube-player*** fournie par **PierfrancescoSoffritti** (lien dans les références). Nous avons préféré d'utiliser cette librairie, à la place de la librairie officielle de YouTube *YouTube Android Player API*, pour différentes raisons expliquées dans la partie **Problèmes rencontrés**. L'utilisation de cette librairie :
 
@@ -546,11 +562,147 @@ Pour utiliser ces librairies :
 
 ### Support de deux thèmes
 
+Notre application est disponible en deux thèmes : clair (le thème par défaut) et sombre (figure 23). Pour changer le thème, il suffit d'ouvrir les paramètres de l'application depuis le fragment d’accueil et cliquer sur `Enable dark theme`.
 
+Sous avons commencé par définir des attributs pour les différents éléments dans le fichier de ressources `attrs.xml` :
+
+```xml
+<resources>
+    ...
+    <attr name="colorAppBackground" format="reference"/>
+    <attr name="colorTitle" format="reference"/>
+    <attr name="colorSubTitle" format="reference"/>
+    <attr name="colorCardBackground" format="reference"/>
+    ...
+</resources>
+```
+
+Ensuite, nous avons défini les différents couleurs des deux thèmes dans le fichier de ressources `colors.xml` :
+
+```xml
+<resources>
+<!--    Default theme-->
+    ...
+    <color name="colorPrimaryDefault">#006685</color>
+    <color name="colorAppBackground">#ECF4FF</color>
+    <color name="colorTitle">#121212</color>
+    <color name="colorCardBackground">#fff</color>
+    ...
+<!--    Dark theme-->
+    ...
+    <color name="colorPrimaryDark">#003957</color>
+    <color name="colorAppBackgroundDark">#121212</color>
+    <color name="colorTitleDark">#fff</color>
+    <color name="colorCardBackgroundDark">#2B2B2B</color>
+    ...
+</resources>
+```
+
+Finalement, dans le fichier `themes.xml` nous avons défini les deux thèmes  `AppTheme` et `AppThemeDark` en affectant les couleurs aux attributs précédemment définis :
+
+```xml
+<!-- Base application theme. -->
+<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    ...
+    <item name="colorAppBackground">@color/colorAppBackground</item>
+    <item name="colorTitle">@color/colorTitle</item>
+    <item name="colorSubTitle">@color/colorTitle</item>
+    <item name="colorCardBackground">@color/colorCardBackground</item>
+    ...
+</style>
+<!--    Dark theme-->
+<style name="AppThemeDark" parent="Theme.AppCompat.Light.DarkActionBar">
+    ...
+    <item name="colorAppBackground">@color/colorAppBackgroundDark</item>
+    <item name="colorTitle">@color/colorTitleDark</item>
+    <item name="colorSubTitle">@color/colorTitleDark</item>
+    <item name="colorCardBackground">@color/colorCardBackgroundDark</item>
+    ...
+</style>
+```
+
+Si par exemple on veut donner une couleur à un titre de film (`TextView`), au lieu d'affecter `@color/colorTitle` à la propriété `android:textColor`, on affecte l'attribut correspondant                            `?attr/colorTitle`. Et au moment de la création de la vue, si le thème de l'application est définie comme `AppTheme`, alors la couleur `colorTitle (#121212)` qui va être affectée, et si le thèmes est `AppThemeDark`, alors c'est la couleur `colorTitleDark (#fff)` qui va être affectée :
+
+```xml
+<TextView
+	...
+	android:textColor="?attr/colorTitle"
+	... />
+```
+
+La page de changement de thème est un fragment de type `PreferenceFragmentCompat`, dont la vue est définie dans le fichier `settings.xml` (dans le dossier de ressources `xml`) :
+
+```xml
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/app_theme"
+        android:icon="@drawable/ic_theme"/>
+    <SwitchPreferenceCompat
+        android:key="app_theme"
+        android:title="@string/enable_dark_theme" />
+</PreferenceScreen>
+```
+
+Quand l'élément `SwitchPreferenceCompat` change de valeur avec un clic de l'utilisateur, cette valeur (`true`/`false`) va être enregistrer dans les préférences partagées de l'application avec l'ID de l'utilisateur connecté, et l'activité sera recharger avec le thème choisi (figure 23) :
+
+```kotlin
+val themeSwitcher = findPreference<SwitchPreferenceCompat>("app_theme")
+themeSwitcher?.onPreferenceChangeListener =
+	Preference.OnPreferenceChangeListener { 
+        _, new_value ->
+            sharedPref.edit()
+                .putBoolean(CURRENT_THEME, new_value as Boolean)
+                .apply()
+
+            activity?.finish()
+            startActivity(activity!!.intent)
+            true
+    }
+
+// Variable CURRENT_THEME is defined as follows
+val CURRENT_THEME
+    get() = "app.theme.current." + FirebaseAuth.getInstance().currentUser!!.uid
+```
+
+et dans la `MainActivity` on charge le thème :
+
+```kotlin
+class MainActivity : AppCompatActivity() {
+    private var currentTheme: Boolean = false
+    private lateinit var sharedPref: SharedPreferences
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedPref = getSharedPreferences(THEME_PREF, MODE_PRIVATE)
+        currentTheme = sharedPref.getBoolean(CURRENT_THEME, false)
+        setAppTheme(currentTheme)
+        ...
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val theme = sharedPref.getBoolean(CURRENT_THEME, false)
+        if(currentTheme != theme)
+            recreate()
+        ...
+    }
+
+    private fun setAppTheme(currentTheme: Boolean) {
+        setTheme(
+            if (currentTheme) R.style.AppThemeDark_NoActionBar 
+            else R.style.AppTheme_NoActionBar
+        )
+    }
+}
+```
+
+![](assets/9.png)
 
 ### Support de deux langages
 
+Notre application supporte deux langages : Français et Anglais. Tout le contenue de notre application est traduit dans les deux langues dans les ressources `string.xml`.
 
+![](assets/10.png)
 
 ## Problèmes rencontrés
 
