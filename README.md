@@ -22,7 +22,7 @@ Notre projet respecte l'architecture **MVVM** (Model, View, View-Model) :
 * View : les éléments de l'interface graphique (UI)
 * View-Model : la logique qui permet de séparer les données des traitements (dans notre cas, les traitements serons les appels aux différentes ressources externes), et qui assure la liaison entre les données et les éléments graphiques
 
-Après avoir fait quelques recherches, nous avons décidé d'utiliser les services **Firebase** de Google pour le stockage de données, et l'api **The Movie Database** comme source de films (plus d'explications d'utilisation et d'intégration dans la partie *Implémentation*).
+Après avoir fait quelques recherches, nous avons décidé d'utiliser les services **Firebase** de Google pour le stockage de données, et l'API **The Movie Database** comme source de films (plus d'explications d'utilisation et d'intégration dans la partie *Implémentation*).
 
 La figure suivante illustre l’architecture générale :
 
@@ -73,10 +73,113 @@ Nous allons présenter le scénario le plus important par un diagramme de séque
 
 #### Diagramme de classe
 
-
+<figure class="image">
+  <img src="assets/class_diagram.png" alt="Diagramme de cas d'utilisation">
+  <figcaption style="text-align: center">
+    <em>Diagramme de classes</em>
+  </figcaption>
+</figure>
 
 ## Implémentation
+
+Nous avons choisi d'utiliser les services **Firebase** de Google pour le stockage de données et la gestion d'authentification, qui offre des librairies riches et complètes Nous avons utilisé les services suivants :
+
+* Le service d'authentification ***Authentification*** : plusieurs fournisseur de connexion possibles : email/Mot de passe, Téléphone, Google, Facebook, Twitter...
+* Le service de base de données ***Cloud Firestore*** (*NoSql data base*) : On a deux collections : `users` et `bucketlists`
+
+Pour la partie qui concerne la recherche des films, nous avons choisi d'utiliser l'API offerte par **The Movie Database**.
+
+### Gestion d'authentification
+
+Nous avons essayé de respecter notre architecture que nous avons conçu initialement (MVVM), mais nous avons remarqué, au moment de l'implémentation de la gestion d'authentification, que nous devons faire autrement pour des raisons de simplification.
+
+Voici la logique que nous avons appliqué :
+
+* 3 activités :
+  
+  * ***SplashActivity*** : cette activité va tout simplement vérifier si l'utilisateur est déjà connecté. Grace à Firebase, cela peut se faire facilement en testant si l'instance de `FirebaseAuth.getInstance().currentUser` est nulle. Si c'est le cas, alors l'utilisateur n'est pas connecté, et l'activité `SignInActivity` va se lancer. Sinon, c'est l'activité `MainActivity` qui va se lancer :
+  
+  ```kotlin
+  if (FirebaseAuth.getInstance().currentUser == null) {
+      startActivity(Intent(this, SigninActivity::class.java))
+  } else {
+      startActivity(Intent(this, MainActivity::class.java))
+  }
+  ```
+  
+  * ***SignInActivity*** : cette activité permet à l'utilisateur de se connecter à son compte. Deux méthodes de connexion possibles : 
+  
+    * **Par adresse e-mail et mot de passe** (capture d'écran 1) : il faut d’abord avoir un compte pour pouvoir se connecter (Si ce n'est pas le cas, l'utilisateur doit en créer dans l'activité `SignUpActivity` en cliquant sur `Create one`). Une fois les informations saisies, l'email va être enregistré dans les préférences partagées de l'application afin d'afficher une liste de suggestion la prochaine fois où l'utilisateur se connecte à nouveau (capture d'écran 2). Voici un extrait du code qui permet de se connecter avec un email et mot de passe :
+  
+    ```kotlin
+    FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+        .addOnCompleteListener {
+            if (it.isSuccessful) {
+                goToMainActivity()
+            } else {
+                // handle connection failure
+            }
+        }
+    ```
+  
+    * **Par un compte Google connecté dans l'appareil** (capture d'écran 3) : grâce à Firebase, faire la liaison entre l'application et les comptes enregistrés dans l'appareil devient une tâche facile. Tout d'abord on commence par lancer un `intent`  spécial fourni utilisant la méthode `startActivityForResult`, et après on récupère les informations de connexion (`credentials`) dans la méthode `onActivityResult`. Avec ce mode de connexion, et si l'utilisateur se connecte pour la première fois à l'application, un nouveau document dans la collection `users` de Cloud Firestore, avec l'id généré par Firebase et le nom utilisateur, va être ajouté.
+  
+    ```kotlin
+    ...
+    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(getString(R.string.default_web_client_id))
+        .requestEmail()
+        .build()
+    val googleSignInClient = GoogleSignIn.getClient(this, gso)
+    val signInIntent = googleSignInClient.signInIntent
+    startActivityForResult(signInIntent,RC_GOOGLE_SIGN_IN)
+    ...
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_GOOGLE_SIGN_IN) {
+            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                // check if it's the first time
+                firebaseAuthWithGoogle(account)
+                goToMainActivity()
+            } catch (e: ApiException) {
+                // handle connection failure
+            }
+        }
+    }
+    ```
+  
+  ![](assets/1.png)
+
+* ***SignUpActivity*** (capture d'écran 4) : cette activité permet à l'utilisateur de créer un compte (email/mot de passe) pour pouvoir se connecter et utiliser l'application. En cliquant sur le bouton `SING UP`, un nouveau document dans la collection `users` de Cloud Firestore, avec l'id généré par Firebase et le nom utilisateur, va être ajouté.
+
+```kotlin
+...
+FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+    .addOnCompleteListener {
+        if (it.isSuccessful) {
+            UserFirestore.addUserIfFirstTime {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        } else {
+            // handle connection failure
+        }
+    }
+```
+
+![](assets/2.png)
+
+### Gérer les bucket lists
+
+
+
+### Support de deux langages
 
 ## Problèmes rencontrés
 
 ## Conclusion
+
+## Références
