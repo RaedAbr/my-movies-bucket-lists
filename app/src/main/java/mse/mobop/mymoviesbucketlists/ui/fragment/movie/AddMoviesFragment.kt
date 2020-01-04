@@ -23,13 +23,14 @@ import mse.mobop.mymoviesbucketlists.model.MoviesSearchResult
 import mse.mobop.mymoviesbucketlists.model.User
 import mse.mobop.mymoviesbucketlists.ui.alrertdialog.DisplayMovieTrailerAlertDialog
 import mse.mobop.mymoviesbucketlists.ui.fragment.BaseFragment
-import mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist.BucketlistViewModel
-import mse.mobop.mymoviesbucketlists.ui.fragment.movie.MovieViewModel.Companion.PAGE_START
-import mse.mobop.mymoviesbucketlists.ui.fragment.movie.MovieViewModel.Companion.SEARCH
+import mse.mobop.mymoviesbucketlists.viewmodel.BucketlistViewModel
+import mse.mobop.mymoviesbucketlists.viewmodel.MovieViewModel.Companion.PAGE_START
+import mse.mobop.mymoviesbucketlists.viewmodel.MovieViewModel.Companion.SEARCH
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.MoviesPaginationScrollListener
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.MoviesPaginationAdapter
 import mse.mobop.mymoviesbucketlists.utils.getAttributeColor
 import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
+import mse.mobop.mymoviesbucketlists.viewmodel.MovieViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -83,7 +84,10 @@ class AddMoviesFragment: BaseFragment() {
 
         val root = inflater.inflate(R.layout.fragment_add_movies, container, false)
 
-        bucketlistViewModel = BucketlistViewModel(bucketlistId)
+        bucketlistViewModel =
+            BucketlistViewModel(
+                bucketlistId
+            )
         bucketlistViewModel.bucketlist.observe(viewLifecycleOwner, Observer {
             if (it == null) { // this means that the data has been deleted by another user
                 Toast.makeText(context, getString(R.string.bucketlist_deleted_by_owner), Toast.LENGTH_LONG).show()
