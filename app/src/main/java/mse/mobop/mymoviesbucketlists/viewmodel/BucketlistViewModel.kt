@@ -1,4 +1,4 @@
-package mse.mobop.mymoviesbucketlists.ui.fragment.bucketlist
+package mse.mobop.mymoviesbucketlists.viewmodel
 
 import androidx.lifecycle.LiveData
 //import mse.mobop.mymoviesbucketlists.ARG_BUCKETLIST_OBJECT

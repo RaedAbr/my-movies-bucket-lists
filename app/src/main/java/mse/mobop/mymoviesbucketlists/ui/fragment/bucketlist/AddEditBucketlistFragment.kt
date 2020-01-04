@@ -20,6 +20,7 @@ import mse.mobop.mymoviesbucketlists.model.User
 import mse.mobop.mymoviesbucketlists.ui.fragment.BaseFragment
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.SearchUserAdapter
 import mse.mobop.mymoviesbucketlists.utils.BucketlistAction
+import mse.mobop.mymoviesbucketlists.viewmodel.BucketlistViewModel
 import kotlin.collections.ArrayList
 
 
@@ -49,7 +50,10 @@ class AddEditBucketlistFragment : BaseFragment() {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_add_edit_bucketlist, container, false)
 
-        bucketlistViewModel = BucketlistViewModel(bucketlistId)
+        bucketlistViewModel =
+            BucketlistViewModel(
+                bucketlistId
+            )
         if (action == BucketlistAction.EDIT) {
             bucketlistViewModel.bucketlist.observe(viewLifecycleOwner, Observer {
                 bucketlist_name.setText(it.name)

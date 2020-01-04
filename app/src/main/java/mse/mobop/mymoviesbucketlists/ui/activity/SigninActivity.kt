@@ -54,7 +54,7 @@ class SigninActivity: AppCompatActivity() {
 
         // Get auto complete emails list from shared preferences
         val preferences = getSharedPreferences(SIGN_IN_PREF, MODE_PRIVATE)
-        val emailsHistoryList = preferences.getStringSet(SING_IN_EMAIL, setOf<String>())!!
+        var emailsHistoryList = preferences.getStringSet(SING_IN_EMAIL, setOf<String>())!!
         val adapter = ArrayAdapter<String>(
             this,
             android.R.layout.simple_dropdown_item_1line,
@@ -77,10 +77,9 @@ class SigninActivity: AppCompatActivity() {
             toggleProgressBar()
 
             // Save email in the shared preferences
-            var emailsHistory = preferences.getStringSet(SING_IN_EMAIL, setOf<String>())!!
-            emailsHistory = emailsHistory.plus(email)
+            emailsHistoryList = emailsHistoryList.plus(email)
             preferences.edit {
-                putStringSet(SING_IN_EMAIL, emailsHistory)
+                putStringSet(SING_IN_EMAIL, emailsHistoryList)
                 apply()
             }
 

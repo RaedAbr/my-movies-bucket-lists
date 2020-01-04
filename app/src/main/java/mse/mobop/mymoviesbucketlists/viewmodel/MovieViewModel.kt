@@ -1,4 +1,4 @@
-package mse.mobop.mymoviesbucketlists.ui.fragment.movie
+package mse.mobop.mymoviesbucketlists.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import mse.mobop.mymoviesbucketlists.model.Movie
@@ -17,7 +17,8 @@ class MovieViewModel {
         private val movieService: MovieService? = MovieApi.client!!.create(MovieService::class.java)
     }
 
-    var currentPage = PAGE_START
+    var currentPage =
+        PAGE_START
     var query: String = ""
     var apiCall = ::callGetPopularMoviesApi
     fun setApiCall(type: Int) {

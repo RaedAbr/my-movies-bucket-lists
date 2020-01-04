@@ -24,6 +24,7 @@ import mse.mobop.mymoviesbucketlists.ui.fragment.BaseFragment
 import mse.mobop.mymoviesbucketlists.ui.recyclerview.adapters.BucketlistMoviesAdapter
 import mse.mobop.mymoviesbucketlists.utils.dateConverter
 import mse.mobop.mymoviesbucketlists.utils.hideKeyboardFrom
+import mse.mobop.mymoviesbucketlists.viewmodel.BucketlistViewModel
 import java.lang.StringBuilder
 
 @SuppressLint("SetTextI18n", "DefaultLocale", "RestrictedApi")
@@ -71,7 +72,10 @@ class OneBucketlistFragment : BaseFragment() {
 
         setUpRecyclerMoviesList(root)
 
-        bucketlistViewModel = BucketlistViewModel(bucketlistId)
+        bucketlistViewModel =
+            BucketlistViewModel(
+                bucketlistId
+            )
         bucketlistViewModel.bucketlist.observe(viewLifecycleOwner, Observer {
             if (it == null) { // this means that the data has been deleted by another user
                 Toast.makeText(context, getString(R.string.bucketlist_deleted_by_owner), Toast.LENGTH_LONG).show()
