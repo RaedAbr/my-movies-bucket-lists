@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 
-abstract class MoviesPaginationScrollListener(var layoutManager: LinearLayoutManager) :
+abstract class MoviesPaginationScrollListener(private var layoutManager: LinearLayoutManager) :
     RecyclerView.OnScrollListener() {
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
