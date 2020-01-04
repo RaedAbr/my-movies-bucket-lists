@@ -24,12 +24,12 @@ Notre projet respecte l'architecture **MVVM** (Model, View, View-Model) :
 
 Après avoir fait quelques recherches, nous avons décidé d'utiliser les services **Firebase** de Google pour le stockage de données, et l'API **The Movie Database** comme source de films (plus d'explications d'utilisation et d'intégration dans la partie *Implémentation*).
 
-La figure suivante illustre l’architecture générale :
+La figure suivante (figure 1) illustre l’architecture générale :
 
 <figure class="image">
   <img src="assets/arch.png" alt="Diagramme de cas d'utilisation">
   <figcaption style="text-align: center">
-    <em>Architecture générale</em>
+    <em>Figure 1 : Architecture générale</em>
   </figcaption>
 </figure>
 
@@ -51,32 +51,40 @@ Après avoir été identifié, un utilisateur peut
 * Regarder la bande-annonce d'un film
 * Consulter la description d'un film
 
-Le diagramme de cas d'utilisation suivant illustre les fonctionnalités de notre application :
+Le diagramme de cas d'utilisation suivant (figure 2) illustre les fonctionnalités de notre application :
 
 <figure class="image">
   <img src="assets/use_case.png" alt="Diagramme de cas d'utilisation">
   <figcaption style="text-align: center">
-    <em>Diagramme de cas d'utilisation</em>
+    <em>Figure 2 : Diagramme de cas d'utilisation</em>
   </figcaption>
 </figure>
 
 #### Recherche et ajout de films dans une bucket List
 
-Nous allons présenter le scénario le plus important par un diagramme de séquence : Recherche et ajout de films dans une bucket list :
+Nous allons présenter le scénario le plus important (figure 3) par un diagramme de séquence : Recherche et ajout de films dans une bucket list :
 
 <figure class="image">
   <img src="assets/add_movies.png" alt="Diagramme de cas d'utilisation">
   <figcaption style="text-align: center">
-    <em>Recherche et ajout de films dans une bucket list</em>
+    <em>Figure 3 : Recherche et ajout de films dans une bucket list</em>
   </figcaption>
 </figure>
 
 #### Diagramme de classe
 
+Pour respecter l'architecture général, nous avons organisé nos classes en packages (figure 4) :
+
+* **Model** : contient les classes modèles de notre application : `User`, `Bucketlist`, `Movie` et `Video`
+* **View** : contient les classes qui construisent l'interface utilisateur (activités, fragments...)
+* **ViewModel** : contient les classes responsables de la liaison entre les vus et les modèle, et les appels vers les librairies externes : `BucketlistViewModel` pour Cloud Firestore et `MovieViewModel` pour The Movie Database
+* **Firebase** : contient les classes qui sont en liaison directe avec les librairie de Firebase : Cloud Firestore et FirebaseAuth
+* **TMDApi** : contient une classe qui envoie des requêtes http au serveur The Movie Database via leur API
+
 <figure class="image">
   <img src="assets/class_diagram.png" alt="Diagramme de cas d'utilisation">
   <figcaption style="text-align: center">
-    <em>Diagramme de classes</em>
+    <em>Figure 4 : Diagramme de classes</em>
   </figcaption>
 </figure>
 
@@ -109,7 +117,7 @@ Voici la logique que nous avons appliqué :
   
   * ***SignInActivity*** : cette activité permet à l'utilisateur de se connecter à son compte. Deux méthodes de connexion possibles : 
   
-    * **Par adresse e-mail et mot de passe** (capture d'écran 1) : il faut d’abord avoir un compte pour pouvoir se connecter (Si ce n'est pas le cas, l'utilisateur doit en créer dans l'activité `SignUpActivity` en cliquant sur `Create one`). Une fois les informations saisies, l'email va être enregistré dans les préférences partagées de l'application afin d'afficher une liste de suggestion la prochaine fois où l'utilisateur se connecte à nouveau (capture d'écran 2). Voici un extrait du code qui permet de se connecter avec un email et mot de passe :
+    * **Par adresse e-mail et mot de passe** (figure 5) : il faut d’abord avoir un compte pour pouvoir se connecter (Si ce n'est pas le cas, l'utilisateur doit en créer dans l'activité `SignUpActivity` en cliquant sur `Create one`). Une fois les informations saisies, l'email va être enregistré dans les préférences partagées de l'application afin d'afficher une liste de suggestion la prochaine fois où l'utilisateur se connecte à nouveau (figure 6). Voici un extrait du code qui permet de se connecter avec un email et mot de passe :
   
     ```kotlin
     FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
@@ -122,7 +130,7 @@ Voici la logique que nous avons appliqué :
         }
     ```
   
-    * **Par un compte Google connecté dans l'appareil** (capture d'écran 3) : grâce à Firebase, faire la liaison entre l'application et les comptes enregistrés dans l'appareil devient une tâche facile. Tout d'abord on commence par lancer un `intent`  spécial fourni utilisant la méthode `startActivityForResult`, et après on récupère les informations de connexion (`credentials`) dans la méthode `onActivityResult`. Avec ce mode de connexion, et si l'utilisateur se connecte pour la première fois à l'application, un nouveau document dans la collection `users` de Cloud Firestore, avec l'id généré par Firebase et le nom utilisateur, va être ajouté.
+    * **Par un compte Google connecté dans l'appareil** (figure 7) : grâce à Firebase, faire la liaison entre l'application et les comptes enregistrés dans l'appareil devient une tâche facile. Tout d'abord on commence par lancer un `intent`  spécial fourni utilisant la méthode `startActivityForResult`, et après on récupère les informations de connexion (`credentials`) dans la méthode `onActivityResult`. Avec ce mode de connexion, et si l'utilisateur se connecte pour la première fois à l'application, un nouveau document dans la collection `users` de Cloud Firestore, avec l'id généré par Firebase et le nom utilisateur, va être ajouté.
   
     ```kotlin
     ...
@@ -152,7 +160,7 @@ Voici la logique que nous avons appliqué :
   
   ![](assets/1.png)
 
-* ***SignUpActivity*** (capture d'écran 4) : cette activité permet à l'utilisateur de créer un compte (email/mot de passe) pour pouvoir se connecter et utiliser l'application. En cliquant sur le bouton `SING UP`, un nouveau document dans la collection `users` de Cloud Firestore, avec l'id généré par Firebase et le nom utilisateur, va être ajouté.
+* ***SignUpActivity*** (figure 8) : cette activité permet à l'utilisateur de créer un compte (email/mot de passe) pour pouvoir se connecter et utiliser l'application. En cliquant sur le bouton `SING UP`, un nouveau document dans la collection `users` de Cloud Firestore, avec l'id généré par Firebase et le nom utilisateur, va être ajouté.
 
 ```kotlin
 ...
@@ -174,9 +182,9 @@ FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
 
 ### Gérer les bucket lists
 
-Après avoir se connecter, l'activité `MainActivity` se lance (capture d'écran 5). Cette activité contient principalement :
+Après avoir se connecter, l'activité `MainActivity` se lance (figure 9). Cette activité contient principalement :
 
-* Un objet `NavigationView` qui permet à l'utilisateur de se déconnecter (capture d'écran 6)
+* Un objet `NavigationView` qui permet à l'utilisateur de se déconnecter (figure 6)
 
   ```xml
   <com.google.android.material.navigation.NavigationView
@@ -199,7 +207,12 @@ Après avoir se connecter, l'activité `MainActivity` se lance (capture d'écran
 
   Le fichier `mobile_navigation.xml` permet de gérer les différentes transactions et actions entre les différents fragment, et les différents arguments qu'ils peuvent communiquer.
 
-![](assets/3.png)
+<figure class="image">
+  <img src="assets/3.png" alt="Diagramme de cas d'utilisation">
+  <figcaption style="text-align: center">
+    <em>Figure 9 : Diagramme de classes</em>
+  </figcaption>
+</figure>
 
 Comme on peut le remarquer dans ce graphe, le fragment qui va s'afficher en premier dans la `MainActivity` sera `BucketlistFragment` (l’icône de la maison).
 
@@ -207,7 +220,9 @@ Comme on peut le remarquer dans ce graphe, le fragment qui va s'afficher en prem
 
 Depuis ce fragment, l'utilisateur peu :
 
-* Consulter la liste des bucket lists qu'il a créées lui même ("Comedy" et "Action" dans le capture d'écran 5) et celles partagées avec lui, que d'autres utilisateurs ont créées ("Drama"). Deux objets `RecyclerView` vont contenir ces deux listes, et les mettre à jour grâce à un adaptateur spécial offert par la librairie de Cloud Firestore : `FirestoreRecyclerAdapter<Model, ViewHolder>(options)`, en voici l'utilisation :
+* Se déconnecter (figure 11)
+
+* Consulter la liste des bucket lists qu'il a créées lui même ("Comedy" et "Action" dans le figure 10) et celles partagées avec lui, que d'autres utilisateurs ont créées ("Drama"). Deux objets `RecyclerView` vont contenir ces deux listes, et les mettre à jour grâce à un adaptateur spécial offert par la librairie de Cloud Firestore : `FirestoreRecyclerAdapter<Model, ViewHolder>(options)`, en voici l'utilisation :
 
   ```kotlin
   ...
@@ -246,12 +261,111 @@ Depuis ce fragment, l'utilisateur peu :
   ```
 
 * Ajouter une bucket list en cliquant sur le bouton flottant "+" en bas à gauche
-* Modifier une de ses propres bucket lists en glissant (swipe) l'élément vers la droite (capture 7)
-* Supprimer une de ses propres bucket lists en glissant (swipe) l'élément vers la gauche (capture 8)
+
+* Modifier une de ses propres bucket lists en glissant (swipe) l'élément vers la droite (figure 12)
+
+* Supprimer une de ses propres bucket lists en glissant (swipe) l'élément vers la gauche (figure 13)
+
+Pour les actions de "swipe", nous avons créé une classe `ItemSwipeController` qui hérite de la classe abstraite `ItemTouchHelper.Callback`, et que nous avons attaché à notre `RecyclerView` :
+
+```kotlin
+class ItemSwipeController(
+    private val buttonsActions: OnSwipedListener,
+    private val directions: Int
+): ItemTouchHelper.Callback() {
+    ...
+    fun onDraw(c: Canvas) {
+        if (currentItemViewHolder != null) {
+            // Draw the edit and the delete round buttons
+            drawButtons(c)
+        }
+    }
+    interface OnSwipedListener {
+        fun onDeleteButtonClick(position: Int)
+        fun onEditButtonClick(position: Int)
+    }
+}
+
+// Usage:
+val swipeController = ItemSwipeController(
+    object : ItemSwipeController.OnSwipedListener {
+        override fun onDeleteButtonClick(position: Int) {
+            // Delete routine
+        }
+        override fun onEditButtonClick(position: Int) {
+            // Edit routine
+        }
+    }, 
+    ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+)
+
+val itemTouchhelper = ItemTouchHelper(swipeController)
+itemTouchhelper.attachToRecyclerView(recyclerViewOwned)
+
+recyclerViewOwned.addItemDecoration(object : ItemDecoration() {
+    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+        swipeController.onDraw(c)
+    }
+})
+```
 
 ![](assets/4.png)
 
 #### AddEditBucketlistFragment
+
+Quand l'utilisateur choisie d'ajouter (figure 14) ou de modifier (figure 15) une bicket list, l'activité principale va charger ce fragment `AddEditBucketlistFragment`. Dans les deux cas, ce fragment est chargé avec les arguments suivants : `fragmentTitle: String`, `bucketlistId: String` et `action: Enum` (peut être `ADD` ou `EDIT`)
+
+```xml
+<fragment android:id="@+id/AddEditBucketlistFragment" ... >
+    <argument
+         android:name="fragmentTitle"
+         app:argType="reference"
+         android:defaultValue="@string/new_bucket_list" />
+    <argument
+         android:name="bucketlistId"
+         app:argType="string"
+         app:nullable="true"
+         android:defaultValue="@null" />
+    <argument
+         android:name="action"
+         app:argType="mse.mobop.mymoviesbucketlists.utils.BucketlistAction"
+         android:defaultValue="ADD" />
+```
+
+* S'il s'agit d'une opération d'ajout, les arguments auront les valeurs par défaut `New bucket list`, `null` et `ADD` respectivement :
+
+  ```kotlin
+  findNavController()
+      .navigate(R.id.action_BucketlistsFragment_to_AddEditBucketlistFragment)
+  ```
+
+* S'il s'agit d'une opération de modification, les arguments auront les valeurs `Edit bucket list`, `<l'id de la bucket list en question>` et `EDIT` respectivement :
+
+  ```kotlin
+  val direction = BucketlistFragmentDirections
+  	.actionBucketlistsFragmentToAddEditBucketlistFragment(
+          fragmentTitle = R.string.edit_bucket_list,
+          bucketlistId = bucketlist.id,
+          action = BucketlistAction.EDIT
+      )
+  findNavController().navigate(direction)
+  ```
+
+> `action_BucketlistsFragment_to_AddEditBucketlistFragment` est définie dans le `NavGraph` :
+>
+> ```xml
+> <fragment android:id="@+id/BucketlistFragment" ... >
+> 	<action
+> 		android:id="@+id/action_BucketlistsFragment_to_AddEditBucketlistFragment"
+>         app:destination="@id/AddEditBucketlistFragment"
+>         ... />
+>     ...
+> </fragment>
+> ```
+
+![](assets/5.png)
+
+#### OneBucketlistFragment
 
 
 
