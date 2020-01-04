@@ -174,6 +174,85 @@ FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
 
 ### Gérer les bucket lists
 
+Après avoir se connecter, l'activité `MainActivity` se lance (capture d'écran 5). Cette activité contient principalement :
+
+* Un objet `NavigationView` qui permet à l'utilisateur de se déconnecter (capture d'écran 6)
+
+  ```xml
+  <com.google.android.material.navigation.NavigationView
+      android:id="@+id/nav_view"
+      ...
+      app:headerLayout="@layout/nav_header_main"
+      app:menu="@menu/activity_main_drawer_menu" />
+  ```
+
+* Un objet `fragment` qui permet de charger les différents fragments définis dans le *Navivation Graph* `mobile_navigation.xml`
+
+  ```xml
+  <fragment
+  	android:id="@+id/nav_host_fragment"
+  	android:name="androidx.navigation.fragment.NavHostFragment"
+  	...
+  	app:defaultNavHost="true"
+  	app:navGraph="@navigation/mobile_navigation" />
+  ```
+
+  Le fichier `mobile_navigation.xml` permet de gérer les différentes transactions et actions entre les différents fragment, et les différents arguments qu'ils peuvent communiquer.
+
+![](assets/3.png)
+
+Comme on peut le remarquer dans ce graphe, le fragment qui va s'afficher en premier dans la `MainActivity` sera `BucketlistFragment` (l’icône de la maison).
+
+#### BucketlistFragment
+
+Depuis ce fragment, l'utilisateur peu :
+
+* Consulter la liste des bucket lists qu'il a créées lui même ("Comedy" et "Action" dans le capture d'écran 5) et celles partagées avec lui, que d'autres utilisateurs ont créées ("Drama"). Deux objets `RecyclerView` vont contenir ces deux listes, et les mettre à jour grâce à un adaptateur spécial offert par la librairie de Cloud Firestore : `FirestoreRecyclerAdapter<Model, ViewHolder>(options)`, en voici l'utilisation :
+
+  ```kotlin
+  ...
+  private val firestoreInstance: FirebaseFirestore by lazy { 
+      FirebaseFirestore.getInstance() 
+  }
+  ...
+  val bucketlistsCollRef = firestoreInstance.collection("bucketlists")
+  val query = bucketlistsCollRef
+  	.whereEqualTo("createdBy.id", FirebaseAuth.getInstance().currentUser!!.uid)
+  	.orderBy("creationTimestamp", Query.Direction.DESCENDING)
+  
+  val recyclerOptions = FirestoreRecyclerOptions.Builder<Bucketlist>()
+      .setQuery(query, Bucketlist::class.java)
+      .build()
+  
+  val recyclerAdapterOwned = 
+  	BucketlistAdapter(recyclerOptions, BucketlistAdapter.Type.OWNED)
+  ```
+
+  ```kotlin
+  class BucketlistAdapter(
+      options: FirestoreRecyclerOptions<Bucketlist>, 
+      private val type: Type
+  ) : FirestoreRecyclerAdapter<Bucketlist, BucketlistHolder>(options) {
+      enum class Type { OWNED, SHARED}
+      ...
+       inner class BucketlistHolder(
+           private val view: View, 
+           private val type: Type
+       ): RecyclerView.ViewHolder(view) {
+           ...
+       }
+      ...
+  }
+  ```
+
+* Ajouter une bucket list en cliquant sur le bouton flottant "+" en bas à gauche
+* Modifier une de ses propres bucket lists en glissant (swipe) l'élément vers la droite (capture 7)
+* Supprimer une de ses propres bucket lists en glissant (swipe) l'élément vers la gauche (capture 8)
+
+![](assets/4.png)
+
+#### AddEditBucketlistFragment
+
 
 
 ### Support de deux langages
