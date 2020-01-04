@@ -444,9 +444,117 @@ youtubePlayerView.addYouTubePlayerListener(
 
 ![](assets/6.png)
 
+#### AddMoviesFragment
+
+Le clic sur le bouton "+" en bas à droite du fragment précédent va charger le fragment `AddMoviesFragment` dans l'activité principale. Ce fragment contient un objet `TabLayout` avec 4 éléments `TabItem` (figure 19). Le clic sur un élément `TabItem` va demander au `MovieViewModel` du fragment de lancer une requête http `GET` vers l'API The Movie Database :
+
+1. **POPULAR** : charger et afficher la liste des films populaires actuellement sur TMDb
+2. **UPCOMING** : charger et afficher la liste des films à venir dans les salles de cinéma
+3. **TOP RATED** : charger et afficher la liste des films les mieux notés sur TMDb
+4. **SEARCH** : permet d'effectuer une recherche de film par titre (figure 21), de charger et afficher le résultat de la recherche
+
+Les résultats de tous ces requêtes sont représentés dans un objet `RecyclerView`, dont on change le contenu en fonction de la requête demandée. Le simple clic sur le poster du film va l'agrandir dans un `AlertDialog` (figure 20). Le clic long sur le poster va ouvrir un `AlertDialog` contenant un `YouTubePlayerView` pour jouer les différentes bandes-annonces du film (figure 22). Le clic long sur la description d'un film permet de le sélectionner pour l'ajouter plus tard dans la bucket list (en cliquant sur le menu **check** en haut à droite dans les figures 19 et 21).
+
+Pour effectuer les appels des requêtes http, nous avons utilisé la librairie ***Retrofit*** (v2.7.0). Pour convertir le résultat des requêtes du `json` vers des objets, nous avons utilisé la librairie ***Gson Converter*** (v2.7.0) de Retrofit. Pour pouvoir déboguer ce que Retrofit fait, nous avons utilisé la librairie ***Logging Interceptor*** (v4.0.1).
+
+Pour utiliser ces librairies :
+
+* Définir le client http avec le débogueur et le convertisseur :
+
+  ```kotlin
+  object MovieApi {
+      private var retrofit: Retrofit? = null
+  
+      private fun buildClient(): OkHttpClient? {
+          val httpLoggingInterceptor = HttpLoggingInterceptor()
+          return OkHttpClient
+              .Builder()
+              .addInterceptor(httpLoggingInterceptor.apply {
+                  httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+              })
+              .build()
+      }
+  
+      val client: Retrofit?
+          get() {
+              if (retrofit == null) {
+                  retrofit = Retrofit.Builder()
+                      .client(buildClient()!!)
+                      .addConverterFactory(GsonConverterFactory.create())
+                      .baseUrl(BASE_URL_API)
+                      .build()
+              }
+              return retrofit
+          }
+  }
+  ```
+
+* Définir les routes de l'API qu'on va utiliser :
+
+  ```kotlin
+  interface MovieService {
+      @GET("movie/popular")
+      fun getPopularMovies(
+          @Query("page") pageIndex: Int,
+          @Query("api_key") apiKey: String = BuildConfig.THE_MOVIE_DATABASE_API_KEY,
+          @Query("include_adult") includeAdpult: Boolean = false,
+          @Query("language") language: String? = "en_US"
+      ): Call<MoviesSearchResult?>?
+  }
+  ```
+
+* Créer une instance du client http :
+
+  ```kotlin
+  private val movieService = MovieApi.client!!.create(MovieService::class.java)
+  ```
+
+* Et finalement effectuer l'appel et récupérer le résultat (exemple avec `getPopularMovies`) :
+
+  ```kotlin
+  data class MoviesSearchResult(
+      @SerializedName("page") val page : Int?,
+      @SerializedName("total_results") val totalResults : Int?,
+      @SerializedName("total_pages") val totalPages : Int?,
+      @SerializedName("results") val results : List<Movie>?
+  )
+  ```
+
+  ```kotlin
+  movieService.getPopularMovies(currentPage).enqueue(
+      object : Callback<MoviesSearchResult?> {
+          override fun onResponse(
+              call: Call<MoviesSearchResult?>?,
+              response: Response<MoviesSearchResult?>?
+          ) { // Got data.
+              val moviesSearchResult = response!!.body()!!
+  
+              val results = moviesSearchResult.results!! as ArrayList<Movie>
+              // Add results to the RecyclerView
+          }
+          
+          override fun onFailure(call: Call<MoviesSearchResult?>?, t: Throwable) {
+              // Handle failure
+          }
+      }
+  )
+  ```
+
+![](assets/7.png)
+
+![](assets/8.png)
+
+### Support de deux thèmes
+
+
+
 ### Support de deux langages
 
+
+
 ## Problèmes rencontrés
+
+
 
 ## Conclusion
 
