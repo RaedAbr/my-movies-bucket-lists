@@ -14,7 +14,7 @@
 
 Pour réaliser ce projet, nous avons travaillé principalement en **Extreme Programming**. Nous avons commencé par fixer les tâches et les fonctionnalités de base de notre application, et nous avions itéré là-dessus.
 
-#### Architecture générale
+### Architecture générale
 
 Notre projet respecte l'architecture **MVVM** (Model, View, View-Model) :
 
@@ -33,7 +33,7 @@ La figure suivante (figure 1) illustre l’architecture générale :
   </figcaption>
 </figure>
 
-#### Cas d'utilisation
+### Cas d'utilisation
 
 Les différents cas d'utilisation de notre application sont les suivants :
 
@@ -60,7 +60,7 @@ Le diagramme de cas d'utilisation suivant (figure 2) illustre les fonctionnalit�
   </figcaption>
 </figure>
 
-#### Recherche et ajout de films dans une bucket List
+### Recherche et ajout de films dans une bucket List
 
 Nous allons présenter le scénario le plus important (figure 3) par un diagramme de séquence : Recherche et ajout de films dans une bucket list :
 
@@ -71,7 +71,7 @@ Nous allons présenter le scénario le plus important (figure 3) par un diagramm
   </figcaption>
 </figure>
 
-#### Diagramme de classe
+### Diagramme de classe
 
 Pour respecter l'architecture général, nous avons organisé nos classes en packages (figure 4) :
 
@@ -363,11 +363,86 @@ Quand l'utilisateur choisie d'ajouter (figure 14) ou de modifier (figure 15) une
 > </fragment>
 > ```
 
+Dans le fragment `AddEditBucketlistFragment`, on peut récupérer les valeurs des arguments via la méthode statique `AddEditBucketlistFragmentArgs.fromBundle(arguments!!)` générée par Android Studio au moment du `Build` de l'application, grace au `NavGraph` :
+
+```kotlin
+val bandle = AddEditBucketlistFragmentArgs.fromBundle(arguments!!)
+val fragmentTitle = bandle.fragmentTitle
+val bucketlistId = bandle.bucketlistId
+val action = bandle.action
+```
+
 ![](assets/5.png)
 
 #### OneBucketlistFragment
 
+Par un simple clic sur un des éléments des `RecyclerView`s dans le fragment `BucketlistFragment` (figure 10), le système navigue vers le fragment `OneBucketlistFragment` (figure 16) en suivant la même logique expliqué dans la partie précédente (utilisant le `NavGraph`). Ce fragment attend les arguments suivants :
 
+* `bucketlistId: String` utilisé pour chargé la bucket list en question depuis la base de données Cloud Firestore
+* `ownerId: String` utilisé pour mettre en place ou pas, à l'utilisateur, le menu pour modifier et supprimer la bucket list (les bouton en haut à droite dans la figure 16)
+
+La liste des films du bucket list est représentée dans un `RecyclerView` : le poster du film, sont titre, et la date dans laquelle ce film à été ajouté à cette bucket list. Pour toutes les images qui viennent depuis internet dans notre application, nous avons utilisé la librairie ***Glide*** (v4.10.0) (lien dans les références). L'utilisation de cette librairie est très simple. Il suffit de fournir principalement le contexte, l'URL vers l'image en question, l'objet `ImageView` dans lequel nous voulons charger l'image (en mode asynchrone), et les routines des actions à exécuter en cas de succès ou d’échec :
+
+```kotlin
+Glide
+    .with(context)
+    .load(BASE_URL_IMG + movie.posterPath)
+    .listener(object : RequestListener<Drawable> {
+        override fun onResourceReady(
+            resource: Drawable?,
+            model: Any?,
+            target: com.bumptech.glide.request.target.Target<Drawable>?,
+            dataSource: DataSource?,
+            isFirstResource: Boolean
+        ): Boolean {
+            // Handle success
+            return false
+        }
+        override fun onLoadFailed(
+            e: GlideException?,
+            model: Any?,
+            target: com.bumptech.glide.request.target.Target<Drawable>?,
+            isFirstResource: Boolean
+        ): Boolean {
+            // Handle failure
+            return false
+        }
+    })
+    .diskCacheStrategy(DiskCacheStrategy.ALL) // Cache both original & resized image
+    .centerCrop() // Center and crop the image in its container
+    .transition(withCrossFade()) // Image apears with fade animation
+    .into(movie_poster) // Container => ImageView
+```
+
+Le simple clic sur un film bascule l'état du film (non vue / déjà vu). Le clic sur le bouton "-" en bas à gauche va changer la vu en mode suppression : cela change l'action du clic sur un film à une action de suppression à la place le l'action de basculement (figure 17). Le clic long sur un élément permet d'ouvrir un `AlertDialog` personnalisé affichant le poster, la description et les différentes bandes-annonces et vidéos liées au film (figure 18).
+
+Les différentes informations liées à un film (depuis The Movie Database) sont déjà enregistrées dans la base de données Cloud Firestore au moment de l'ajout d'un film dans une bucket list (explication dans la partie suivante). Mais pour les vidéos liées au film, il faut lancer une nouvelle requête`GET` vers l'API The Movie Database `movie/{movie_id}/videos`. La réponse de cette requête est une liste de vidéos YouTube identifiées par un `key`. Pour afficher les vidéos YouTube, nous avons utiliser la librairie ***android-youtube-player*** fournie par **PierfrancescoSoffritti** (lien dans les références). Nous avons préféré d'utiliser cette librairie, à la place de la librairie officielle de YouTube *YouTube Android Player API*, pour différentes raisons expliquées dans la partie **Problèmes rencontrés**. L'utilisation de cette librairie :
+
+* Ajout de l'objet `YouTubePlayerView` dans la vue :
+
+```xml
+<com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+        android:id="@+id/youtube_player_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:showFullScreenButton="false"/>
+```
+
+* Chargement de la vidéo dynamiquement :
+
+```kotlin
+youtubePlayerView.addYouTubePlayerListener(
+    object : AbstractYouTubePlayerListener() {
+        override fun onReady(youTubePlayer: YouTubePlayer) {
+            youTubePlayer.loadVideo(video.key, 0f)
+            // First parameter is the video youtube key
+            // Second parameter is from where to start the video (in seconds)
+        }
+    }
+)
+```
+
+![](assets/6.png)
 
 ### Support de deux langages
 
