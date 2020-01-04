@@ -11,4 +11,5 @@
     <attr name="colorPosterBackground" format="reference"/>
     <attr name="colorMovieSelected" format="reference"/>
     <attr name="colorSelectedMovieCheckbox" format="reference"/>
+    <attr name="colorInversed" format="reference"/>
 </resources>

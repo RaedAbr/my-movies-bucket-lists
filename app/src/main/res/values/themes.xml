@@ -16,6 +16,7 @@
         <item name="colorHeader">@color/colorHeader</item>
         <item name="colorPosterBackground">@color/colorPosterBackground</item>
         <item name="colorMovieSelected">@color/colorPrimaryDefaultDark</item>
+        <item name="colorInversed">@color/colorPrimaryDefaultDark</item>
 
         <item name="android:windowBackground">?attr/colorAppBackground</item>
         <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
@@ -44,7 +45,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryDark</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorWhite</item>
 
         <item name="colorAppBackground">@color/colorAppBackgroundDark</item>
         <item name="colorTitle">@color/colorTitleDark</item>
@@ -56,6 +57,7 @@
         <item name="colorHeader">@color/colorHeaderDark</item>
         <item name="colorPosterBackground">@color/colorPosterBackground</item>
         <item name="colorMovieSelected">@color/colorTitleDark</item>
+        <item name="colorInversed">@color/colorGray</item>
 
         <item name="android:windowBackground">?attr/colorAppBackground</item>
         <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>

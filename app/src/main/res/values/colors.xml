@@ -18,4 +18,5 @@
     <color name="colorTitleDark">#fff</color>
     <color name="colorCardBackgroundDark">#2B2B2B</color>
     <color name="colorHeaderDark">#2B4D69</color>
+    <color name="colorGray">#919191</color>
 </resources>
