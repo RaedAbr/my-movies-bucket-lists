@@ -6,13 +6,19 @@
 
 ## Introduction
 
+My Movies Bucket lists est une application faite pour les cinéphiles qui souhaitent partager des moments à regarder des films avec d'autres cinéphiles. Elle permet de créer et de partager avec d'autres cinéphiles des "bucket lists" de films. Chaque cinéphile peut alors choisir d'ajouter un film à la liste. Lorsque les cinéphiles ont vus un film de la liste, ils peuvent le taguer comme vu afin qu'il n'aparaisse plus dans la catégorie des films à voir. Une liste est indépendante des autres. Lorsqu'un cinéphile a vu un film avec un autre cinéphile, cela n'impactera pas les listes qu'il partage avec d'autres cinéphiles.
+
 ## Analyse
+
+Il existe beaucoup d'applications qui offrent la possibilité de créer une liste de lecture pour permettre aux utilisateurs de garder une trace des films qu'ils ont vus et des films qu'ils veulent voir. Cependant, nous n'avons pas trouvé d'application qui permette de partager des listes entre ses utilisateurs. Nous trouvons que cet aspect communautaire et de partage est ce qui manque aux applications qui existent déjà sur le marché. C'est pourquoi nous avons décidé de créer My Movies Bucket lists.
+
+l'application est divisée en plusieurs entités distinctes. La première entité est l'utilisateur. Il peut créer un compte et se connecter. Ensuite vient la seconde entité, la bucket list. Elle peut être créée par un utilisateur qui peut la partager avec d'autres utilisateurs. Un utilisateur peut créer autant de bucket list qu'il le veut. Enfin la troisième entité est le film. Un film peut être ajouté dans une bucket list. Au sein d'une bucket list un film possède un attribut pour savoir si il a été visionné ou non. Les données des films proviennent d'une API spécialisée comme "The Movie DB" ou encore "IMDB". Dans le cadre de ce projet, nous utiliserons "The Movie DB".
 
 ## Conception
 
 ### Méthodologie
 
-Pour réaliser ce projet, nous avons travaillé principalement en **Extreme Programming**. Nous avons commencé par fixer les tâches et les fonctionnalités de base de notre application, et nous avions itéré là-dessus.
+Pour réaliser ce projet, nous avons travaillé principalement en **Extreme Programming**. Nous avons commencé par fixer les tâches et les fonctionnalités de base de notre application, et nous avons itéré là-dessus.
 
 #### Architecture générale
 
@@ -255,10 +261,14 @@ Depuis ce fragment, l'utilisateur peu :
 
 
 
-### Support de deux langages
+### Support de deux langues
 
 ## Problèmes rencontrés
 
 ## Conclusion
+
+D'une manère générale, nous avons travaillé en extreme programming. Le gros de l'application a donc été réalisé par les deux membres du groupe. Nous avons choisi cette manière de travailler parce que le projet nous le permettait et surtout pour que chacun comprenne le code. En effet, cette méthode a l'avantage de ne pas créer d'ilots de compétence.
+
+Ensuite, nous avons chacun procédé 
 
 ## Références
