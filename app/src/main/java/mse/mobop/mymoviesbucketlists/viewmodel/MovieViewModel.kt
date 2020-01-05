@@ -14,7 +14,7 @@ class MovieViewModel {
         const val TOP_RATED = 2
         const val SEARCH = 3
         const val PAGE_START = 1
-        private val movieService: MovieService? = MovieApi.client!!.create(MovieService::class.java)
+        private val movieService = MovieApi.client!!.create(MovieService::class.java)
     }
 
     var currentPage =
@@ -36,19 +36,19 @@ class MovieViewModel {
     var selectedMovies: ArrayList<Movie> = ArrayList()
 
     private fun callGetPopularMoviesApi(): Call<MoviesSearchResult?>? {
-        return movieService!!.getPopularMovies(currentPage)
+        return movieService.getPopularMovies(currentPage)
     }
 
     private fun callGetTopRatedMoviesApi(): Call<MoviesSearchResult?>? {
-        return movieService!!.getTopRatedMovies(currentPage)
+        return movieService.getTopRatedMovies(currentPage)
     }
 
     private fun callGetUpcomingMoviesApi(): Call<MoviesSearchResult?>? {
-        return movieService!!.getUpcomingMovies(currentPage)
+        return movieService.getUpcomingMovies(currentPage)
     }
 
     private fun callSearchMoviesApi(): Call<MoviesSearchResult?>? {
-        return movieService!!.searchForMovies(query, currentPage)
+        return movieService.searchForMovies(query, currentPage)
     }
 
     fun addLoadingFooter() {

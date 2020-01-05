@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
+    <mse.mobop.mymoviesbucketlists.ui.preference.MyPreferenceCategory
         android:title="@string/app_theme"
         android:icon="@drawable/ic_theme"/>
     <mse.mobop.mymoviesbucketlists.ui.preference.MySwitchPreferenceCompat
