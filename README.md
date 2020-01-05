@@ -32,12 +32,7 @@ Après avoir fait quelques recherches, nous avons décidé d'utiliser les servic
 
 La figure suivante (figure 1) illustre l’architecture générale :
 
-<figure class="image">
-  <img src="assets/arch.png" alt="Diagramme de cas d'utilisation">
-  <figcaption style="text-align: center">
-    <em>Figure 1 : Architecture générale</em>
-  </figcaption>
-</figure>
+![](assets/arch.png)
 
 ### Cas d'utilisation
 
@@ -59,23 +54,13 @@ Après avoir été identifié, un utilisateur peut
 
 Le diagramme de cas d'utilisation suivant (figure 2) illustre les fonctionnalités de notre application :
 
-<figure class="image">
-  <img src="assets/use_case.png" alt="Diagramme de cas d'utilisation">
-  <figcaption style="text-align: center">
-    <em>Figure 2 : Diagramme de cas d'utilisation</em>
-  </figcaption>
-</figure>
+![](assets/use_case.png)
 
 ### Recherche et ajout de films dans une bucket List
 
 Nous allons présenter le scénario le plus important (figure 3) par un diagramme de séquence : Recherche et ajout de films dans une bucket list :
 
-<figure class="image">
-  <img src="assets/add_movies.png" alt="Diagramme de cas d'utilisation">
-  <figcaption style="text-align: center">
-    <em>Figure 3 : Recherche et ajout de films dans une bucket list</em>
-  </figcaption>
-</figure>
+![](assets/add_movies.png)
 
 ### Diagramme de classe
 
@@ -87,12 +72,7 @@ Pour respecter l'architecture général, nous avons organisé nos classes en pac
 * **Firebase** : contient les classes qui sont en liaison directe avec les librairie de Firebase : Cloud Firestore et FirebaseAuth
 * **TMDApi** : contient une classe qui envoie des requêtes http au serveur The Movie Database via leur API
 
-<figure class="image">
-  <img src="assets/class_diagram.png" alt="Diagramme de cas d'utilisation">
-  <figcaption style="text-align: center">
-    <em>Figure 4 : Diagramme de classes</em>
-  </figcaption>
-</figure>
+![](assets/class_diagram.png)
 
 ## Implémentation
 
@@ -213,12 +193,7 @@ Après avoir se connecter, l'activité `MainActivity` se lance (figure 9). Cette
 
   Le fichier `mobile_navigation.xml` permet de gérer les différentes transactions et actions entre les différents fragment, et les différents arguments qu'ils peuvent communiquer.
 
-<figure class="image">
-  <img src="assets/3.png" alt="Diagramme de cas d'utilisation">
-  <figcaption style="text-align: center">
-    <em>Figure 9 : Diagramme de classes</em>
-  </figcaption>
-</figure>
+![](assets/3.png)
 
 Comme on peut le remarquer dans ce graphe, le fragment qui va s'afficher en premier dans la `MainActivity` sera `BucketlistFragment` (l’icône de la maison).
 
@@ -712,7 +687,53 @@ Notre application supporte deux langages : Français et Anglais. Tout le contenu
 
 ## Problèmes rencontrés
 
+### Fixer l'architecture générale
 
+Au début de ce projet, notre architecture pour l'application était la suivante :
+
+* Utilisation de la librairie ***Room*** et ***Sqlite*** pour la persistance des données relatives à un utilisateur en local
+* Utilisation d'un serveur de base de données ***MangoDB*** distant pour le stockage des données de tous les utilisateurs
+* Création d'une API permettant de communiquer avec la base de données
+
+Si l'utilisateur est en mode connecté, toutes les modifications qu'il applique seront enregistrées en local. Une fois connecté à internet, les modifications seront envoyées au serveur distant. Avec cette méthodes, des conflits vont être potentiellement produits, et donc il faut concevoir un système qui gère tout cela... En cherchant sur internet, nous nous sommes rendu compte de l’existence de ***Firebase*** qui facilite beaucoup les choses, et qui 
+
+* Offre une librairie pour l'authentification
+* Offre une base de données *NoSql*
+* Gérer le cache de l'application (persistance locale des données). Au moment ou l'application devient capable de se connecter à internet, les données seront synchronisées automatiquement
+* Résout les problèmes de conflits automatiquement
+
+### Choisir les librairies
+
+#### Visionner les vidéos YouTube
+
+Quand nous avons commencé à implémenter la fonctionnalité de visionnage des bandes-annonces des films, nous avons automatiquement utilisé la librairie officielle offerte par YouTube : ***YouTube Android Player API***. Nous avons rencontré des problèmes d’intégration, quand nous voulions mettre l'élément lecteur de vidéo dans un `AlertDialog`. En plus, nous avons eu des problèmes de stabilité et notre application plantait d'une manière aléatoire, sans raison apparente. Pour cela, nous avons décidé de chercher une alternative, et nous avons trouvé la librairie ***android-youtube-player***.
+
+#### Envoyer des requêtes http
+
+Pour récupérer les listes de films depuis l'API ***The Movie Database*** et pour afficher les poster des films, nous avons utilisé la librairie ***Volley*** au début. Nous avons dû gérer le conversion des réponses de requêtes depuis `json` vers `object`. Il fallait aussi créer un objet pour ajouter des paramètres à la requête, et passer avec chaque requête l'URL complet de la route. Nous n'étions pas convaincus de notre code, et donc nous avons décidé de chercher une autre solution : utiliser ***Retrofit*** à la place.
+
+### Modification de l'état d'un film (vu / non vu)
+
+Dans Cloud Firestore, nous avons une "collection" `bucketlists` contenant les différents objets `Bucketlist`. Chaque `Bucketlist` est un "document" ayant un `id` et d'autres attributs. Un des attributs s'appelle `movies`, un tableau d'objets de type `Movie`. Chaque objet `Movie` a un attribut booléen `watched` (**true** si le film est déjà vu, **false** sinon) (figure 25).
+
+![](assets/cloud_firestore_shema.png)
+
+Au moment où l’utilisateur clique sur un film pour changer son état, il fallait modifier cet attribut `watched` de l'élément `Movie` du tableau `movies` dans le document de la bucket list en question. Malheureusement, la librairie de ***Firebase*** ne fournit pas une fonction pour modifier un attribut d'un objet dans un tableau. Ils fournissent seulement un moyen pour ajouter (s'il n'existait pas) ou supprimer un élément dans un tableau:
+
+```kotlin
+// Add element to array in document
+FirebaseFirestore.getInstance()
+	.collection('bucketlists')
+	.document(bucketlistId)
+	.update("tableAttributeName", FieldValue.arrayUnion("value"))
+// Delete element from array in document
+FirebaseFirestore.getInstance()
+	.collection('bucketlists')
+	.document(bucketlistId)
+    .update("tableAttributeName", FieldValue.arrayRemove("value"))
+```
+
+Et donc pour changer l'état d'un film, notre seule solution est de le supprimer du tableau `movies`, modifier l'attribut `watched`, et l'insérer à nouveau. Ce traitement génère un comportement par très agréable, au niveau visuel, à notre `RecyclerView` qui contient la liste des films.
 
 ## Conclusion
 
